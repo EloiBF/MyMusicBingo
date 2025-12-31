@@ -1,0 +1,15 @@
+ipykernel
+groq
+django
+python-dotenv
+langchain
+langchain-community
+psycopg2-binary
+pandas
+djangorestframework
+django-cors-headers
+django-filter
+lxml
+unicode
+django-widget-tweaks
+spotipy

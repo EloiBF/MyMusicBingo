@@ -1,0 +1,71 @@
+﻿
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mÔ£ô[39m 1717 modules transformed.
+node.exe : [31mÔ£ù[39m Build failed in 2.87s
+En C:\Program Files\nodejs\npm.ps1: 29 
+Carácter: 3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([ 
+   31mÔ£ù[39m Build failed in 2.87s:String) [  
+  ], RemoteException
+    + FullyQualifiedErrorId : NativeCommandErro 
+   r
+ 
+[31merror during build:
+[31msrc/pages/Dashboard.jsx (4:10): "history" 
+is not exported by "node_modules/lucide-react/di
+st/esm/lucide-react.js", imported by 
+"src/pages/Dashboard.jsx".[31m
+file: [36mC:/Python Projects/BingoMusicMaker/fr
+ontend/src/pages/Dashboard.jsx:4:10[31m
+[33m
+2: import {
+3:     Settings, Play, Music, LayoutGrid, 
+Layers, Palette,
+4:     Home, history as HistoryIcon, LogOut, 
+PlusCircle, Search, Sparkles
+             ^
+5: } from 'lucide-react';
+6: import { useNavigate } from 
+'react-router-dom';
+[31m
+    at getRollupError (file:///C:/Python%20Proje
+cts/BingoMusicMaker/frontend/node_modules/rollup
+/dist/es/shared/parseAst.js:401:41)
+    at error (file:///C:/Python%20Projects/Bingo
+MusicMaker/frontend/node_modules/rollup/dist/es/
+shared/parseAst.js:397:42)
+    at Module.error (file:///C:/Python%20Project
+s/BingoMusicMaker/frontend/node_modules/rollup/d
+ist/es/shared/node-entry.js:17022:16)
+    at Module.traceVariable (file:///C:/Python%2
+0Projects/BingoMusicMaker/frontend/node_modules/
+rollup/dist/es/shared/node-entry.js:17478:29)
+    at ModuleScope.findVariable (file:///C:/Pyth
+on%20Projects/BingoMusicMaker/frontend/node_modu
+les/rollup/dist/es/shared/node-entry.js:15141:39
+)
+    at ReturnValueScope.findVariable (file:///C:
+/Python%20Projects/BingoMusicMaker/frontend/node
+_modules/rollup/dist/es/shared/node-entry.js:568
+8:38)
+    at FunctionBodyScope.findVariable (file:///C
+:/Python%20Projects/BingoMusicMaker/frontend/nod
+e_modules/rollup/dist/es/shared/node-entry.js:56
+88:38)
+    at Identifier.bind (file:///C:/Python%20Proj
+ects/BingoMusicMaker/frontend/node_modules/rollu
+p/dist/es/shared/node-entry.js:5462:40)
+    at CallExpression.bind (file:///C:/Python%20
+Projects/BingoMusicMaker/frontend/node_modules/r
+ollup/dist/es/shared/node-entry.js:2825:28)
+    at CallExpression.bind (file:///C:/Python%20
+Projects/BingoMusicMaker/frontend/node_modules/r
+ollup/dist/es/shared/node-entry.js:12172:15)[39
+m
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Bungee', cursive;
+            background: #fffcf2;
+        }
+
+        .container {
+            width: 210mm;
+            height: 297mm;
+            padding: 20mm 15mm;
+            margin: 0 auto;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            --cols: 3;
+            --rows: 3;
+        }
+
+        .header {
+            margin-bottom: 5mm;
+        }
+
+        .decor {
+            font-size: 30pt;
+            margin: 5pt 0;
+        }
+
+        .header h1 {
+            font-size: 45pt;
+            color: var(--primary);
+            -webkit-text-stroke: 2px #252422;
+            margin: 0;
+            filter: drop-shadow(4px 4px 0px #ccc);
+        }
+
+        .header h2 {
+            font-size: 18pt;
+            color: #252422;
+            margin: 5pt 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(var(--cols), 1fr);
+            grid-template-rows: repeat(var(--rows), 1fr);
+            gap: 15px;
+            width: 100%;
+            flex-grow: 1;
+            margin-bottom: 10mm;
+        }
+
+        .cell {
+            border: 4px solid #252422;
+            border-radius: 12px;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            min-height: 0;
+        }
+
+        .song {
+            font-size: 14pt;
+            color: #252422;
+            line-height: 1.1;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .artist {
+            font-size: 10pt;
+            color: var(--primary);
+        }
+
+        .card-number {
+            font-size: 1.5rem;
+            color: #403d39;
+            margin-top: auto;
+            padding-bottom: 5mm;
+        }
+    </style>
+</head>
+
+<body {% if is_preview %}style="overflow: hidden;" {% endif %}>
+    <div class="container"
+        style="--primary: {{ color }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
+        <div class="header">
+            <div class="decor">📻 🕺 📻</div>
+            <h1>BINGO</h1>
+            <h2>{{ event.event_title }}</h2>
+        </div>
+        <div class="grid">
+            {% for item in card.data %}
+            <div class="cell">
+                <div class="song">{{ item.nom }}</div>
+                <div class="artist">{{ item.artista }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="card-number">VOL. {{ card.card_index }}</div>
+    </div>
+</body>
+
+</html>

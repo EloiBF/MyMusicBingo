@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ event.event_title }} - Print View</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0;
+        }
+
+        .page-break {
+            display: flex;
+            justify-content: center;
+            page-break-after: always;
+            break-after: page;
+            padding: 20px 0;
+        }
+
+        .no-print-banner {
+            background: #1a1a1a;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            border-bottom: 4px solid {
+                    {
+                    event.primary_color
+                }
+            }
+
+            ;
+            font-family: sans-serif;
+        }
+
+        .btn-print {
+            background: {
+                    {
+                    event.primary_color
+                }
+            }
+
+            ;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .page-break {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="no-print-banner no-print">
+        <h2 style="margin: 0;">🖨️ Ready to Print: {{ event.event_title }}</h2>
+        <p style="margin: 5px 0; opacity: 0.8;">Total of {{ cards|length }} cards in Style: {{ event.theme|upper }}</p>
+        <button onclick="window.print()" class="btn-print">🖨️ Print / Save as PDF</button>
+    </div>
+
+    <div class="content">
+        {{ content|safe }}
+    </div>
+</body>
+
+</html>
