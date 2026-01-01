@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@300;600&display=swap"
         rel="stylesheet">
     <style>
         @page {
@@ -21,111 +22,116 @@
         .container {
             width: 210mm;
             height: 297mm;
-            padding: 15mm 15mm;
+            padding: 20mm 20mm;
             background: white;
             margin: 0 auto;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
-            --primary: #f39c12;
+            --primary: #d4af37;
             --cols: 3;
             --rows: 3;
         }
 
         .header {
-            margin-bottom: 10mm;
-            padding: 8mm;
-            border: 8pt double #2c3e50;
-            background: white;
-            transform: skew(-2deg);
+            margin-bottom: 15mm;
+            padding-bottom: 10mm;
+            border-bottom: 0.5pt solid var(--primary);
         }
 
         .header h1 {
-            font-family: 'Bungee', cursive;
-            font-size: 48pt;
+            font-family: 'Playfair Display', serif;
+            font-size: 42pt;
             color: var(--primary);
             margin: 0;
-            -webkit-text-stroke: 1.5pt #2c3e50;
-            text-shadow: 4pt 4pt 0px #2c3e50;
+            font-weight: 700;
+            letter-spacing: 4pt;
+            text-transform: uppercase;
         }
 
         .header h2 {
-            font-size: 20pt;
-            color: #2c3e50;
-            margin: 10pt 0 0;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2pt;
+            font-family: 'Playfair Display', serif;
+            font-size: 22pt;
+            color: #333;
+            margin: 15pt 0 0;
+            font-weight: 400;
+            font-style: italic;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(var(--cols), 1fr);
             grid-template-rows: repeat(var(--rows), 1fr);
-            gap: 15px;
+            gap: 20px;
             width: 100%;
             flex-grow: 1;
         }
 
         .cell {
-            border: 3pt solid #2c3e50;
+            border: 0.5pt solid var(--primary);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 12px;
+            padding: 15px;
             box-sizing: border-box;
             background: white;
             position: relative;
-            box-shadow: 5pt 5pt 0px #bdc3c7;
+        }
+
+        .cell::before {
+            content: '';
+            position: absolute;
+            top: 5pt;
+            left: 5pt;
+            right: 5pt;
+            bottom: 5pt;
+            border: 0.2pt solid #eee;
         }
 
         .song {
-            font-size: 14pt;
-            font-weight: 700;
-            color: #2c3e50;
-            line-height: 1.1;
-            margin-bottom: 4pt;
+            font-size: 13pt;
+            font-weight: 600;
+            color: #1a1a1a;
+            line-height: 1.3;
+            margin-bottom: 5pt;
             word-break: break-word;
         }
 
         .artist {
-            font-family: 'Bungee', cursive;
             font-size: 9pt;
             color: var(--primary);
-            -webkit-text-stroke: 0.5pt #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5pt;
         }
 
         .card-number {
-            font-family: 'Bungee', cursive;
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin: 15pt 0;
-            background: yellow;
-            display: inline-block;
-            padding: 5pt 15pt;
-            border: 2pt solid #2c3e50;
-            transform: rotate(2deg);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: #999;
+            margin: 20pt 0 10pt;
+            font-style: italic;
         }
 
         .footer {
-            font-size: 9pt;
-            color: #2c3e50;
+            font-size: 8pt;
+            color: #ccc;
             margin-top: auto;
-            padding-bottom: 8mm;
-            font-weight: 700;
-            letter-spacing: 1pt;
+            padding-bottom: 5mm;
+            text-transform: uppercase;
+            letter-spacing: 2pt;
         }
     </style>
 </head>
 
 <body {% if is_preview %}style="overflow: hidden;" {% endif %}>
     <div class="container"
-        style="--primary: {{ color|default:'#f39c12' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
+        style="--primary: {{ color|default:'#d4af37' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="header">
-            <h1>📻 BINGO 🎙️</h1>
+            <h1>💍 BINGO 💍</h1>
             <h2>{{ event.event_title }}</h2>
         </div>
 
@@ -138,10 +144,8 @@
             {% endfor %}
         </div>
 
-        <div style="margin-top: auto;">
-            <div class="card-number">NO. {{ card.card_index }}</div>
-        </div>
-        <div class="footer">MYMUSICBINGO • THE GOLDEN ERA VIBES 📼</div>
+        <div class="card-number">Wedding Guest Card No. {{ card.card_index }}</div>
+        <div class="footer">MYMUSICBINGO • CELEBRATING ETERNAL LOVE ✨</div>
     </div>
 </body>
 

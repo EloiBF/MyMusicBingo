@@ -278,6 +278,95 @@ select:focus {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* Landing Page Specific Styles */
+.landing-hero-grid {
+  transition: var(--transition);
+}
+
+.landing-stats > div {
+  transition: var(--transition);
+}
+
+.landing-stats > div:hover {
+  transform: translateY(-5px);
+}
+
+.landing-steps-grid-3 > div,
+.landing-steps-grid-2 > div {
+  transition: var(--transition);
+}
+
+.landing-steps-grid-3 > div:hover,
+.landing-steps-grid-2 > div:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+}
+
+.landing-lifestyle-grid > div {
+  transition: var(--transition);
+}
+
+.landing-lifestyle-grid > div:hover img {
+  transform: scale(1.05);
+}
+
+.landing-lifestyle-grid img {
+  transition: var(--transition);
+}
+
+.landing-testimonial-grid > div {
+  transition: var(--transition);
+}
+
+.landing-testimonial-grid > div:hover {
+  transform: translateY(-5px);
+}
+
+@media (max-width: 1024px) {
+  .landing-hero-grid {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+  }
+  
+  .landing-hero-grid > div:first-child {
+    text-align: center !important;
+  }
+  
+  .landing-hero-grid .flex-between-responsive {
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-steps-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .landing-steps-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .landing-lifestyle-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .landing-testimonial-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-hero-grid {
+    gap: 2rem !important;
+  }
+  
+  .landing-stats {
+    flex-direction: column !important;
+    gap: 2rem !important;
+  }
+}
+
 .sidebar-overlay {
   display: none;
   position: fixed;

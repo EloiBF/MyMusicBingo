@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;800&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4 portrait;
@@ -13,7 +13,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             background: white;
         }
 
@@ -34,43 +34,46 @@
 
         .header {
             margin-bottom: 15mm;
-            padding: 12mm;
-            background: var(--primary);
-            color: white;
-            text-align: left;
+            padding: 15mm 10mm;
+            border: 6pt solid #000;
+            background: white;
+            box-shadow: 10pt 10pt 0px var(--primary);
             position: relative;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
         }
 
         .header h1 {
-            font-size: 50pt;
+            font-size: 65pt;
+            color: #000;
             margin: 0;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: -2pt;
-            line-height: 0.9;
+            letter-spacing: -4pt;
+            line-height: 0.8;
         }
 
         .header h2 {
             font-size: 18pt;
-            margin: 10pt 0 0;
+            color: #000;
+            margin: 15pt 0 0;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 2pt;
-            opacity: 0.9;
+            letter-spacing: 4pt;
+            border-top: 2pt solid #000;
+            display: inline-block;
+            padding-top: 5pt;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(var(--cols), 1fr);
             grid-template-rows: repeat(var(--rows), 1fr);
-            gap: 15px;
+            gap: 20px;
             width: 100%;
             flex-grow: 1;
         }
 
         .cell {
-            border: 2pt solid #000;
+            border: 3pt solid #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -78,11 +81,11 @@
             padding: 15px;
             box-sizing: border-box;
             background: white;
-            transition: transform 0.2s;
+            box-shadow: 6pt 6pt 0px var(--primary);
         }
 
         .song {
-            font-size: 15pt;
+            font-size: 16pt;
             font-weight: 800;
             color: #000;
             line-height: 1.1;
@@ -91,32 +94,34 @@
         }
 
         .artist {
-            font-size: 10pt;
+            font-size: 11pt;
             color: #666;
-            font-weight: 600;
+            font-weight: 500;
             text-transform: uppercase;
         }
 
         .footer {
             margin-top: auto;
-            padding: 15pt 0;
+            padding: 20pt 0;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-top: 4pt solid var(--primary);
+            align-items: flex-end;
         }
 
-        .card-no {
-            font-size: 2.2rem;
+        .card-number {
+            font-size: 3.5rem;
             font-weight: 800;
             color: #000;
+            line-height: 1;
         }
 
-        .brand {
+        .footer-tag {
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1pt;
-            font-size: 11pt;
+            font-size: 12pt;
+            background: #000;
+            color: #fff;
+            padding: 5pt 10pt;
         }
     </style>
 </head>
@@ -126,7 +131,7 @@
         style="--primary: {{ color|default:'#000' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="header">
-            <h1>MODERN BINGO</h1>
+            <h1>DANCE PARTY</h1>
             <h2>{{ event.event_title }}</h2>
         </div>
 
@@ -140,8 +145,8 @@
         </div>
 
         <div class="footer">
-            <div class="brand">MYMUSICBINGO • BOLD STYLE ⚡</div>
-            <div class="card-no">#{{ card.card_index }}</div>
+            <div class="footer-tag">MYMUSICBINGO • NON-STOP ENERGY ⚡</div>
+            <div class="card-number">#{{ card.card_index }}</div>
         </div>
     </div>
 </body>

@@ -33,12 +33,24 @@
             top: 0;
             z-index: 1000;
 
-            border-bottom: 4px solid {{ event.primary_color }};
+            border-bottom: 4px solid {
+                    {
+                    event.primary_color
+                }
+            }
+
+            ;
             font-family: sans-serif;
         }
 
         .btn-print {
-            background: {{ event.primary_color }};
+            background: {
+                    {
+                    event.primary_color
+                }
+            }
+
+            ;
             color: white;
             border: none;
             padding: 12px 30px;

@@ -70,9 +70,15 @@ const CreateBingo = () => {
     ];
 
     const themes = [
-        { id: 'classic', label: 'Classic Elegance', icon: '🎼', desc: 'Serif fonts & clean borders' },
-        { id: 'modern', label: 'Modern Bold', icon: '⚡', desc: 'Sans-serif & brutalist shadows' },
-        { id: 'retro', label: 'Retro Funk', icon: '📻', desc: 'Vintage colors & display types' },
+        { id: 'classic', label: 'Classic Elegance', icon: '🎼', desc: 'Serif fonts & professional borders' },
+        { id: 'modern', label: 'Modern Bold', icon: '⚡', desc: 'Sans-serif & clean brutalist shadows' },
+        { id: 'retro', label: 'Retro Wave', icon: '📻', desc: '80s & 90s vibrant nostalgia' },
+        { id: 'wedding', label: 'Wedding Gala', icon: '💍', desc: 'Elegant romance & high-end typography' },
+        { id: 'birthday', label: 'Birthday Bash', icon: '🎂', desc: 'Colorful & festive celebration' },
+        { id: 'graduation', label: 'Academic Excellence', icon: '🎓', desc: 'Graduation & achievement design' },
+        { id: 'corporate', label: 'Professional Executive', icon: '🏢', desc: 'Corporate & networking design' },
+        { id: 'dance', label: 'Electric Dance', icon: '💃', desc: 'High energy & vibrant pulses' },
+        { id: 'christmas', label: 'Christmas Spirit', icon: '🎄', desc: 'Festive joy & winter wonderland' },
     ];
 
     const fetchUserPlaylists = async () => {

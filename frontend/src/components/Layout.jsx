@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api';
+import Footer from './Footer';
 
 const SidebarLink = ({ icon, label, active, onClick }) => (
     <button
@@ -52,7 +53,7 @@ const Layout = ({ children }) => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--background)' }}>
+        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--background)', flexDirection: 'column' }}>
             {/* Mobile Toggle Button */}
             <button
                 className="mobile-toggle"
@@ -117,9 +118,12 @@ const Layout = ({ children }) => {
                 </div>
             </aside>
 
-            <main className="main-content">
-                {children}
-            </main>
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <main className="main-content" style={{ flex: 1 }}>
+                    {children}
+                </main>
+                <Footer />
+            </div>
         </div>
     );
 };

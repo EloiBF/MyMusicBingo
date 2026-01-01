@@ -7,6 +7,8 @@ import PrintView from './pages/PrintView';
 import CreateBingo from './pages/CreateBingo';
 import BingoDetail from './pages/BingoDetail';
 import Settings from './pages/Settings';
+import Terms from './pages/Terms';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import Layout from './components/Layout';
 
@@ -75,6 +77,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
