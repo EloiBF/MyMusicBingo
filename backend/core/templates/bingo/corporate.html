@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --surface: #ffffff;
+            --surface-alt: #f9f9f9;
+            --surface-even: #fafafa;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+            --border-light: #dfe6e9;
+        }
+
         @page {
             size: A4 portrait;
             margin: 0;
@@ -21,50 +30,40 @@
             width: 210mm;
             height: 297mm;
             padding: 15mm 15mm;
-            background: white;
+            background: var(--surface);
             margin: 0 auto;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
-            --primary: #2d3436;
-            --cols: 3;
-            --rows: 3;
         }
 
         .header {
             margin-bottom: 12mm;
             padding: 12mm;
             border-left: 8pt solid var(--primary);
-            background: #f9f9f9;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: var(--surface-alt);
+            text-align: center;
         }
 
         .header h1 {
-            font-size: 38pt;
+            font-size: 40pt;
             color: var(--primary);
             margin: 0;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -1.5pt;
             line-height: 1;
+            white-space: nowrap;
         }
 
         .header h2 {
             font-size: 16pt;
-            color: #636e72;
+            color: var(--text-muted);
             margin: 8pt 0 0;
             font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 1pt;
-        }
-
-        .header-icon {
-            font-size: 45pt;
-            opacity: 0.8;
         }
 
         .grid {
@@ -77,24 +76,24 @@
         }
 
         .cell {
-            border: 1pt solid #dfe6e9;
+            border: 1pt solid var(--border-light);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 12px;
             box-sizing: border-box;
-            background: white;
+            background: var(--surface);
         }
 
         .cell:nth-child(even) {
-            background: #fafafa;
+            background: var(--surface-even);
         }
 
         .song {
             font-size: 14pt;
             font-weight: 700;
-            color: #2d3436;
+            color: var(--text-dark);
             line-height: 1.2;
             margin-bottom: 4pt;
             word-break: break-word;
@@ -102,7 +101,7 @@
 
         .artist {
             font-size: 10pt;
-            color: #636e72;
+            color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -116,12 +115,12 @@
             align-items: center;
             font-size: 10pt;
             font-weight: 700;
-            color: #2d3436;
+            color: var(--text-dark);
         }
 
         .card-no {
             background: var(--primary);
-            color: white;
+            color: var(--surface);
             padding: 4pt 10pt;
             font-size: 11pt;
         }
@@ -133,11 +132,8 @@
         style="--primary: {{ color|default:'#2d3436' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="header">
-            <div>
-                <h1>CORPORATE BINGO</h1>
-                <h2>{{ event.event_title }}</h2>
-            </div>
-            <div class="header-icon">🏢</div>
+            <h1>🎵 Bingo musical 🎵</h1>
+            <h2>{{ event.event_title }}</h2>
         </div>
 
         <div class="grid">
@@ -150,8 +146,8 @@
         </div>
 
         <div class="footer">
-            <div>MYMUSICBINGO • PROFESSIONAL EVENT 📊</div>
-            <div class="card-no">NO. {{ card.card_index }}</div>
+            <div>MYMUSICBINGO • PROFESSIONAL EVENT 🎵</div>
+            <div class="card-no">n°{{ card.card_index }}</div>
         </div>
     </div>
 </body>

@@ -16,7 +16,7 @@ const CreateBingo = () => {
         rows: 3,
         columns: 3,
         theme: 'classic',
-        primary_color: '#3f51b5'
+        primary_color: '#8b5cf6' // Matches --primary
     });
 
     const [loading, setLoading] = useState(false);
@@ -155,9 +155,9 @@ const CreateBingo = () => {
     };
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="container" style={{ maxWidth: '1200px' }}>
             <header style={{ marginBottom: '3rem' }}>
-                <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <h1 style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <Wand2 size={32} color="var(--primary)" /> {isEditMode ? 'Edit Bingo Event' : 'Create Magic Bingo'}
                 </h1>
                 <p style={{ color: 'var(--text-muted)' }}>{isEditMode ? 'Update My Bingo event settings.' : 'Configure your event and generate unique cards in seconds.'}</p>
@@ -188,7 +188,7 @@ const CreateBingo = () => {
                                         placeholder="Paste Spotify link or ID..."
                                         value={config.playlistId}
                                         onChange={(e) => handlePlaylistChange(e.target.value)}
-                                        style={{ paddingLeft: '3rem', width: '100%' }}
+                                        style={{ paddingLeft: '3rem' }}
                                         required
                                     />
                                 </div>
@@ -215,8 +215,8 @@ const CreateBingo = () => {
                                 )}
                             </div>
                             {!user?.is_spotify_linked && (
-                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                                    <AlertCircle size={10} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                    <AlertCircle size={14} />
                                     Link your Spotify account in <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', padding: 0, textDecoration: 'underline', cursor: 'pointer', fontSize: 'inherit' }}>settings</button> to browse your playlists.
                                 </p>
                             )}
@@ -261,15 +261,16 @@ const CreateBingo = () => {
                                         onClick={() => setConfig({ ...config, theme: t.id })}
                                         style={{
                                             padding: '1rem',
-                                            borderRadius: '0.75rem',
+                                            borderRadius: 'var(--radius-md)',
                                             border: `2px solid ${config.theme === t.id ? 'var(--primary)' : 'var(--glass-border)'}`,
-                                            background: config.theme === t.id ? 'rgba(139, 92, 246, 0.05)' : 'transparent',
+                                            background: config.theme === t.id ? 'hsla(260, 100%, 65%, 0.1)' : 'transparent',
                                             cursor: 'pointer',
-                                            textAlign: 'center'
+                                            textAlign: 'center',
+                                            transition: 'var(--transition)'
                                         }}
                                     >
                                         <div style={{ fontSize: '1.5rem', marginBottom: '0.2rem' }}>{t.icon}</div>
-                                        <div style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>{t.label}</div>
+                                        <div style={{ fontWeight: '600', fontSize: '0.8rem' }}>{t.label}</div>
                                     </div>
                                 ))}
                             </div>
@@ -278,12 +279,12 @@ const CreateBingo = () => {
                                 <label>Main Color</label>
                                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                                     {[
-                                        '#3f51b5', // Blue
-                                        '#f44336', // Red
-                                        '#4caf50', // Green
-                                        '#ff9800', // Orange
-                                        '#9c27b0', // Purple
-                                        '#009688', // Teal
+                                        '#8b5cf6', // Primary
+                                        '#06b6d4', // Cyan
+                                        '#10b981', // Emerald
+                                        '#f59e0b', // Amber
+                                        '#ec4899', // Pink
+                                        '#6366f1', // Indigo
                                     ].map(color => (
                                         <button
                                             key={color}
@@ -294,9 +295,9 @@ const CreateBingo = () => {
                                                 height: '2.5rem',
                                                 borderRadius: '50%',
                                                 background: color,
-                                                border: config.primary_color === color ? '3px solid var(--text-color)' : '1px solid rgba(0,0,0,0.1)',
+                                                border: config.primary_color === color ? '3px solid var(--text)' : '1px solid var(--glass-border)',
                                                 cursor: 'pointer',
-                                                transition: 'transform 0.2s',
+                                                transition: 'var(--transition)',
                                                 transform: config.primary_color === color ? 'scale(1.1)' : 'scale(1)'
                                             }}
                                             aria-label={`Select color ${color}`}
@@ -368,12 +369,15 @@ const CreateBingo = () => {
                         <iframe
                             src={`http://localhost:8000/api/bingo/live_preview/?theme=${config.theme}&primary_color=${encodeURIComponent(config.primary_color)}&rows=${config.rows}&columns=${config.columns}&preview=1`}
                             style={{
-                                width: '200%',
-                                height: '200%',
+                                width: '794px',
+                                height: '1123px',
                                 border: 'none',
                                 transform: 'scale(0.5)',
                                 transformOrigin: 'top left',
-                                overflow: 'hidden'
+                                overflow: 'hidden',
+                                position: 'absolute',
+                                top: '0',
+                                left: '0'
                             }}
                             scrolling="no"
                             title="Design Preview"
@@ -388,48 +392,49 @@ const CreateBingo = () => {
             {showPlaylistModal && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    background: 'rgba(0,0,0,0.7)',
+                    background: 'rgba(0,0,0,0.8)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 1000
+                    zIndex: 1000,
+                    backdropFilter: 'blur(8px)'
                 }}>
-                    <div className="glass animate-fade-in" style={{ width: '90%', maxWidth: '600px', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+                    <div className="glass animate-fade-in" style={{ width: '90%', maxWidth: '600px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', border: '1px solid var(--glass-border)' }}>
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <ListMusic size={20} color="var(--primary)" /> Select Playlist
                             </h3>
-                            <button onClick={() => setShowPlaylistModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                            <button onClick={() => setShowPlaylistModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }} className="hover-scale">
                                 <X size={24} />
                             </button>
                         </div>
                         <div style={{ padding: '1.5rem', overflowY: 'auto' }}>
                             {paramLoading ? (
-                                <p style={{ textAlign: 'center' }}>Loading your playlists...</p>
+                                <p style={{ textAlign: 'center', padding: '2rem' }}>Loading your playlists...</p>
                             ) : (
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
                                     {playlists.map(p => (
                                         <div
                                             key={p.id}
                                             onClick={() => selectPlaylist(p.id)}
-                                            style={{ cursor: 'pointer', borderRadius: '0.5rem', overflow: 'hidden', background: 'var(--card-bg)', border: '1px solid var(--glass-border)', transition: 'transform 0.2s' }}
+                                            style={{ cursor: 'pointer', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--surface-light)', border: '1px solid var(--glass-border)', transition: 'var(--transition)' }}
                                             className="hover-scale"
                                         >
-                                            <div style={{ aspectRatio: '1/1', background: '#333' }}>
+                                            <div style={{ aspectRatio: '1/1', background: 'var(--gray-800)' }}>
                                                 {p.image ? (
                                                     <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                 ) : (
-                                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+                                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-600)' }}>
                                                         <Music size={32} />
                                                     </div>
                                                 )}
                                             </div>
-                                            <div style={{ padding: '0.5rem' }}>
-                                                <div style={{ fontWeight: 'bold', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
+                                            <div style={{ padding: '0.75rem' }}>
+                                                <div style={{ fontWeight: '600', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</div>
                                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{p.tracks_count} tracks</div>
                                             </div>
                                         </div>
                                     ))}
                                     {playlists.length === 0 && (
-                                        <p style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--text-muted)' }}>No playlists found.</p>
+                                        <p style={{ gridColumn: '1/-1', textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>No playlists found.</p>
                                     )}
                                 </div>
                             )}

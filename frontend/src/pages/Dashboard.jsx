@@ -44,14 +44,14 @@ const Dashboard = () => {
             </header>
 
             {events.length === 0 ? (
-                <div className="glass" style={{ padding: '4rem', textAlign: 'center' }}>
+                <div className="glass" style={{ padding: '4rem', textAlign: 'center', border: '1px solid var(--glass-border)' }}>
                     <div style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
-                        <Layers size={48} style={{ opacity: 0.2, margin: '0 auto' }} />
+                        <Layers size={48} style={{ opacity: 0.1, margin: '0 auto' }} />
                     </div>
                     <h3 style={{ marginBottom: '1rem' }}>No bingo events yet</h3>
                     <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Start by creating your first bingo set from a Spotify playlist.</p>
                     <button onClick={() => navigate('/create')} className="btn btn-primary">
-                        Create First Bingo
+                        <PlusCircle size={18} /> Create First Bingo
                     </button>
                 </div>
             ) : (
@@ -59,17 +59,14 @@ const Dashboard = () => {
                     {events.map((event) => (
                         <section
                             key={event.id}
-                            className="card-hover"
+                            className="glass"
                             style={{
                                 padding: '2rem',
                                 cursor: 'pointer',
                                 position: 'relative',
                                 overflow: 'hidden',
-                                background: `linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)`,
-                                backdropFilter: 'blur(10px)',
-                                borderRadius: '1rem',
-                                border: '1px solid rgba(255, 255, 255, 0.2)',
-                                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+                                transition: 'var(--transition)',
+                                transformOrigin: 'center'
                             }}
                             onClick={() => navigate(`/bingo/${event.id}`)}
                         >
@@ -88,11 +85,12 @@ const Dashboard = () => {
                                     width: '48px',
                                     height: '48px',
                                     background: event.primary_color,
-                                    borderRadius: '0.75rem',
+                                    borderRadius: 'var(--radius-md)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    boxShadow: `0 4px 15px ${event.primary_color}40`
+                                    boxShadow: `0 4px 15px ${event.primary_color}40`,
+                                    border: '1px solid rgba(255,255,255,0.2)'
                                 }}>
                                     <Music size={24} color="white" />
                                 </div>
@@ -110,7 +108,7 @@ const Dashboard = () => {
                             <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{event.event_title}</h3>
                             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{event.playlist_name}</p>
 
-                            <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1.5rem' }}>
+                            <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid var(--glass-border)', paddingTop: '1.5rem' }}>
                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                                     <span style={{ fontWeight: 'bold', color: 'var(--text-main)', display: 'block' }}>{event.num_cards}</span>
                                     Cards

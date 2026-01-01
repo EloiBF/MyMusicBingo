@@ -7,6 +7,11 @@
         href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --surface: #ffffff;
+            --text-dark: #2c2c2c;
+        }
+
         @page {
             size: A4 portrait;
             margin: 0;
@@ -31,11 +36,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            --primary: #f48fb1;
-            --secondary: #ce93d8;
-            --accent: #90caf9;
-            --cols: 3;
-            --rows: 3;
         }
 
         .soft-border {
@@ -64,11 +64,12 @@
 
         .header h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 44pt;
+            font-size: 40pt;
             color: var(--primary);
             margin: 0;
             font-weight: 700;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
         }
 
         .header .subtitle {
@@ -99,7 +100,7 @@
         }
 
         .cell {
-            border: 2px solid white;
+            border: 2px solid var(--surface);
             border-radius: 20px;
             display: flex;
             flex-direction: column;
@@ -145,7 +146,7 @@
             font-family: 'Quicksand', sans-serif;
             font-size: 13pt;
             font-weight: 600;
-            color: #2c2c2c;
+            color: var(--text-dark);
             line-height: 1.2;
             margin-bottom: 4pt;
             word-break: break-word;
@@ -163,7 +164,7 @@
             font-family: 'Dancing Script', cursive;
             font-size: 1.4rem;
             font-weight: 700;
-            color: white;
+            color: var(--surface);
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             padding: 8px 25px;
             border-radius: 25px;
@@ -294,7 +295,7 @@
 
 <body {% if is_preview %}style="overflow: hidden;" {% endif %}>
     <div class="container"
-        style="--primary: {{ color }}; --secondary: {{ color|default:'#f48fb1' }}; --accent: {{ color|default:'#90caf9' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
+        style="--primary: {{ color|default:'#f48fb1' }}; --secondary: {{ color|default:'#ce93d8' }}; --accent: {{ color|default:'#90caf9' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="soft-border"></div>
 
@@ -311,7 +312,7 @@
         <div class="rattle rattle-4">🔔</div>
 
         <div class="header">
-            <h1>👶 Baby Shower Bingo 👶</h1>
+            <h1>🎀 Bingo musical 🎀</h1>
             <div class="subtitle">Welcome Little One</div>
             <h2>{{ event.event_title }}</h2>
         </div>
@@ -329,7 +330,7 @@
             {% endfor %}
         </div>
 
-        <div class="card-number">Card #{{ card.card_index }}</div>
+        <div class="card-number">n°{{ card.card_index }}</div>
         <div class="footer">MyMusicBingo • Celebrating New Beginnings 🌸</div>
     </div>
 </body>

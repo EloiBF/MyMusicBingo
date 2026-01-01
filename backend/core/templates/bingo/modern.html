@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --surface: #ffffff;
+            --text-dark: #000000;
+            --text-muted: #666666;
+        }
+
         @page {
             size: A4 portrait;
             margin: 0;
@@ -21,15 +27,12 @@
             width: 210mm;
             height: 297mm;
             padding: 15mm 15mm;
-            background: white;
+            background: var(--surface);
             margin: 0 auto;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
-            --primary: #000000;
-            --cols: 3;
-            --rows: 3;
         }
 
         .header {
@@ -37,18 +40,19 @@
             padding: 12mm;
             background: var(--primary);
             color: white;
-            text-align: left;
+            text-align: center;
             position: relative;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
         }
 
         .header h1 {
-            font-size: 50pt;
+            font-size: 40pt;
             margin: 0;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -2pt;
             line-height: 0.9;
+            white-space: nowrap;
         }
 
         .header h2 {
@@ -58,6 +62,7 @@
             text-transform: uppercase;
             letter-spacing: 2pt;
             opacity: 0.9;
+            text-align: center;
         }
 
         .grid {
@@ -70,21 +75,21 @@
         }
 
         .cell {
-            border: 2pt solid #000;
+            border: 2pt solid var(--text-dark);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 15px;
             box-sizing: border-box;
-            background: white;
+            background: var(--surface);
             transition: transform 0.2s;
         }
 
         .song {
             font-size: 15pt;
             font-weight: 800;
-            color: #000;
+            color: var(--text-dark);
             line-height: 1.1;
             margin-bottom: 5pt;
             word-break: break-word;
@@ -92,7 +97,7 @@
 
         .artist {
             font-size: 10pt;
-            color: #666;
+            color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -109,7 +114,7 @@
         .card-no {
             font-size: 2.2rem;
             font-weight: 800;
-            color: #000;
+            color: var(--text-dark);
         }
 
         .brand {
@@ -123,10 +128,10 @@
 
 <body {% if is_preview %}style="overflow: hidden;" {% endif %}>
     <div class="container"
-        style="--primary: {{ color|default:'#000' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
+        style="--primary: {{ color|default:'#000000' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="header">
-            <h1>MODERN BINGO</h1>
+            <h1>🎧🎵 Bingo musical 🎵🎧</h1>
             <h2>{{ event.event_title }}</h2>
         </div>
 
@@ -141,7 +146,7 @@
 
         <div class="footer">
             <div class="brand">MYMUSICBINGO • BOLD STYLE ⚡</div>
-            <div class="card-no">#{{ card.card_index }}</div>
+            <div class="card-no">n°{{ card.card_index }}</div>
         </div>
     </div>
 </body>

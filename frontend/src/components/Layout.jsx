@@ -14,8 +14,10 @@ const SidebarLink = ({ icon, label, active, onClick }) => (
             width: '100%',
             justifyContent: 'flex-start',
             background: active ? 'var(--primary)' : 'transparent',
-            border: 'none',
-            padding: '0.75rem 1rem'
+            border: active ? 'none' : '1px solid transparent',
+            padding: '0.75rem 1rem',
+            color: active ? 'white' : 'var(--text-muted)',
+            transition: 'var(--transition)'
         }}
     >
         {icon} {label}
@@ -76,8 +78,9 @@ const Layout = ({ children }) => {
                     <div style={{
                         width: '32px', height: '32px',
                         background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                        borderRadius: '0.5rem',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        borderRadius: 'var(--radius-sm)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: 'var(--shadow-glow)'
                     }}>
                         <Music size={18} color="white" />
                     </div>
@@ -93,7 +96,7 @@ const Layout = ({ children }) => {
                 <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--glass-border)' }}>
                     <div
                         onClick={() => navigate('/settings')}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', cursor: 'pointer', padding: '0.5rem', borderRadius: '0.5rem' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', cursor: 'pointer', padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid transparent', transition: 'var(--transition)' }}
                         className="hover-bg"
                     >
                         <div style={{
@@ -101,7 +104,8 @@ const Layout = ({ children }) => {
                             background: 'var(--primary)',
                             borderRadius: '50%',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            color: 'white', fontWeight: 'bold'
+                            color: 'white', fontWeight: 'bold',
+                            boxShadow: 'var(--shadow-md)'
                         }}>
                             {user?.username?.[0]?.toUpperCase() || 'U'}
                         </div>
@@ -124,7 +128,7 @@ const Layout = ({ children }) => {
                 </main>
                 <Footer />
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -86,18 +86,19 @@ const Settings = () => {
 
             {message.text && (
                 <div style={{
-                    padding: '1rem',
-                    borderRadius: '0.75rem',
-                    background: message.type === 'success' ? 'rgba(34, 197, 94, 0.1)' :
-                        message.type === 'error' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                    border: `1px solid ${message.type === 'success' ? 'rgba(34, 197, 94, 0.2)' :
-                        message.type === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.2)'}`,
-                    color: message.type === 'success' ? '#22c55e' :
-                        message.type === 'error' ? '#ef4444' : '#3b82f6',
+                    padding: '1rem 1.5rem',
+                    borderRadius: 'var(--radius-md)',
+                    marginBottom: '2rem',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.75rem',
-                    marginBottom: '2rem'
+                    background: message.type === 'success' ? 'var(--success-bg)' :
+                        message.type === 'error' ? 'var(--error-bg)' : 'var(--info-bg)',
+                    border: `1px solid ${message.type === 'success' ? 'hsla(142, 76%, 36%, 0.2)' :
+                        message.type === 'error' ? 'hsla(0, 84%, 60%, 0.2)' : 'hsla(217, 91%, 60%, 0.2)'}`,
+                    color: message.type === 'success' ? 'var(--success)' :
+                        message.type === 'error' ? 'var(--error)' : 'var(--info)',
+                    animation: 'fadeIn 0.3s ease'
                 }}>
                     {message.type === 'success' ? <CheckCircle2 size={18} /> :
                         message.type === 'error' ? <AlertCircle size={18} /> : <AlertCircle size={18} />}
@@ -111,15 +112,15 @@ const Settings = () => {
                     <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Personal Information</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Username</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.5rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Username</label>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
                                 <User size={16} color="var(--primary)" />
                                 <span>{user.username}</span>
                             </div>
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Email</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.5rem' }}>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Email</label>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
                                 <Mail size={16} color="var(--primary)" />
                                 <span>{user.email}</span>
                             </div>

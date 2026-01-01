@@ -199,12 +199,15 @@ const BingoDetail = () => {
                         <iframe
                             src={`http://localhost:8000/api/bingo/${id}/preview_card/?preview=1`}
                             style={{
-                                width: '200%',
-                                height: '200%',
+                                width: '794px',
+                                height: '1123px',
                                 border: 'none',
                                 transform: 'scale(0.5)',
                                 transformOrigin: 'top left',
-                                overflow: 'hidden'
+                                overflow: 'hidden',
+                                position: 'absolute',
+                                top: '0',
+                                left: '0'
                             }}
                             scrolling="no"
                             title="Card Preview"

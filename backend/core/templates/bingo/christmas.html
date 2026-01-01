@@ -7,6 +7,14 @@
         href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Montserrat:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --secondary: var(--primary);
+            --surface: #ffffff;
+            --surface-alt: #fffafa;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+        }
+
         @page {
             size: A4 portrait;
             margin: 0;
@@ -23,24 +31,22 @@
             width: 210mm;
             height: 297mm;
             padding: 15mm 15mm;
-            background: white;
+            background: var(--surface);
             margin: 0 auto;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
-            --primary: #c0392b;
-            --cols: 3;
-            --rows: 3;
         }
 
         .header {
             margin-bottom: 10mm;
             padding: 10mm;
-            border: 4pt double #27ae60;
+            border: 4pt double var(--secondary);
             border-radius: 25px;
-            background: #fffafa;
+            background: var(--surface-alt);
             position: relative;
+            text-align: center;
         }
 
         .header::before,
@@ -61,17 +67,19 @@
 
         .header h1 {
             font-family: 'Mountains of Christmas', cursive;
-            font-size: 52pt;
+            font-size: 40pt;
             color: var(--primary);
             margin: 0;
-            text-shadow: 2pt 2pt 0px #fff;
+            text-shadow: 2pt 2pt 0px var(--surface);
+            white-space: nowrap;
         }
 
         .header h2 {
             font-size: 20pt;
-            color: #27ae60;
+            color: var(--secondary);
             margin: 5pt 0 0;
             font-weight: 700;
+            text-align: center;
         }
 
         .grid {
@@ -84,7 +92,7 @@
         }
 
         .cell {
-            border: 2pt solid #27ae60;
+            border: 2pt solid var(--secondary);
             border-radius: 15px;
             display: flex;
             flex-direction: column;
@@ -92,7 +100,7 @@
             align-items: center;
             padding: 12px;
             box-sizing: border-box;
-            background: white;
+            background: var(--surface);
             position: relative;
         }
 
@@ -108,7 +116,7 @@
         .song {
             font-size: 14pt;
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-dark);
             line-height: 1.2;
             margin-bottom: 3pt;
             word-break: break-word;
@@ -123,14 +131,14 @@
         .card-number {
             font-family: 'Mountains of Christmas', cursive;
             font-size: 2rem;
-            color: #27ae60;
+            color: var(--secondary);
             margin: 10pt 0;
             font-weight: 700;
         }
 
         .footer {
             font-size: 9pt;
-            color: #7f8c8d;
+            color: var(--text-muted);
             margin-top: auto;
             padding-bottom: 8mm;
         }
@@ -142,7 +150,7 @@
         style="--primary: {{ color|default:'#c0392b' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="header">
-            <h1>🎅 BINGO 🎁</h1>
+            <h1>🎄 Bingo musical 🎄</h1>
             <h2>{{ event.event_title }}</h2>
         </div>
 
@@ -155,7 +163,7 @@
             {% endfor %}
         </div>
 
-        <div class="card-number">Merry Card #{{ card.card_index }}</div>
+        <div class="card-number">n°{{ card.card_index }}</div>
         <div class="footer">MyMusicBingo • Holiday Magic & Joy ❄️</div>
     </div>
 </body>

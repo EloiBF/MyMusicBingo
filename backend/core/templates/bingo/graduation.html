@@ -7,6 +7,16 @@
         href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,600;1,400&family=Outfit:wght@400;700&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --surface: #ffffff;
+            --surface-alt: #fdfdfd;
+            --text-dark: #1a1a1a;
+            --text-main: #333333;
+            --text-muted: #555555;
+            --text-light: #777777;
+            --border-light: #e0e0e0;
+        }
+
         @page {
             size: A4 portrait;
             margin: 0;
@@ -23,24 +33,21 @@
             width: 210mm;
             height: 297mm;
             padding: 15mm 15mm;
-            background: white;
+            background: var(--surface);
             margin: 0 auto;
             box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
-            --primary: #1a237e;
-            --cols: 3;
-            --rows: 3;
         }
 
         .header {
             margin-bottom: 12mm;
             padding: 12mm;
-            background: #fdfdfd;
+            background: var(--surface-alt);
             border: 2pt solid var(--primary);
             position: relative;
-            box-shadow: 0 10pt 0px #e0e0e0;
+            box-shadow: 0 10pt 0px var(--border-light);
         }
 
         .header::after {
@@ -50,23 +57,24 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 36pt;
-            background: white;
+            background: var(--surface);
             padding: 0 15px;
         }
 
         .header h1 {
             font-family: 'Crimson Pro', serif;
-            font-size: 42pt;
+            font-size: 40pt;
             color: var(--primary);
             margin: 0;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 4pt;
+            white-space: nowrap;
         }
 
         .header h2 {
             font-size: 20pt;
-            color: #333;
+            color: var(--text-main);
             margin: 10pt 0 0;
             font-weight: 600;
             letter-spacing: 1pt;
@@ -89,7 +97,7 @@
             align-items: center;
             padding: 12px;
             box-sizing: border-box;
-            background: white;
+            background: var(--surface);
             position: relative;
         }
 
@@ -105,7 +113,7 @@
         .song {
             font-size: 14pt;
             font-weight: 700;
-            color: #1a1a1a;
+            color: var(--text-dark);
             line-height: 1.2;
             margin-bottom: 4pt;
             word-break: break-word;
@@ -113,7 +121,7 @@
 
         .artist {
             font-size: 9pt;
-            color: #555;
+            color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -130,7 +138,7 @@
 
         .footer {
             font-size: 9pt;
-            color: #777;
+            color: var(--text-light);
             margin-top: auto;
             padding-bottom: 10mm;
             font-weight: 600;
@@ -143,7 +151,7 @@
         style="--primary: {{ color|default:'#1a237e' }}; --cols: {{ event.columns|default:3 }}; --rows: {{ event.rows|default:3 }};">
 
         <div class="header">
-            <h1>GRADUATION BINGO</h1>
+            <h1>🎓 Bingo musical 🎓</h1>
             <h2>{{ event.event_title }}</h2>
         </div>
 
@@ -156,7 +164,7 @@
             {% endfor %}
         </div>
 
-        <div class="card-number">Class of Excellence • Card #{{ card.card_index }}</div>
+        <div class="card-number">n°{{ card.card_index }}</div>
         <div class="footer">MYMUSICBINGO • REACH FOR THE STARS 🌟</div>
     </div>
 </body>
