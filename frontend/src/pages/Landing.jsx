@@ -303,9 +303,19 @@ const StepCard = ({ n, icon, title, desc, color }) => (
 const TestimonialCard = ({ name, text, rating }) => (
     <div className="glass" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', gap: '2px', marginBottom: '1rem' }}>
-            {[...Array(5)].map((_, i) => <Star key={i} size={16} fill={i < rating ? "var(--primary)" : "none"} color={i < rating ? "var(--primary)" : "var(--gray-600)"} />)}
+            {[...Array(5)].map((_, i) => (
+                <Star 
+                    key={i} 
+                    size={16} 
+                    /* Canviem var(--primary) per var(--warning) */
+                    fill={i < rating ? "var(--warning)" : "none"} 
+                    color={i < rating ? "var(--warning)" : "var(--gray-600)"} 
+                />
+            ))}
         </div>
-        <p style={{ fontStyle: 'italic', marginBottom: '1.5rem', flex: 1, lineHeight: 1.6, color: 'var(--text)' }}>"{text}"</p>
+        <p style={{ fontStyle: 'italic', marginBottom: '1.5rem', flex: 1, lineHeight: 1.6, color: 'var(--text)' }}>
+            "{text}"
+        </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <div style={{ 
                 width: 36, height: 36, borderRadius: '50%', 
