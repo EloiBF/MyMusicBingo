@@ -1,65 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-    Music, Zap, Users, ChevronRight, Play, LogIn, Copy, Palette, 
-    Download, Smartphone, Star, Shield, Sparkles, ArrowRight, 
-    Headphones, ChevronsDown 
+import {
+    Music, Zap, Users, ChevronRight, Play, LogIn, Copy, Palette,
+    Download, Smartphone, Star, Shield, Sparkles, ArrowRight,
+    Headphones, ChevronsDown
 } from 'lucide-react';
 import Footer from '../components/Footer';
 import API_URLS from '../config/api';
+import BingoPreview from '../components/BingoPreview';
 
-/**
- * Estils específics per al component StackedCards per gestionar
- * l'escalat de l'iframe sense embrutar l'index.css global.
- * Utilitza les variables CSS del tema.
- */
-const SCALER_STYLES = `
+const STACKED_STYLES = `
     .stacked-cards-wrapper {
         position: relative;
         width: 100%;
-        /* Mantenim la proporció A4 (210/297 = 0.707) */
-        aspect-ratio: 0.707; 
-        max-width: 380px; /* Mida màxima en desktop */
-        margin: 0 auto;
+        aspect-ratio: 210 / 297; 
+        max-width: 380px;
+        margin: 2rem auto 0rem;
+        z-index: 10;
         perspective: 1200px;
     }
-
     .card-item {
         position: absolute;
         top: 0; left: 0;
         width: 100%; height: 100%;
         transition: var(--transition);
         border-radius: var(--radius-md);
-        box-shadow: var(--shadow-xl);
-        overflow: hidden;
-        background: var(--surface-light);
+        /* No background or overflow needed as BingoPreview handles it, 
+           but keep relative positioning context just in case */
     }
-
-    /* Contenidor de l'iframe que forcem a ser gegant per després escalar-lo */
-    .iframe-scaler-container {
-        width: 794px; /* Ample real A4 */
-        height: 1123px; /* Alt real A4 */
-        position: absolute;
-        top: 0;
-        left: 0;
-        transform-origin: top left;
-        /* Aquí està la màgia: L'escala es calcula segons l'amplada del pare */
-        /* escala = 100% / 794px */
-        transform: scale(calc(var(--container-width, 300) / 794));
-        pointer-events: none;
-    }
-
-    .iframe-scaler-container iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    /* Ajustos per a mòbils molt petits */
     @media (max-width: 480px) {
-        .stacked-cards-wrapper {
-            max-width: 260px;
-        }
+        .stacked-cards-wrapper { max-width: 260px; }
     }
 `;
 
@@ -68,7 +38,7 @@ const Landing = () => {
 
     return (
         <div style={{ background: 'var(--background)', color: 'var(--text)', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
-            <style>{SCALER_STYLES}</style>
+            <style>{STACKED_STYLES}</style>
 
             {/* Navigation */}
             <nav className="glass" style={{
@@ -125,13 +95,13 @@ const Landing = () => {
                         <h1 className="animate-fade-in" style={{
                             lineHeight: 1.1
                         }}>
-                            Play, sing and win <br />
-                            <span style={{ 
-                                background: 'linear-gradient(135deg, var(--primary), var(--secondary))', 
-                                WebkitBackgroundClip: 'text', 
+                            Play, sing and win <br /> with
+                            <span style={{
+                                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                                WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 backgroundClip: 'text'
-                            }}>with Music Bingo!</span>
+                            }}> Music Bingo!</span>
                         </h1>
                         <p className="animate-fade-in" style={{
                             fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
@@ -140,8 +110,7 @@ const Landing = () => {
                             margin: '0 auto 3rem',
                             animationDelay: '0.1s'
                         }}>
-                            Turn your favorite Spotify playlists into interactive musical bingo. 
-                            Create your own game, fast and easy!
+                            Create your own bingo cards from any Spotify playlist. <br /> Choose a design, download, and print to play with friends
                         </p>
 
                         <div className="animate-fade-in" style={{
@@ -153,14 +122,14 @@ const Landing = () => {
                             }}>
                                 Get Started Free <ArrowRight size={20} />
                             </button>
-                            <button 
+                            <button
                                 onClick={() => document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' })}
                                 className="btn btn-secondary" style={{
-                                padding: 'clamp(0.8rem, 1.5vw, 1rem) clamp(2rem, 3vw, 3rem)',
-                                fontSize: '1.1rem',
-                                background: 'rgba(255,255,255,0.05)', /* Lleuger glass per sobre de la imatge */
-                                backdropFilter: 'blur(10px)'
-                            }}>
+                                    padding: 'clamp(0.8rem, 1.5vw, 1rem) clamp(2rem, 3vw, 3rem)',
+                                    fontSize: '1.1rem',
+                                    background: 'rgba(255,255,255,0.05)', /* Lleuger glass per sobre de la imatge */
+                                    backdropFilter: 'blur(10px)'
+                                }}>
                                 <Play size={18} fill="currentColor" /> How it Works
                             </button>
                         </div>
@@ -179,9 +148,9 @@ const Landing = () => {
                     <div className="container grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <h2 style={{ marginBottom: '1.5rem', lineHeight: 1.2 }}>
-                                From Spotify 
+                                From Spotify
                                 <span style={{ color: '#1DB954', display: 'inline-flex', alignItems: 'center', marginLeft: '0.5rem', verticalAlign: 'middle' }}>
-                                    <svg width="0.9em" height="0.9em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                                    <svg width="0.9em" height="0.9em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" /></svg>
                                 </span>
                                 <br /> to MyMusicBingo
                             </h2>
@@ -190,9 +159,9 @@ const Landing = () => {
                             </p>
 
                             <div style={{ display: 'grid', gap: '2rem' }}>
-                                <FeatureItem icon={<Palette />} title="Customizable Cards" desc="Fully themeable. From weddings to corporate events." color="var(--primary)" />
-                                <FeatureItem icon={<Download />} title="Print Ready" desc="Get high quality cards instantly or order premium prints." color="var(--secondary)" />
-                                <FeatureItem icon={<Smartphone />} title="AI Song ID" desc="Host effortlessly with our AI song identification tool." color="var(--accent)" />
+                                <FeatureItem icon={<Palette />} title="Customizable Cards" desc="Fully themeable. From weddings to birthday parties, even corporate events." color="var(--primary)" />
+                                <FeatureItem icon={<Download />} title="Print Ready" desc="Get high quality bingo cards instantly or order custom premium prints for your special events." color="var(--secondary)" />
+                                <FeatureItem icon={<Smartphone />} title="AI Song Recognition" desc="Control played songs with our AI song identification tool." color="var(--accent)" />
                             </div>
                         </div>
 
@@ -206,22 +175,22 @@ const Landing = () => {
                 {/* How It Works */}
                 <section id="how-it-works" className="container" style={{ padding: 'clamp(4rem, 8vw, 8rem) 1rem' }}>
                     <SectionHeader title="How It Works" subtitle="Start your party in minutes with our simple process." />
-                    
-                    <div className="landing-steps-grid-3 grid-layout" style={{ 
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-                        marginBottom: '2.5rem' 
+
+                    <div className="landing-steps-grid-3 grid-layout" style={{
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                        marginBottom: '2.5rem'
                     }}>
-                        <StepCard n="1" icon={<LogIn size={28} />} title="Quick Sign In" desc="Create account to save events and access premium tools." color="var(--primary)" />
-                        <StepCard n="2" icon={<Music size={28} />} title="Connect Spotify" desc="Paste any playlist ID. We import tracks instantly." color="var(--secondary)" />
+                        <StepCard n="1" icon={<LogIn size={28} />} title="Quick Sign In" desc="Create a free account to save events and access premium tools." color="var(--primary)" />
+                        <StepCard n="2" icon={<Music size={28} />} title="Connect Spotify" desc="Paste any public playlist ID (share link from Spotify app)." color="var(--secondary)" />
                         <StepCard n="3" icon={<Palette size={28} />} title="Style Cards" desc="Choose themes and colors to match your vibe." color="var(--accent)" />
                     </div>
-                    
-                    <div className="landing-steps-grid-2 grid-layout" style={{ 
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-                        maxWidth: '800px', margin: '0 auto' 
+
+                    <div className="landing-steps-grid-2 grid-layout" style={{
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                        maxWidth: '800px', margin: '0 auto'
                     }}>
                         <StepCard n="4" icon={<Download size={28} />} title="Export & Print" desc="Print yourself or order professional copies." color="var(--success)" />
-                        <StepCard n="5" icon={<Smartphone size={28} />} title="AI Recognition" desc="Track played songs and verify winners automatically." color="var(--warning)" />
+                        <StepCard n="5" icon={<Smartphone size={28} />} title="AI Song Recognition" desc="Track played songs and verify winners automatically." color="var(--warning)" />
                     </div>
 
                     <div style={{ textAlign: 'center', marginTop: '4rem' }}>
@@ -235,9 +204,9 @@ const Landing = () => {
                 <section className="container" style={{ padding: 'clamp(3rem, 6vw, 6rem) 1rem' }}>
                     <SectionHeader title="Success Stories" subtitle="" />
                     <div className="landing-testimonial-grid grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-                        <TestimonialCard name="Júlia R." text="Song tracking during the Bingo is super easy and fast." rating={5} />
-                        <TestimonialCard name="Judith A." text="We ordered custom Bingo Game, the quality is super high." rating={5} />
-                        <TestimonialCard name="Laia A." text="Easy to connect to Spotify and create Bingo with my songs." rating={4} />
+                        <TestimonialCard name="Júlia R." text="Song tracking during the Bingo is super easy, I could focus on having fun." rating={5} />
+                        <TestimonialCard name="Judith A." text="We ordered custom Bingo Game, the quality and design is really good. The party was amazing!!" rating={5} />
+                        <TestimonialCard name="Laia A." text="Easy to connect to Spotify and create full Bingo game with my songs, in less than a minute..." rating={4} />
                     </div>
                 </section>
 
@@ -250,8 +219,8 @@ const Landing = () => {
                         borderColor: 'var(--glass-border)',
                         position: 'relative', overflow: 'hidden'
                     }}>
-                        <h2 style={{ marginBottom: '1rem' }}>Ready to Play?</h2>
-                        <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '2.5rem' }}>Join creators worldwide and host the ultimate music bingo event.</p>
+                        <h2 style={{ marginBottom: '1rem' }}>Create Music Bingo cards for free</h2>
+                        <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '2.5rem' }}>Log in, connect spotify playlist and print or order your bingo game!</p>
                         <button onClick={() => navigate('/auth')} className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem' }}>
                             Get Started Now <ArrowRight size={22} />
                         </button>
@@ -304,12 +273,12 @@ const TestimonialCard = ({ name, text, rating }) => (
     <div className="glass" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', gap: '2px', marginBottom: '1rem' }}>
             {[...Array(5)].map((_, i) => (
-                <Star 
-                    key={i} 
-                    size={16} 
+                <Star
+                    key={i}
+                    size={16}
                     /* Canviem var(--primary) per var(--warning) */
-                    fill={i < rating ? "var(--warning)" : "none"} 
-                    color={i < rating ? "var(--warning)" : "var(--gray-600)"} 
+                    fill={i < rating ? "var(--warning)" : "none"}
+                    color={i < rating ? "var(--warning)" : "var(--gray-600)"}
                 />
             ))}
         </div>
@@ -317,11 +286,11 @@ const TestimonialCard = ({ name, text, rating }) => (
             "{text}"
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <div style={{ 
-                width: 36, height: 36, borderRadius: '50%', 
-                background: 'var(--surface-light)', 
+            <div style={{
+                width: 36, height: 36, borderRadius: '50%',
+                background: 'var(--surface-light)',
                 border: '1px solid var(--glass-border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold'
             }}>{name[0]}</div>
             <span style={{ fontWeight: 600 }}>{name}</span>
         </div>
@@ -329,66 +298,71 @@ const TestimonialCard = ({ name, text, rating }) => (
 );
 
 const StackedBingoCards = () => {
-    const wrapperRef = React.useRef(null);
-    const [width, setWidth] = React.useState(0);
-
-    React.useLayoutEffect(() => {
-        const updateWidth = () => {
-            if (wrapperRef.current) {
-                setWidth(wrapperRef.current.offsetWidth);
-            }
-        };
-        
-        window.addEventListener('resize', updateWidth);
-        updateWidth();
-        return () => window.removeEventListener('resize', updateWidth);
-    }, []);
-
-    const cardStyles = {
-        '--container-width': width
-    };
-
     return (
-        <div className="stacked-cards-wrapper" ref={wrapperRef} style={cardStyles}>
-            {/* 1. Retro (Ara al fons) */}
-            <div className="card-item" style={{ 
-                transform: 'rotate(-10deg) translateX(-18%) translateY(5%)', 
-                border: '1px solid var(--gray-700)', 
-                zIndex: 1 
+        <div className="stacked-cards-wrapper">
+            {/* 1. Retro (Background) */}
+            <div className="card-item" style={{
+                transform: 'rotate(-10deg) translateX(-18%) translateY(5%)',
+                border: 'none',
+                background: 'transparent',
+                boxShadow: 'none',
+                zIndex: 1
             }}>
-                <div className="iframe-scaler-container">
-                    <iframe 
-                        title="Retro" 
-                        src={API_URLS.BINGO_LIVE_PREVIEW('theme=retro&primary_color=%23f39c12&rows=3&columns=3&preview=1')} 
-                    />
-                </div>
+                <BingoPreview
+                    theme="retro"
+                    primaryColor="#f39c12"
+                    rows={3}
+                    columns={3}
+                    eventTitle="Retro Bingo"
+                    scale="auto"
+                    showFullscreen={false}
+                    hideFooter={true}
+                    padding={0}
+                    iframeStyle={{ border: '1px solid var(--gray-700)' }}
+                />
             </div>
 
-            {/* 2. Wedding (Al mig) */}
-            <div className="card-item" style={{ 
-                transform: 'rotate(8deg) translateX(15%) translateY(-2%)', 
-                zIndex: 2 
+            {/* 2. Wedding (Middle) */}
+            <div className="card-item" style={{
+                transform: 'rotate(8deg) translateX(15%) translateY(-2%)',
+                border: 'none',
+                background: 'transparent',
+                boxShadow: 'none',
+                zIndex: 2
             }}>
-                <div className="iframe-scaler-container">
-                    <iframe 
-                        title="Wedding" 
-                        src={API_URLS.BINGO_LIVE_PREVIEW('theme=wedding&primary_color=%23d4af37&rows=3&columns=3&preview=1')} 
-                    />
-                </div>
+                <BingoPreview
+                    theme="wedding"
+                    primaryColor="#d4af37"
+                    rows={3}
+                    columns={3}
+                    eventTitle="Wedding Bingo"
+                    scale="auto"
+                    showFullscreen={false}
+                    hideFooter={true}
+                    padding={0}
+                />
             </div>
 
-            {/* 3. Classic (Ara al front de tot) */}
-            <div className="card-item" style={{ 
-                transform: 'rotate(-2deg)', 
-                border: '1px solid var(--gray-600)', 
-                zIndex: 3 
+            {/* 3. Classic (Front) */}
+            <div className="card-item" style={{
+                transform: 'rotate(-2deg)',
+                border: 'none',
+                background: 'transparent',
+                boxShadow: 'none',
+                zIndex: 3
             }}>
-                <div className="iframe-scaler-container">
-                    <iframe 
-                        title="Classic" 
-                        src={API_URLS.BINGO_LIVE_PREVIEW('theme=classic&primary_color=%232c3e50&rows=3&columns=3&preview=1')} 
-                    />
-                </div>
+                <BingoPreview
+                    theme="classic"
+                    primaryColor="#2c3e50"
+                    rows={3}
+                    columns={3}
+                    eventTitle="Classic Bingo"
+                    scale="auto"
+                    showFullscreen={false}
+                    hideFooter={true}
+                    padding={0}
+                    iframeStyle={{ border: '1px solid var(--gray-600)' }}
+                />
             </div>
         </div>
     );

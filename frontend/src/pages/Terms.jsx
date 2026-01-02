@@ -1,129 +1,68 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import PageLayout from '../components/PageLayout';
 
 const Terms = () => {
-    const navigate = useNavigate();
-
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
-            <button 
-                onClick={() => navigate(-1)} 
-                className="btn btn-secondary"
-                style={{ marginBottom: '2rem' }}
-            >
-                ← Back
-            </button>
-
-            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem', color: 'var(--text-primary)' }}>
-                Terms of Service
-            </h1>
-
-            <div style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                <p style={{ marginBottom: '1.5rem' }}>
-                    <strong>Last updated:</strong> January 1, 2026
+        <PageLayout
+            title="Terms of Service"
+            backPath={-1}
+            maxWidth="800px"
+        >
+            <div className="glass" style={{ padding: '2.5rem', borderRadius: 'var(--radius-lg)' }}>
+                <p style={{ marginBottom: '2rem', color: 'var(--text-muted)', fontSize: '1.1rem' }}>
+                    Welcome to My Music Bingo! These terms outline the rules and regulations for using our playlist-to-bingo service.
                 </p>
 
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        1. Acceptance of Terms
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        By accessing and using MyMusicBingo, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                <Section title="1. Service Description">
+                    <p>
+                        My Music Bingo allows users to connect their Spotify accounts, select playlists, and generate printable musical bingo cards for personal entertainment use.
                     </p>
-                </section>
+                </Section>
 
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        2. Description of Service
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        MyMusicBingo is a music bingo game application that allows users to create and play bingo games using music tracks. The service integrates with Spotify to provide access to music content.
+                <Section title="2. User Accounts">
+                    <p>
+                        To use our core features, you must register an account. You can optionally link your Spotify account to access your private playlists.
+                        You are responsible for maintaining the confidentiality of your login credentials.
                     </p>
-                </section>
+                </Section>
 
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        3. User Accounts
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account or password.
+                <Section title="3. Spotify Integration">
+                    <p>
+                        Our service integrates with Spotify. By linking your account, you grant us permission to read your playlists solely for the purpose of generating bingo cards.
+                        We do not modify your playlists or Library. You may unlink your Spotify account at any time in the Settings page.
                     </p>
-                </section>
+                </Section>
 
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        4. Spotify Integration
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        MyMusicBingo uses the Spotify Web API to access music content. You must have a valid Spotify account to use features that require Spotify integration. Your use of Spotify services is governed by Spotify's own terms of service.
+                <Section title="4. Intellectual Property">
+                    <p>
+                        The generated bingo cards are for personal, non-commercial entertainment. The musical works referenced on the cards remain the property of their respective rights holders.
+                        My Music Bingo does not provide music streaming or downloading capabilities.
                     </p>
-                </section>
+                </Section>
 
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        5. User Content
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        You retain ownership of any content you create on MyMusicBingo, including bingo games and playlists. By creating content, you grant us a license to use, modify, and display your content for the purpose of providing the service.
+                <Section title="5. Data Privacy">
+                    <p>
+                        Your privacy is important to us. Please refer to our Privacy Policy for details on how we collect, use, and protect your information.
                     </p>
-                </section>
+                </Section>
 
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        6. Prohibited Uses
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        You may not use MyMusicBingo for any illegal or unauthorized purpose. You agree not to use the service to:
+                <Section title="6. Modifications">
+                    <p>
+                        We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.
                     </p>
-                    <ul style={{ marginLeft: '2rem', marginBottom: '1rem' }}>
-                        <li>Violate any laws or regulations</li>
-                        <li>Infringe on intellectual property rights</li>
-                        <li>Upload malicious code or harmful content</li>
-                        <li>Spam or harass other users</li>
-                    </ul>
-                </section>
-
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        7. Privacy
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service, to understand our practices.
-                    </p>
-                </section>
-
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        8. Limitation of Liability
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        MyMusicBingo shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.
-                    </p>
-                </section>
-
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        9. Changes to Terms
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        We reserve the right to modify these terms at any time. If we make material changes, we will notify you by email or by posting a notice on our site prior to the change becoming effective.
-                    </p>
-                </section>
-
-                <section style={{ marginBottom: '2rem' }}>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                        10. Contact Information
-                    </h2>
-                    <p style={{ marginBottom: '1rem' }}>
-                        If you have any questions about these Terms of Service, please contact us at:
-                    </p>
-                    <p style={{ marginBottom: '1rem' }}>
-                        Email: support@mymusicbingo.com
-                    </p>
-                </section>
+                </Section>
             </div>
-        </div>
+        </PageLayout>
     );
 };
+
+const Section = ({ title, children }) => (
+    <div style={{ marginBottom: '2.5rem' }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--text)' }}>{title}</h2>
+        <div style={{ color: 'var(--text-muted)', lineHeight: '1.7' }}>
+            {children}
+        </div>
+    </div>
+);
 
 export default Terms;

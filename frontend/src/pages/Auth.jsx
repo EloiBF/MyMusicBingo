@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Music, ArrowRight, User, Mail, Lock, UserPlus, LogIn } from 'lucide-react';
+import { Music, ArrowRight, User, Mail, Lock, UserPlus, LogIn, Home } from 'lucide-react';
 import api from '../api';
+import Navbar from '../components/Navbar';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -46,8 +47,24 @@ const Auth = () => {
   };
 
   return (
-    <div className="container" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="glass animate-fade-in" style={{ width: '100%', maxWidth: '450px', padding: '3rem', textAlign: 'center' }}>
+    <div style={{ 
+      background: 'var(--background)', 
+      color: 'var(--text)', 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column' 
+    }}>
+      <Navbar />
+      <div style={{ 
+        flex: 1, 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        paddingTop: '6rem' // Account for fixed navbar
+      }}>
+        <div className="container" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: '450px' }}>
+          <div className="glass animate-fade-in" style={{ width: '100%', padding: '3rem', textAlign: 'center' }}>
 
         <div style={{
           width: '64px',
@@ -63,7 +80,7 @@ const Auth = () => {
           <Music size={32} color="white" />
         </div>
 
-        <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Bingo Music</h1>
+        <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => navigate('/')}>MyMusicBingo</h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>
           {mode === 'login' ? 'Welcome back! Sign in to continue.' : 'Create an account to start building bingos.'}
         </p>
@@ -154,6 +171,9 @@ const Auth = () => {
             {mode === 'login' ? 'Create one' : 'Sign in'}
           </button>
         </p>
+          </div>
+          </div>
+        </div>
       </div>
     </div>
   );

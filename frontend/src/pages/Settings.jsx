@@ -4,6 +4,8 @@ import {
     User, Mail, Settings as SettingsIcon, Link2, Link2Off, LogOut, CheckCircle2, AlertCircle, Music, Lock, Eye, EyeOff
 } from 'lucide-react';
 import api from '../api';
+import PageLayout from '../components/PageLayout';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const Settings = () => {
     const [searchParams] = useSearchParams();
@@ -23,6 +25,19 @@ const Settings = () => {
         confirm: false
     });
     const [changingPassword, setChangingPassword] = useState(false);
+
+    // Modal State
+    const [modalConfig, setModalConfig] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        onConfirm: null,
+        confirmText: '',
+        confirmColor: '',
+        icon: null
+    });
+
+    const closeModal = () => setModalConfig(prev => ({ ...prev, isOpen: false }));
 
     useEffect(() => {
         fetchUser();
@@ -63,9 +78,19 @@ const Settings = () => {
         }
     };
 
-    const handleUnlinkSpotify = async () => {
-        if (!window.confirm('Are you sure you want to unlink your Spotify account? You will lose access to your private playlists.')) return;
+    const confirmUnlinkSpotify = () => {
+        setModalConfig({
+            isOpen: true,
+            title: 'Unlink Spotify Account?',
+            message: 'Are you sure you want to unlink your Spotify account? You will lose access to your private playlists and easy music importing.',
+            confirmText: 'Unlink Account',
+            confirmColor: '#ef4444',
+            icon: <Link2Off size={44} color="#ef4444" />,
+            onConfirm: handleUnlinkSpotify
+        });
+    };
 
+    const handleUnlinkSpotify = async () => {
         setSyncing(true);
         try {
             await api.post('/auth/unlink_spotify/');
@@ -75,7 +100,20 @@ const Settings = () => {
             setMessage({ text: 'Failed to unlink account.', type: 'error' });
         } finally {
             setSyncing(false);
+            closeModal();
         }
+    };
+
+    const confirmLogout = () => {
+        setModalConfig({
+            isOpen: true,
+            title: 'Sign Out?',
+            message: 'Are you sure you want to sign out of your account? You will need to log in again to access your bingos.',
+            confirmText: 'Sign Out',
+            confirmColor: 'var(--text)',
+            icon: <LogOut size={44} />,
+            onConfirm: handleLogout
+        });
     };
 
     const handleLogout = () => {
@@ -86,17 +124,17 @@ const Settings = () => {
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
-        
+
         if (passwordData.new_password !== passwordData.confirm_password) {
             setMessage({ text: 'New passwords do not match.', type: 'error' });
             return;
         }
-        
+
         if (passwordData.new_password.length < 8) {
             setMessage({ text: 'Password must be at least 8 characters long.', type: 'error' });
             return;
         }
-        
+
         setChangingPassword(true);
         try {
             await api.post('/auth/change_password/', passwordData);
@@ -117,16 +155,25 @@ const Settings = () => {
         setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
     };
 
-    if (loading) return <div className="container" style={{ padding: '2rem' }}>Loading settings...</div>;
+    if (loading) return <div style={{ padding: '2rem' }}>Loading settings...</div>;
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '3rem' }}>
-                <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <SettingsIcon size={32} color="var(--primary)" /> Account Settings
-                </h1>
-                <p style={{ color: 'var(--text-muted)' }}>Manage your profile and external integrations.</p>
-            </header>
+        <PageLayout
+            title="Account Settings"
+            subtitle="Manage your profile and external integrations."
+            icon={<SettingsIcon size={32} />}
+        >
+            <ConfirmationModal
+                isOpen={modalConfig.isOpen}
+                onClose={closeModal}
+                onConfirm={modalConfig.onConfirm}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                confirmText={modalConfig.confirmText}
+                confirmColor={modalConfig.confirmColor}
+                icon={modalConfig.icon}
+                isLoading={syncing}
+            />
 
             {message.text && (
                 <div style={{
@@ -196,8 +243,8 @@ const Settings = () => {
                                 boxShadow: '0 4px 15px rgba(29, 185, 84, 0.3)'
                             }}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-</svg>
+                                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                                </svg>
                             </div>
                             <div>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Spotify Integration</h3>
@@ -213,7 +260,7 @@ const Settings = () => {
 
                         {user.is_spotify_linked ? (
                             <button
-                                onClick={handleUnlinkSpotify}
+                                onClick={confirmUnlinkSpotify}
                                 disabled={syncing}
                                 className="btn btn-secondary"
                                 style={{ borderRadius: '0.75rem', gap: '0.5rem', borderColor: '#ef4444', color: '#ef4444' }}
@@ -275,7 +322,7 @@ const Settings = () => {
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>New Password</label>
                             <div style={{ position: 'relative' }}>
@@ -315,7 +362,7 @@ const Settings = () => {
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div>
                             <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Confirm New Password</label>
                             <div style={{ position: 'relative' }}>
@@ -355,7 +402,7 @@ const Settings = () => {
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                             <button
                                 type="button"
@@ -385,7 +432,7 @@ const Settings = () => {
                         Logging out will end your current session. You will need to sign in again to access My Bingos.
                     </p>
                     <button
-                        onClick={handleLogout}
+                        onClick={confirmLogout}
                         className="btn btn-secondary"
                         style={{ background: 'rgba(239, 68, 68, 0.05)', borderColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' }}
                     >
@@ -393,7 +440,7 @@ const Settings = () => {
                     </button>
                 </section>
             </div>
-        </div>
+        </PageLayout>
     );
 };
 

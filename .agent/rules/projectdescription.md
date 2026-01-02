@@ -11,7 +11,8 @@ Users must log in to use the service. The current authentication method is Djang
 Bingo Card Generation:
 Users can generate bingo cards by following these steps: 1) Select a playlist, choosing either a public playlist (using centralized credentials) or, in the future, a private playlist via OAuth; 2) Choose the number of cards/participants; 3) Select a theme and personalize the bingo card (colors, icons, visual elements); 4) Additional options such as ensuring each card is unique and setting the minimum number of times a song appears; 5) Generate cards, previewing them before downloading or printing. The system must guarantee that each card is different and that all songs are included according to the user’s settings.
 
-
+Song tracking with AI:
+Users can check songs that have been played during a bingo game using AI-powered analysis to verify matches and track progress. The AI will analyze audio or lyrics to confirm if a song has been called and check the song in the songs list.
 User Flow and UX:
 
 - Landing Page: Clearly explain the app features, including card bingo creation from playlists, song tracking during gameplay (future integration), and emphasize the “Login” button.

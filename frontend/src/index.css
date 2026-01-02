@@ -156,6 +156,12 @@ h3 {
   background: var(--gray-700);
 }
 
+.glass-hover:hover {
+  background: hsla(0, 0%, 100%, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* Input styles */
 .input-group {
   margin-bottom: 1.5rem;
@@ -364,6 +370,49 @@ select:focus {
   .desktop-only {
     display: none !important;
   }
+}
+
+/* Navbar Responsive Styles */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  .mobile-menu-btn {
+    display: block !important;
+  }
+  
+  .nav-text {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+  
+  .mobile-menu-overlay {
+    display: none !important;
+  }
+}
+
+/* Navbar link hover effects */
+.nav-link:hover {
+  background: var(--surface-light) !important;
+  color: var(--primary) !important;
+}
+
+.nav-link.active {
+  background: hsla(260, 100%, 65%, 0.15) !important;
+  color: white !important;
+  border: 1px solid var(--primary) !important;
+  box-shadow: 0 0 15px hsla(260, 100%, 65%, 0.15);
+}
+
+.mobile-nav-link:hover {
+  background: var(--primary) !important;
+  color: white !important;
 }
 
 /* Sidebar & Main Content */

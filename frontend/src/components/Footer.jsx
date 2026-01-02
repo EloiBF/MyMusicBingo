@@ -12,7 +12,7 @@ const Footer = () => {
             WebkitBackdropFilter: 'blur(10px)'
         }}>
             <div style={{
-                maxWidth: '1200px',
+                maxWidth: 'clamp(800px, 90vw, 1400px)',
                 margin: '0 auto',
                 padding: '0 2rem',
                 display: 'flex',
@@ -60,10 +60,10 @@ const Footer = () => {
                         </h3>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             <li>
-                                <Link 
-                                    to="/dashboard" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <Link
+                                    to="/dashboard"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}
@@ -74,10 +74,10 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link 
-                                    to="/create" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <Link
+                                    to="/create"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}
@@ -88,10 +88,10 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link 
-                                    to="/settings" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <Link
+                                    to="/settings"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}
@@ -111,10 +111,10 @@ const Footer = () => {
                         </h3>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             <li>
-                                <Link 
-                                    to="/terms" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <Link
+                                    to="/terms"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}
@@ -125,10 +125,10 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link 
-                                    to="/privacy" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <Link
+                                    to="/privacy"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}
@@ -148,10 +148,10 @@ const Footer = () => {
                         </h3>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             <li>
-                                <a 
-                                    href="mailto:support@mymusicbingo.com" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <a
+                                    href="mailto:support@mymusicbingo.com"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}
@@ -162,10 +162,10 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li>
-                                <a 
-                                    href="mailto:privacy@mymusicbingo.com" 
-                                    style={{ 
-                                        color: 'var(--text-secondary)', 
+                                <a
+                                    href="mailto:privacy@mymusicbingo.com"
+                                    style={{
+                                        color: 'var(--text-secondary)',
                                         textDecoration: 'none',
                                         transition: 'color 0.2s ease'
                                     }}

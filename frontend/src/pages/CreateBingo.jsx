@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Play, Music, LayoutGrid, Layers, Search, Sparkles, Wand2, Eye, ListMusic, X, AlertCircle, Link2Off
+    Music, Search, PlusCircle, X, Wand2, ListMusic, Eye, Settings as SettingsIcon,
+    User, Mail, Lock, UserPlus, LogIn, Home, ChevronLeft, Link2Off, AlertCircle, Layers, LayoutGrid, Play
 } from 'lucide-react';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api';
 import API_URLS from '../config/api';
+import PageLayout from '../components/PageLayout';
+import BingoPreview from '../components/BingoPreview';
+import SplitLayout from '../components/SplitLayout';
 
 const CreateBingo = () => {
     const navigate = useNavigate();
@@ -13,7 +18,7 @@ const CreateBingo = () => {
     const [config, setConfig] = useState({
         eventTitle: '',
         playlistId: '',
-        numCards: 70,
+        numCards: 20,
         rows: 3,
         columns: 3,
         theme: 'classic',
@@ -156,17 +161,28 @@ const CreateBingo = () => {
     };
 
     return (
-        <div className="container" style={{ maxWidth: '1200px' }}>
-            <header style={{ marginBottom: '3rem' }}>
-                <h1 style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <Wand2 size={32} color="var(--primary)" /> {isEditMode ? 'Edit Bingo Event' : 'Create Magic Bingo'}
-                </h1>
-                <p style={{ color: 'var(--text-muted)' }}>{isEditMode ? 'Update My Bingo event settings.' : 'Configure your event and generate unique cards in seconds.'}</p>
-            </header>
-
-            <div className="grid-layout" style={{ gridTemplateColumns: '1fr 400px' }}>
+        <PageLayout
+            title={isEditMode ? 'Edit Bingo Event' : 'Create Music Bingo'}
+            subtitle={isEditMode ? 'Update My Bingo event settings.' : 'Design and generate unique bingo cards in seconds.'}
+            icon={<Wand2 size={32} />}
+        >
+            <SplitLayout
+                sidebarSticky={true}
+                sidebar={
+                    <BingoPreview
+                        theme={config.theme}
+                        primaryColor={config.primary_color}
+                        rows={config.rows}
+                        columns={config.columns}
+                        eventTitle={config.eventTitle || 'Disco Night 2025'}
+                        scale="auto"
+                        showFullscreen={false}
+                        containerStyle={{ marginBottom: '1.5rem' }}
+                    />
+                }
+            >
                 {/* Form Column */}
-                <section className="glass" style={{ padding: '3rem' }}>
+                <section className="glass" style={{ padding: 'clamp(2rem, 4vw, 3rem)' }}>
                     <form onSubmit={handleGenerate}>
                         <div className="input-group" style={{ marginBottom: '2rem' }}>
                             <label>Event Name</label>
@@ -353,42 +369,7 @@ const CreateBingo = () => {
                         </button>
                     </form>
                 </section>
-
-                {/* Preview Column */}
-                <aside style={{ position: 'sticky', top: '2rem', height: 'fit-content' }}>
-                    <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <Eye size={20} color="var(--primary)" /> Design Preview
-                    </h3>
-                    <div className="glass" style={{
-                        padding: '8px',
-                        aspectRatio: '1 / 1.414',
-                        background: 'white',
-                        boxShadow: '0 15px 35px rgba(0,0,0,0.15)',
-                        border: '1px solid var(--glass-border)',
-                        overflow: 'hidden'
-                    }}>
-                        <iframe
-                            src={API_URLS.BINGO_LIVE_PREVIEW(`theme=${config.theme}&primary_color=${encodeURIComponent(config.primary_color)}&rows=${config.rows}&columns=${config.columns}&preview=1&event_title=${encodeURIComponent(config.eventTitle || 'Disco Night 2025')}`)}
-                            style={{
-                                width: '794px',
-                                height: '1123px',
-                                border: 'none',
-                                transform: 'scale(0.5)',
-                                transformOrigin: 'top left',
-                                overflow: 'hidden',
-                                position: 'absolute',
-                                top: '0',
-                                left: '0'
-                            }}
-                            scrolling="no"
-                            title="Design Preview"
-                        />
-                    </div>
-                    <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-                        Mock preview of a single card
-                    </p>
-                </aside>
-            </div>
+            </SplitLayout>
 
             {showPlaylistModal && (
                 <div style={{
@@ -398,7 +379,13 @@ const CreateBingo = () => {
                     zIndex: 1000,
                     backdropFilter: 'blur(8px)'
                 }}>
-                    <div className="glass animate-fade-in" style={{ width: '90%', maxWidth: '600px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', border: '1px solid var(--glass-border)' }}>
+                    <div className="glass animate-fade-in" style={{
+                        width: 'clamp(400px, 90vw, 700px)',
+                        maxHeight: '80vh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        border: '1px solid var(--glass-border)'
+                    }}>
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <ListMusic size={20} color="var(--primary)" /> Select Playlist
@@ -443,7 +430,7 @@ const CreateBingo = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </PageLayout>
     );
 }
 

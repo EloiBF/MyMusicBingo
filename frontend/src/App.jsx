@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import PrintView from './pages/PrintView';
 import CreateBingo from './pages/CreateBingo';
 import BingoDetail from './pages/BingoDetail';
+import SongTrackingPage from './pages/SongTrackingPage';
 import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -58,6 +59,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateBingo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bingo/:id/track"
+          element={
+            <ProtectedRoute>
+              <SongTrackingPage />
             </ProtectedRoute>
           }
         />
