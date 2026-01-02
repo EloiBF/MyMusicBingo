@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
-    User, Mail, Settings as SettingsIcon, Link2, Link2Off, LogOut, CheckCircle2, AlertCircle, Music
+    User, Mail, Settings as SettingsIcon, Link2, Link2Off, LogOut, CheckCircle2, AlertCircle, Music, Lock, Eye, EyeOff
 } from 'lucide-react';
 import api from '../api';
 
@@ -12,6 +12,17 @@ const Settings = () => {
     const [loading, setLoading] = useState(true);
     const [syncing, setSyncing] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
+    const [passwordData, setPasswordData] = useState({
+        old_password: '',
+        new_password: '',
+        confirm_password: ''
+    });
+    const [showPasswords, setShowPasswords] = useState({
+        old: false,
+        new: false,
+        confirm: false
+    });
+    const [changingPassword, setChangingPassword] = useState(false);
 
     useEffect(() => {
         fetchUser();
@@ -71,6 +82,39 @@ const Settings = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/');
+    };
+
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+        
+        if (passwordData.new_password !== passwordData.confirm_password) {
+            setMessage({ text: 'New passwords do not match.', type: 'error' });
+            return;
+        }
+        
+        if (passwordData.new_password.length < 8) {
+            setMessage({ text: 'Password must be at least 8 characters long.', type: 'error' });
+            return;
+        }
+        
+        setChangingPassword(true);
+        try {
+            await api.post('/auth/change_password/', passwordData);
+            setMessage({ text: 'Password changed successfully!', type: 'success' });
+            setPasswordData({ old_password: '', new_password: '', confirm_password: '' });
+        } catch (err) {
+            setMessage({ text: err.response?.data?.message || 'Failed to change password.', type: 'error' });
+        } finally {
+            setChangingPassword(false);
+        }
+    };
+
+    const handlePasswordInputChange = (field, value) => {
+        setPasswordData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const togglePasswordVisibility = (field) => {
+        setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
     };
 
     if (loading) return <div className="container" style={{ padding: '2rem' }}>Loading settings...</div>;
@@ -151,7 +195,9 @@ const Settings = () => {
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 boxShadow: '0 4px 15px rgba(29, 185, 84, 0.3)'
                             }}>
-                                <Music size={24} color="white" />
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+</svg>
                             </div>
                             <div>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Spotify Integration</h3>
@@ -185,6 +231,151 @@ const Settings = () => {
                             </button>
                         )}
                     </div>
+                </section>
+
+                {/* Change Password Section */}
+                <section className="glass" style={{ padding: '2rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Change Password</h2>
+                    <form onSubmit={handlePasswordChange} style={{ display: 'grid', gap: '1.5rem' }}>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Current Password</label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type={showPasswords.old ? 'text' : 'password'}
+                                    value={passwordData.old_password}
+                                    onChange={(e) => handlePasswordInputChange('old_password', e.target.value)}
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.75rem 1rem 0.75rem 2.5rem',
+                                        background: 'var(--surface-light)',
+                                        border: '1px solid var(--glass-border)',
+                                        borderRadius: 'var(--radius-md)',
+                                        fontSize: '1rem',
+                                        color: 'var(--text)'
+                                    }}
+                                    placeholder="Enter current password"
+                                />
+                                <Lock size={16} color="var(--primary)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
+                                <button
+                                    type="button"
+                                    onClick={() => togglePasswordVisibility('old')}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '0.75rem',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: 'var(--text-muted)'
+                                    }}
+                                >
+                                    {showPasswords.old ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>New Password</label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type={showPasswords.new ? 'text' : 'password'}
+                                    value={passwordData.new_password}
+                                    onChange={(e) => handlePasswordInputChange('new_password', e.target.value)}
+                                    required
+                                    minLength="8"
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.75rem 1rem 0.75rem 2.5rem',
+                                        background: 'var(--surface-light)',
+                                        border: '1px solid var(--glass-border)',
+                                        borderRadius: 'var(--radius-md)',
+                                        fontSize: '1rem',
+                                        color: 'var(--text)'
+                                    }}
+                                    placeholder="Enter new password (min. 8 characters)"
+                                />
+                                <Lock size={16} color="var(--primary)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
+                                <button
+                                    type="button"
+                                    onClick={() => togglePasswordVisibility('new')}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '0.75rem',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: 'var(--text-muted)'
+                                    }}
+                                >
+                                    {showPasswords.new ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Confirm New Password</label>
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    type={showPasswords.confirm ? 'text' : 'password'}
+                                    value={passwordData.confirm_password}
+                                    onChange={(e) => handlePasswordInputChange('confirm_password', e.target.value)}
+                                    required
+                                    minLength="8"
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.75rem 1rem 0.75rem 2.5rem',
+                                        background: 'var(--surface-light)',
+                                        border: '1px solid var(--glass-border)',
+                                        borderRadius: 'var(--radius-md)',
+                                        fontSize: '1rem',
+                                        color: 'var(--text)'
+                                    }}
+                                    placeholder="Confirm new password"
+                                />
+                                <Lock size={16} color="var(--primary)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
+                                <button
+                                    type="button"
+                                    onClick={() => togglePasswordVisibility('confirm')}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '0.75rem',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: 'var(--text-muted)'
+                                    }}
+                                >
+                                    {showPasswords.confirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                            <button
+                                type="button"
+                                onClick={() => setPasswordData({ old_password: '', new_password: '', confirm_password: '' })}
+                                className="btn btn-secondary"
+                                style={{ borderRadius: '0.75rem' }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={changingPassword || !passwordData.old_password || !passwordData.new_password || !passwordData.confirm_password}
+                                className="btn btn-primary"
+                                style={{ borderRadius: '0.75rem', gap: '0.5rem' }}
+                            >
+                                <Lock size={16} />
+                                {changingPassword ? 'Changing...' : 'Change Password'}
+                            </button>
+                        </div>
+                    </form>
                 </section>
 
                 {/* Dangerous Zone */}

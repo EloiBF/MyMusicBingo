@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import api from '../api';
 import SongTracking from '../components/SongTracking';
+import API_URLS from '../config/api';
 
 const BingoDetail = () => {
     const { id } = useParams();
@@ -112,7 +113,7 @@ const BingoDetail = () => {
                         <Music size={20} /> Song Tracking
                     </button>
                     <button
-                        onClick={() => window.open(`http://localhost:8000/api/bingo/${id}/printable_html/`, '_blank')}
+                        onClick={() => window.open(API_URLS.BINGO_PRINTABLE(id), '_blank')}
                         className="btn btn-primary"
                         style={{ padding: '1rem 2rem', flex: 1 }}
                     >
@@ -197,7 +198,7 @@ const BingoDetail = () => {
                         border: '2px solid white'
                     }}>
                         <iframe
-                            src={`http://localhost:8000/api/bingo/${id}/preview_card/?preview=1`}
+                            src={API_URLS.BINGO_PREVIEW_CARD(id)}
                             style={{
                                 width: '794px',
                                 height: '1123px',

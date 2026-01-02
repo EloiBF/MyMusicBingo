@@ -238,6 +238,112 @@ select:focus {
   }
 }
 
+/* Success Stories Stars */
+.testimonial-stars svg {
+  color: #FFD700 !important;
+  fill: #FFD700 !important;
+  stroke: transparent !important;
+  stroke-width: 0 !important;
+}
+
+/* Preview Container */
+.preview-container {
+  position: relative;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.preview-scaler {
+  transform: scale(0.85);
+  transform-origin: center;
+}
+
+/* Navbar Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.join-button {
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  border: none;
+  color: white !important;
+  padding: 0.5rem 1.5rem !important;
+  border-radius: 0.5rem;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.login-button {
+  background: transparent;
+  border: none;
+  color: var(--text) !important;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 0.5rem;
+  transition: var(--transition);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .preview-container {
+    height: 320px;
+  }
+  
+  .preview-scaler {
+    transform: scale(0.7);
+  }
+  
+  .join-button {
+    display: none; /* Hide Join Now button on mobile */
+  }
+  
+  .login-button {
+    padding: 0.5rem 1rem !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Fix content cutoff in the Spotify section */
+  .grid-layout > div:first-child {
+    min-height: auto !important;
+    padding-bottom: 2rem;
+  }
+  
+  .premium-feature-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .preview-container {
+    margin: 1rem 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-container {
+    height: 280px;
+  }
+  
+  .preview-scaler {
+    transform: scale(0.6);
+  }
+}
+
 .grid-auto-fit {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

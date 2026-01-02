@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import API_URLS from '../config/api';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -97,7 +98,7 @@ const Dashboard = () => {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        window.open(`http://localhost:8000/api/bingo/${event.id}/printable_html/`, '_blank');
+                                        window.open(API_URLS.BINGO_PRINTABLE(event.id), '_blank');
                                     }}
                                     className="btn btn-secondary"
                                     style={{ padding: '0.5rem', borderRadius: '0.5rem' }}

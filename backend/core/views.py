@@ -351,6 +351,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         rows = int(request.query_params.get('rows', 3))
         cols = int(request.query_params.get('columns', 3))
         is_preview = request.query_params.get('preview') == '1'
+        event_title = request.query_params.get('event_title', 'Disco Night 2025')
         
         # Simple data for preview
         dummy_data = []
@@ -368,7 +369,7 @@ class BingoViewSet(viewsets.ModelViewSet):
             primary_color=color,
             rows=rows,
             columns=cols,
-            event_title="Design Preview"
+            event_title=event_title
         )
         
         mock_card = MockObj(

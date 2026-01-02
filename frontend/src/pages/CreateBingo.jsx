@@ -4,13 +4,14 @@ import {
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api';
+import API_URLS from '../config/api';
 
 const CreateBingo = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
     const [config, setConfig] = useState({
-        eventTitle: 'Bingo Musical',
+        eventTitle: '',
         playlistId: '',
         numCards: 70,
         rows: 3,
@@ -367,7 +368,7 @@ const CreateBingo = () => {
                         overflow: 'hidden'
                     }}>
                         <iframe
-                            src={`http://localhost:8000/api/bingo/live_preview/?theme=${config.theme}&primary_color=${encodeURIComponent(config.primary_color)}&rows=${config.rows}&columns=${config.columns}&preview=1`}
+                            src={API_URLS.BINGO_LIVE_PREVIEW(`theme=${config.theme}&primary_color=${encodeURIComponent(config.primary_color)}&rows=${config.rows}&columns=${config.columns}&preview=1&event_title=${encodeURIComponent(config.eventTitle || 'Disco Night 2025')}`)}
                             style={{
                                 width: '794px',
                                 height: '1123px',
