@@ -2,6 +2,27 @@
 
 **Musical Bingo Generator** with Spotify integration to create bingo cards from playlists.
 
+**Configuration**
+
+
+BACKEND: Django + Django Rest Framework
+FRONTEND: React / Node.js
+
+Install requirements with `pip install -r requirements.txt` and `npm install`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## How It Works
 
 - Users must **log in** with email and password. (Future support for Google login.)  
