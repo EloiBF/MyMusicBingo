@@ -60,7 +60,7 @@ class SpotifyAuthViewSet(viewsets.GenericViewSet):
         state = request.query_params.get('state', 'auth')
 
         if error:
-            return redirect('http://localhost:5173/auth?error=SpotifyAccessDenied')
+            return redirect(f'{settings.FRONTEND_URL}/auth?error=SpotifyAccessDenied')
 
         # Exchange code for tokens
         try:
@@ -73,7 +73,7 @@ class SpotifyAuthViewSet(viewsets.GenericViewSet):
             })
             
             if not response.ok:
-                return redirect('http://localhost:5173/auth?error=TokenExchangeFailed')
+                return redirect(f'{settings.FRONTEND_URL}/auth?error=TokenExchangeFailed')
 
             tokens = response.json()
             access_token = tokens.get('access_token')
@@ -86,11 +86,11 @@ class SpotifyAuthViewSet(viewsets.GenericViewSet):
             })
             
             if not profile_response.ok:
-                return redirect('http://localhost:5173/auth?error=ProfileFetchFailed')
+                return redirect(f'{settings.FRONTEND_URL}/auth?error=ProfileFetchFailed')
                 
             profile = profile_response.json()
         except Exception as e:
-            return redirect(f'http://localhost:5173/auth?error={str(e)}')
+            return redirect(f'{settings.FRONTEND_URL}/auth?error={str(e)}')
 
         spotify_id = profile.get('id')
         email = profile.get('email')
@@ -105,7 +105,7 @@ class SpotifyAuthViewSet(viewsets.GenericViewSet):
                 user_id = state.split('_')[1]
                 user = BingoUser.objects.get(pk=user_id)
             except (IndexError, BingoUser.DoesNotExist):
-                return redirect('http://localhost:5173/settings?error=UserNotFound')
+                return redirect(f'{settings.FRONTEND_URL}/settings?error=UserNotFound')
         else:
             # Traditional Spotify Login path
             # Search by Spotify ID via token relation or username
@@ -146,10 +146,10 @@ class SpotifyAuthViewSet(viewsets.GenericViewSet):
 
         # Redirect back
         if is_linking:
-            return redirect('http://localhost:5173/settings?spotify_linked=true')
+            return redirect(f'{settings.FRONTEND_URL}/settings?spotify_linked=true')
         
         # Redirect to Frontend with Token and Spotify info
-        frontend_url = 'http://localhost:5173/auth/callback'
+        frontend_url = f'{settings.FRONTEND_URL}/auth/callback'
         return redirect(f'{frontend_url}?token={token.key}&spotify_id={spotify_id}&display_name={display_name}')
 
 class AuthViewSet(viewsets.GenericViewSet):
@@ -207,8 +207,8 @@ class BingoViewSet(viewsets.ModelViewSet):
     serializer_class = BingoEventSerializer
 
     def get_queryset(self):
-        # Allow unauthorized access for public preview actions
-        if self.action in ['preview_card', 'printable_html', 'live_preview']:
+        # Allow unauthorized access only for live_preview (landing page)
+        if self.action == 'live_preview':
             return BingoEvent.objects.all()
         return self.queryset.filter(user=self.request.user)
 
@@ -380,7 +380,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         html = self._generate_card_html(mock_event, mock_card, standalone=True, is_preview=is_preview)
         return HttpResponse(html, content_type='text/html')
 
-    @action(detail=True, methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=True, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def preview_card(self, request, pk=None):
         # Use BingoEvent.objects directly to bypass filtered get_queryset if needed, 
         # but get_queryset now handles it.
@@ -394,7 +394,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         html = self._generate_card_html(event, card, standalone=True, is_preview=is_preview)
         return HttpResponse(html, content_type='text/html')
 
-    @action(detail=True, methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=True, methods=['get'])
     def printable_html(self, request, pk=None):
         event = self.get_object()
         cards = event.cards.all().order_by('card_index')

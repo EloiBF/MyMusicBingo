@@ -15,12 +15,12 @@ import Layout from './components/Layout';
 
 import AuthCallback from './pages/AuthCallback';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, withLayout = true }) => {
   const token = localStorage.getItem('token');
   if (!token) {
     return <Navigate to="/auth" replace />;
   }
-  return <Layout>{children}</Layout>;
+  return withLayout ? <Layout>{children}</Layout> : children;
 };
 
 function App() {
@@ -73,7 +73,7 @@ function App() {
         <Route
           path="/print/:eventId"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute withLayout={false}>
               <PrintView />
             </ProtectedRoute>
           }

@@ -35,58 +35,23 @@
             padding: 20px 0;
         }
 
-        .no-print-banner {
-            background: var(--text-dark);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 4px solid var(--primary);
-        }
-
-        .btn-print {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: var(--radius);
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            font-size: 1.1rem;
-            box-shadow: var(--shadow);
-            transition: opacity 0.2s;
-        }
-
-        .btn-print:hover {
-            opacity: 0.9;
-        }
-
         @media print {
             body {
                 background: white;
             }
 
-            .no-print {
-                display: none !important;
-            }
-
             .page-break {
                 padding: 0;
+            }
+
+            .content {
+                background: white;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="no-print-banner no-print">
-        <h2 style="margin: 0;">🖨️ Ready to Print: {{ event.event_title }}</h2>
-        <p style="margin: 5px 0; opacity: 0.8;">Total of {{ cards|length }} cards in Style: {{ event.theme|upper }}</p>
-        <button onclick="window.print()" class="btn-print">🖨️ Print / Save as PDF</button>
-    </div>
-
     <div class="content">
         {% block content %}{% endblock %}
     </div>

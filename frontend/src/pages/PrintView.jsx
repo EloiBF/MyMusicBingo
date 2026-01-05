@@ -1,130 +1,95 @@
-import React from 'react';
-import { Printer, Download, ArrowLeft } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Printer, ArrowLeft } from 'lucide-react';
+import api from '../api';
 
-const PrintView = ({ event, cards }) => {
-    // Mock data for demonstration if not provided
-    const displayCards = cards || [
-        { card_index: 1, data: Array(9).fill({ nom: "Song Title", artista: "Artist Name" }) },
-        { card_index: 2, data: Array(9).fill({ nom: "Another Song", artista: "Another Artist" }) }
-    ];
+const PrintView = () => {
+    const { eventId } = useParams();
+    const navigate = useNavigate();
+    const iframeRef = useRef(null);
+
+    const [html, setHtml] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    const printableUrl = useMemo(() => `/bingo/${eventId}/printable_html/`, [eventId]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        const fetchPrintableHtml = async () => {
+            try {
+                const res = await api.get(printableUrl, { responseType: 'text' });
+                if (!cancelled) setHtml(res.data || '');
+            } catch (err) {
+                const status = err?.response?.status;
+                if (status === 401 || status === 403) {
+                    navigate('/auth', { replace: true });
+                    return;
+                }
+                console.error('Error fetching printable HTML:', err);
+                navigate('/dashboard', { replace: true });
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+
+        fetchPrintableHtml();
+        return () => {
+            cancelled = true;
+        };
+    }, [navigate, printableUrl]);
 
     const handlePrint = () => {
-        window.print();
+        const win = iframeRef.current?.contentWindow;
+        if (!win) return;
+        win.focus();
+        win.print();
     };
 
+    if (loading) {
+        return (
+            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--background)', minHeight: '100vh' }}>
+                Loading printable view...
+            </div>
+        );
+    }
+
     return (
-        <div className="print-view-container">
-            <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; color: black !important; }
-          .bingo-card { 
-            break-after: page; 
-            border: 2px solid black !important;
-            background: white !important;
-            box-shadow: none !important;
-          }
-          .bingo-cell { border: 1px solid black !important; background: white !important; color: black !important; }
-          .bingo-header { color: black !important; }
-        }
-        
-        .print-toolbar {
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          padding: 1rem 2rem;
-          background: var(--surface);
-          border-bottom: 1px solid var(--glass-border);
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .bingo-grid {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 4rem;
-          padding: 4rem 2rem;
-        }
-
-        .bingo-card {
-          width: 210mm; /* A4 Width */
-          min-height: 200mm;
-          padding: 2rem;
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-        }
-
-        .bingo-card-grid {
-          display: grid;
-          flex: 1;
-          gap: 1px;
-          background: var(--glass-border);
-          border: 1px solid var(--glass-border);
-          border-radius: 0.5rem;
-          overflow: hidden;
-        }
-
-        .bingo-cell {
-          background: var(--surface-light);
-          padding: 1.5rem 1rem;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          min-height: 100px;
-        }
-
-        .song-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem; font-family: 'Outfit', sans-serif; }
-        .artist-name { color: var(--text-muted); font-size: 0.85rem; }
-      `}</style>
-
-            <div className="print-toolbar no-print">
-                <button className="btn btn-secondary">
-                    <ArrowLeft size={18} /> Back to Dashboard
+        <div style={{ minHeight: '100vh', background: 'var(--background)', color: 'var(--text)' }}>
+            <div className="no-print glass" style={{
+                margin: 'clamp(1rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem)',
+                position: 'sticky',
+                top: 0,
+                zIndex: 100,
+                padding: '0.8rem clamp(1rem, 2vw, 2rem)',
+                background: 'var(--surface)',
+                borderBottom: '1px solid var(--glass-border)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                backdropFilter: 'var(--glass-blur)',
+                WebkitBackdropFilter: 'var(--glass-blur)'
+            }}>
+                <button className="btn btn-secondary glass glass-hover" onClick={() => navigate('/dashboard')}>
+                    <ArrowLeft size={18} /> Back
                 </button>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button onClick={handlePrint} className="btn btn-primary">
-                        <Printer size={18} /> Print Cards
-                    </button>
-                    <button className="btn btn-secondary">
-                        <Download size={18} /> Download JSON
-                    </button>
-                </div>
+                <button onClick={handlePrint} className="btn btn-primary">
+                    <Printer size={18} /> Print
+                </button>
             </div>
 
-            <div className="bingo-grid">
-                {displayCards.map((card) => (
-                    <div key={card.card_index} className="bingo-card glass">
-                        <div className="bingo-header" style={{ textAlign: 'center' }}>
-                            <h2 style={{ fontSize: '2.5rem', color: 'var(--primary)' }}>BINGO MUSICAL</h2>
-                            <p style={{ color: 'var(--text-muted)' }}>Card #{card.card_index} • {event?.playlist_name || 'My Playlist'}</p>
-                        </div>
+            <iframe
+                ref={iframeRef}
+                title="Printable Bingo"
+                style={{ width: '100%', height: 'calc(100vh - 64px - clamp(2rem, 4vw, 3rem))', border: 'none', display: 'block', background: '#fff' }}
+                srcDoc={html}
+            />
 
-                        <div
-                            className="bingo-card-grid"
-                            style={{
-                                gridTemplateColumns: `repeat(${event?.columns || 3}, 1fr)`,
-                                gridTemplateRows: `repeat(${event?.rows || 3}, 1fr)`
-                            }}
-                        >
-                            {card.data.map((song, i) => (
-                                <div key={i} className="bingo-cell">
-                                    <span className="song-name">{song.nom}</span>
-                                    <span className="artist-name">{song.artista}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                            Generated by BingoMusicMaker
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <style>{`
+                @media print {
+                    .no-print { display: none !important; }
+                }
+            `}</style>
         </div>
     );
 };

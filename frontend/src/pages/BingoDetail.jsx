@@ -78,7 +78,7 @@ const BingoDetail = () => {
     const pageActions = (
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <button
-                onClick={() => window.open(API_URLS.BINGO_PRINTABLE(id), '_blank')}
+                onClick={() => navigate(`/print/${id}`)}
                 className="btn btn-primary"
                 style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: 'var(--shadow-lg)' }}
             >

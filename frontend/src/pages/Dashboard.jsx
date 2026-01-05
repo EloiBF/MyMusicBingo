@@ -203,7 +203,7 @@ const Dashboard = () => {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            window.open(API_URLS.BINGO_PRINTABLE(event.id), '_blank');
+                                            navigate(`/print/${event.id}`);
                                         }}
                                         className="btn-icon-only"
                                         title="Print Cards"
