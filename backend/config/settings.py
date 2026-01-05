@@ -162,5 +162,9 @@ CORS_ALLOW_METHODS = [
 # Additional CORS settings for debugging
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
+# Ensure CORS headers are always sent
+CORS_ALWAYS_ALLOW_ALL_ORIGINS = False
+CORS_URLS_REGEX = r'^.*$'
+
 # Allow iframes for bingo previews
 X_FRAME_OPTIONS = 'ALLOWALL'
