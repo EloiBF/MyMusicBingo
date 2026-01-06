@@ -22,7 +22,7 @@ const CreateBingo = () => {
         rows: 3,
         columns: 3,
         theme: 'classic',
-        primary_color: '#8b5cf6' // Matches --primary
+        primary_color: 'var(--primary)' // Matches --primary
     });
 
     const [loading, setLoading] = useState(false);
@@ -74,6 +74,19 @@ const CreateBingo = () => {
         { label: '4x4 (16 songs)', rows: 4, cols: 4 },
         { label: '5x5 (25 songs)', rows: 5, cols: 5 },
     ];
+
+    const colorMap = {
+        'var(--primary)': '#8b5cf6',
+        'var(--bingo-cyan)': '#06b6d4',
+        'var(--bingo-emerald)': '#10b981',
+        'var(--bingo-amber)': '#f59e0b',
+        'var(--bingo-pink)': '#ec4899',
+        'var(--bingo-indigo)': '#6366f1'
+    };
+
+    const getColorValue = (color) => {
+        return colorMap[color] || color;
+    };
 
     const themes = [
         { id: 'classic', label: 'Classic Elegance', icon: '🎼', desc: 'Serif fonts & professional borders' },
@@ -171,7 +184,7 @@ const CreateBingo = () => {
                 sidebar={
                     <BingoPreview
                         theme={config.theme}
-                        primaryColor={config.primary_color}
+                        primaryColor={getColorValue(config.primary_color)}
                         rows={config.rows}
                         columns={config.columns}
                         eventTitle={config.eventTitle || 'Disco Night 2025'}
@@ -296,12 +309,12 @@ const CreateBingo = () => {
                                 <label>Main Color</label>
                                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                                     {[
-                                        '#8b5cf6', // Primary
-                                        '#06b6d4', // Cyan
-                                        '#10b981', // Emerald
-                                        '#f59e0b', // Amber
-                                        '#ec4899', // Pink
-                                        '#6366f1', // Indigo
+                                        'var(--primary)', // Primary
+                                        'var(--bingo-cyan)', // Cyan
+                                        'var(--bingo-emerald)', // Emerald
+                                        'var(--bingo-amber)', // Amber
+                                        'var(--bingo-pink)', // Pink
+                                        'var(--bingo-indigo)', // Indigo
                                     ].map(color => (
                                         <button
                                             key={color}
@@ -323,7 +336,7 @@ const CreateBingo = () => {
                                     <div style={{ position: 'relative', width: '2.5rem', height: '2.5rem' }}>
                                         <input
                                             type="color"
-                                            value={config.primary_color}
+                                            value={config.primary_color.startsWith('var(') ? '#8b5cf6' : config.primary_color}
                                             onChange={(e) => setConfig({ ...config, primary_color: e.target.value })}
                                             style={{
                                                 position: 'absolute',
@@ -349,7 +362,7 @@ const CreateBingo = () => {
                                                 width: '1.5rem',
                                                 height: '1.5rem',
                                                 borderRadius: '50%',
-                                                background: config.primary_color,
+                                                background: getColorValue(config.primary_color),
                                                 border: '2px solid white',
                                                 boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                                             }} />

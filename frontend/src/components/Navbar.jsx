@@ -4,20 +4,32 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api';
+import ConfirmationModal from './ConfirmationModal';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 const response = await api.get('/auth/me/');
                 setUser(response.data);
             } catch (err) {
                 console.error('Error fetching user:', err);
+                localStorage.removeItem('token'); // Remove invalid token
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchUser();
@@ -29,7 +41,14 @@ const Navbar = () => {
     }, [location.pathname]);
 
     const handleLogout = () => {
+        setShowLogoutModal(true);
+    };
+
+    const confirmLogout = () => {
         localStorage.removeItem('token');
+        setUser(null); // Update local state immediately
+        setIsLoading(false); // Ensure loading state is reset
+        setShowLogoutModal(false);
         navigate('/');
     };
 
@@ -55,28 +74,47 @@ const Navbar = () => {
                 borderRadius: 'var(--radius-lg)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{
-                        width: '40px', height: '40px',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                        borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <Music size={24} color="white" />
-                    </div>
+                    <img 
+                        src="/images/logo.png" 
+                        alt="BingoMusicMaker Logo"
+                        style={{
+                            width: '40px', 
+                            height: '40px',
+                            borderRadius: 'var(--radius-md)',
+                            objectFit: 'contain'
+                        }}
+                    />
                     <span 
                         className="brand" 
                         style={{ 
                             fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)',
                             cursor: 'pointer'
                         }} 
-                        onClick={() => navigate('/dashboard')}
+                        onClick={() => navigate('/')}
                     >
                         BingoMusicMaker
                     </span>
                 </div>
 
                 {/* Desktop Navigation */}
-                <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-                    {user ? (
+                <div className="desktop-nav" style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '2rem',
+                    minHeight: '48px' // Ensure consistent height
+                }}>
+                    {isLoading ? (
+                        /* Loading state - show skeleton or minimal UI */
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{
+                                width: '100px',
+                                height: '32px',
+                                background: 'var(--surface-light)',
+                                borderRadius: 'var(--radius-md)',
+                                animation: 'pulse 1.5s ease-in-out infinite'
+                            }} />
+                        </div>
+                    ) : user ? (
                         <>
                             <div style={{ display: 'flex', gap: '1rem' }}>
                                 {navLinks.map((link) => (
@@ -117,7 +155,7 @@ const Navbar = () => {
                                 }}>
                                     <div style={{
                                         width: '32px', height: '32px',
-                                        background: 'var(--primary)',
+                                        background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
                                         borderRadius: '50%',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         color: 'white', fontWeight: 'bold', fontSize: '0.9rem'
@@ -151,7 +189,12 @@ const Navbar = () => {
                         </>
                     ) : (
                         /* Non-authenticated user navigation */
-                        <div className="nav-buttons">
+                        <div className="nav-buttons" style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '1rem',
+                            minHeight: '48px' // Match authenticated height
+                        }}>
                             <button onClick={() => navigate('/auth')} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>Login</button>
                             <button onClick={() => navigate('/auth')} className="btn btn-primary join-button">Join Now</button>
                         </div>
@@ -199,7 +242,20 @@ const Navbar = () => {
                         margin: '0 auto',
                         width: '100%'
                     }}>
-                        {user ? (
+                        {isLoading ? (
+                            /* Loading state for mobile */
+                            <div style={{ textAlign: 'center' }}>
+                                <div style={{
+                                    width: '48px',
+                                    height: '48px',
+                                    background: 'var(--surface-light)',
+                                    borderRadius: '50%',
+                                    margin: '0 auto 2rem',
+                                    animation: 'pulse 1.5s ease-in-out infinite'
+                                }} />
+                                <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+                            </div>
+                        ) : user ? (
                             <>
                                 {/* User Info */}
                                 <div style={{
@@ -213,7 +269,7 @@ const Navbar = () => {
                                 }}>
                                     <div style={{
                                         width: '48px', height: '48px',
-                                        background: 'var(--primary)',
+                                        background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
                                         borderRadius: '50%',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         color: 'white', fontWeight: 'bold', fontSize: '1.1rem'
@@ -279,15 +335,20 @@ const Navbar = () => {
                                 <div style={{
                                     width: '64px',
                                     height: '64px',
-                                    background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                                    borderRadius: '1rem',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    margin: '0 auto 2rem',
-                                    boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)'
+                                    margin: '0 auto 2rem'
                                 }}>
-                                    <Music size={32} color="white" />
+                                    <img 
+                                        src="/images/logo.png" 
+                                        alt="BingoMusicMaker Logo"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'contain'
+                                        }}
+                                    />
                                 </div>
                                 
                                 <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Welcome to BingoMusicMaker</h3>
@@ -325,6 +386,18 @@ const Navbar = () => {
                     </div>
                 </div>
             )}
+
+            {/* Logout Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
+                onConfirm={confirmLogout}
+                title="Logout"
+                message="Are you sure you want to logout? You'll need to login again to access your account."
+                confirmText="Logout"
+                confirmColor="var(--error)"
+                icon={<LogOut size={44} />}
+            />
         </>
     );
 };

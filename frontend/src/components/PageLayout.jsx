@@ -17,7 +17,7 @@ const PageLayout = ({
     return (
         <div style={{ maxWidth, margin: '0 auto', width: '100%' }}>
             {/* Top Navigation & Header Area */}
-            <header style={{ marginBottom: 'clamp(3rem, 6vw, 4rem)' }}>
+            <header style={{ marginBottom: 'clamp(1.5rem, 3vw, 2rem)' }}>
                 {/* Back Button */}
                 {backPath && (
                     <button

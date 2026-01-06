@@ -58,7 +58,7 @@ const BingoDetail = () => {
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', color: 'var(--text-muted)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{
-                    color: '#1DB954',
+                    color: 'var(--spotify-green)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     width: '16px',
@@ -125,8 +125,8 @@ const BingoDetail = () => {
                 title="Delete this event?"
                 message={`All generated cards and statistics for "${event.event_title}" will be permanently removed.`}
                 confirmText="Yes, Delete"
-                confirmColor="#ef4444"
-                icon={<Trash2 size={44} color="#ef4444" />}
+                confirmColor="var(--error)"
+                icon={<Trash2 size={44} color="var(--error)" />}
                 isLoading={deleting}
             />
 

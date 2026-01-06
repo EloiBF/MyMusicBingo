@@ -84,8 +84,8 @@ const Settings = () => {
             title: 'Unlink Spotify Account?',
             message: 'Are you sure you want to unlink your Spotify account? You will lose access to your private playlists and easy music importing.',
             confirmText: 'Unlink Account',
-            confirmColor: '#ef4444',
-            icon: <Link2Off size={44} color="#ef4444" />,
+            confirmColor: 'var(--error)',
+            icon: <Link2Off size={44} color="var(--error)" />,
             onConfirm: handleUnlinkSpotify
         });
     };
@@ -237,7 +237,7 @@ const Settings = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             <div style={{
                                 width: '48px', height: '48px',
-                                background: '#1DB954',
+                                background: 'var(--spotify-green)',
                                 borderRadius: '50%',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 boxShadow: '0 4px 15px rgba(29, 185, 84, 0.3)'
@@ -248,7 +248,7 @@ const Settings = () => {
                             </div>
                             <div>
                                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Spotify Integration</h3>
-                                <p style={{ margin: 0, fontSize: '0.85rem', color: user.is_spotify_linked ? '#1DB954' : 'var(--text-muted)' }}>
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: user.is_spotify_linked ? 'var(--spotify-green)' : 'var(--text-muted)' }}>
                                     {user.is_spotify_linked ? (
                                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><CheckCircle2 size={12} /> Account Linked</span>
                                     ) : (
@@ -263,7 +263,7 @@ const Settings = () => {
                                 onClick={confirmUnlinkSpotify}
                                 disabled={syncing}
                                 className="btn btn-secondary"
-                                style={{ borderRadius: '0.75rem', gap: '0.5rem', borderColor: '#ef4444', color: '#ef4444' }}
+                                style={{ borderRadius: '0.75rem', gap: '0.5rem', borderColor: 'var(--error)', color: 'var(--error)' }}
                             >
                                 <Link2Off size={18} /> Unlink Spotify
                             </button>
@@ -272,7 +272,7 @@ const Settings = () => {
                                 onClick={handleLinkSpotify}
                                 disabled={syncing}
                                 className="btn btn-primary"
-                                style={{ background: '#1DB954', border: 'none', borderRadius: '0.75rem', gap: '0.5rem', boxShadow: '0 4px 15px rgba(29, 185, 84, 0.2)' }}
+                                style={{ background: 'var(--spotify-green)', border: 'none', borderRadius: '0.75rem', gap: '0.5rem', boxShadow: '0 4px 15px rgba(29, 185, 84, 0.2)' }}
                             >
                                 <Link2 size={18} /> Connect Spotify
                             </button>
@@ -427,14 +427,14 @@ const Settings = () => {
 
                 {/* Dangerous Zone */}
                 <section className="glass" style={{ padding: '2rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: '#ef4444' }}>Session Management</h2>
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--error)' }}>Session Management</h2>
                     <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
                         Logging out will end your current session. You will need to sign in again to access My Bingos.
                     </p>
                     <button
                         onClick={confirmLogout}
                         className="btn btn-secondary"
-                        style={{ background: 'rgba(239, 68, 68, 0.05)', borderColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' }}
+                        style={{ background: 'rgba(239, 68, 68, 0.05)', borderColor: 'rgba(239, 68, 68, 0.2)', color: 'var(--error)' }}
                     >
                         <LogOut size={18} /> Sign Out of All Devices
                     </button>

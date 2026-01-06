@@ -1,11 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;800&display=swap');
 
 :root {
-  /* Brand Colors */
-  --primary: hsl(260, 100%, 65%);
-  --primary-hover: hsl(260, 100%, 75%);
-  --secondary: hsl(180, 100%, 50%);
+/* --- Brand Colors (Refined) --- */
+  --primary: #1DB954; 
+  --primary-hover: #1ed760;
+  --secondary: #0ea5e9; 
+  --secondary-hover: #38bdf8;
   --accent: hsl(320, 100%, 65%);
+
+  /* Spotify Brand Color */
+  --spotify-green: #1DB954;
+
+  /* Bingo Theme Colors */
+  --bingo-classic: #2c3e50;
+  --bingo-retro: #f39c12;
+  --bingo-wedding: #d4af37;
+  --bingo-cyan: #06b6d4;
+  --bingo-emerald: #10b981;
+  --bingo-amber: #f59e0b;
+  --bingo-pink: #ec4899;
+  --bingo-indigo: #6366f1;
 
   /* Neutral Scale */
   /* Neutral Scale */
@@ -51,7 +65,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 20px hsla(260, 100%, 65%, 0.3);
+  --shadow-glow: 0 0 20px rgba(30, 215, 96, 0.3);
 
   /* Transitions & Misc */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -136,14 +150,14 @@ h3 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
   color: white;
   box-shadow: var(--shadow-glow);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px hsla(260, 100%, 65%, 0.4);
+  box-shadow: 0 6px 20px rgba(30, 215, 96, 0.4);
 }
 
 .btn-secondary {
@@ -191,7 +205,7 @@ input:focus,
 select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px hsla(260, 100%, 65%, 0.2);
+  box-shadow: 0 0 0 2px rgba(30, 215, 96, 0.2);
 }
 
 /* Layout Helpers */
@@ -225,6 +239,15 @@ select:focus {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 
@@ -275,7 +298,7 @@ select:focus {
 }
 
 .join-button {
-  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+  background: linear-gradient(90deg, var(--primary), var(--secondary)) !important;
   border: none;
   color: white !important;
   padding: 0.5rem 1.5rem !important;
@@ -400,14 +423,14 @@ select:focus {
 /* Navbar link hover effects */
 .nav-link:hover {
   background: var(--surface-light) !important;
-  color: var(--primary) !important;
+  color: white !important;
 }
 
 .nav-link.active {
-  background: hsla(260, 100%, 65%, 0.15) !important;
+  background: linear-gradient(90deg, rgba(30, 215, 96, 0.2), rgba(14, 165, 233, 0.2)) !important;
   color: white !important;
-  border: 1px solid var(--primary) !important;
-  box-shadow: 0 0 15px hsla(260, 100%, 65%, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none;
 }
 
 .mobile-nav-link:hover {
@@ -475,7 +498,7 @@ select:focus {
   border: none;
   color: white;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(30, 215, 96, 0.4);
 }
 
 /* Landing Page Specific Styles */
@@ -499,7 +522,7 @@ select:focus {
 .landing-steps-grid-3>div:hover,
 .landing-steps-grid-2>div:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 20px 40px rgba(30, 215, 96, 0.2);
 }
 
 .landing-lifestyle-grid>div {

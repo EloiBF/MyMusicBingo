@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
             <Navbar />
             <main style={{
                 flex: 1,
-                paddingTop: 'clamp(8rem, 15vh, 10rem)', // Increased padding for better separation
+                paddingTop: 'clamp(6rem, 15vh, 10rem)', // Increased padding for better separation
                 display: 'flex',
                 flexDirection: 'column',
                 paddingLeft: '2rem',

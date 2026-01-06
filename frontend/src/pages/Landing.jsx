@@ -6,6 +6,7 @@ import {
     Headphones, ChevronsDown
 } from 'lucide-react';
 import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 import API_URLS from '../config/api';
 import BingoPreview from '../components/BingoPreview';
 
@@ -41,32 +42,7 @@ const Landing = () => {
             <style>{STACKED_STYLES}</style>
 
             {/* Navigation */}
-            <nav className="glass" style={{
-                margin: 'clamp(1rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem)',
-                padding: '0.8rem clamp(1rem, 2vw, 2rem)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                position: 'fixed',
-                top: 0, left: 0, right: 0,
-                zIndex: 1000,
-                borderRadius: 'var(--radius-lg)'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{
-                        width: '40px', height: '40px',
-                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                        borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <Music size={24} color="white" />
-                    </div>
-                    <span className="brand" style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)' }}>BingoMusicMaker</span>
-                </div>
-                <div className="nav-buttons">
-                    <button onClick={() => navigate('/auth')} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>Login</button>
-                    <button onClick={() => navigate('/auth')} className="btn btn-primary join-button">Join Now</button>
-                </div>
-            </nav>
+            <Navbar />
 
             <main style={{ flex: 1 }}>
                 {/* Hero Section */}
@@ -83,7 +59,7 @@ const Landing = () => {
                     {/* Background */}
                     <div style={{
                         position: 'absolute', inset: 0, zIndex: 0,
-                        backgroundImage: 'url(https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1600&q=80)',
+                        backgroundImage: 'url(https://images.unsplash.com/photo-1509824227185-9c5a01ceba0d?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
                         backgroundSize: 'cover', backgroundPosition: 'center',
                         filter: 'brightness(0.4) saturate(1.2)'
                     }} />
@@ -110,7 +86,7 @@ const Landing = () => {
                             margin: '0 auto 3rem',
                             animationDelay: '0.1s'
                         }}>
-                            Create your own bingo cards from any Spotify playlist. <br /> Choose a design, download, and print to play with friends
+                            Connect Spotify playlists to create unique bingo cards. <br /> Fast, easy and free to use.
                         </p>
 
                         <div className="animate-fade-in" style={{
@@ -144,19 +120,17 @@ const Landing = () => {
                 </section>
 
                 {/* Why Section */}
-                <section id="why-section" style={{ padding: 'clamp(2.5rem, 2.5rem, 2.5rem) 0', background: 'var(--surface)' }}>
+                <section id="why-section" style={{ padding: 'clamp(1.5rem, 2rem, 2.5rem) 0', background: 'var(--surface)' }}>
                     <div className="container grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <h2 style={{ marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                            <h2 style={{ marginBottom: '4rem', lineHeight: 1.2 }}>
                                 From Spotify
-                                <span style={{ color: '#1DB954', display: 'inline-flex', alignItems: 'center', marginLeft: '0.5rem', verticalAlign: 'middle' }}>
+                                <span style={{ color: 'var(--spotify-green)', display: 'inline-flex', alignItems: 'center', marginLeft: '0.5rem', verticalAlign: 'middle' }}>
                                     <svg width="0.9em" height="0.9em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" /></svg>
                                 </span>
                                 <br /> to BingoMusicMaker
                             </h2>
-                            <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.2rem)', color: 'var(--text-muted)', marginBottom: '3rem' }}>
-                                Connect Spotify playlists to create unique bingo cards. <br /> Fast, free and easy to use.
-                            </p>
+
 
                             <div style={{ display: 'grid', gap: '2rem' }}>
                                 <FeatureItem icon={<Palette />} title="Customizable Cards" desc="Fully themeable. From weddings to birthday parties, even corporate events." color="var(--primary)" />
@@ -210,22 +184,6 @@ const Landing = () => {
                     </div>
                 </section>
 
-                {/* CTA */}
-                <section className="container" style={{ paddingBottom: '6rem' }}>
-                    <div className="glass" style={{
-                        padding: 'clamp(3rem, 6vw, 5rem) 1rem',
-                        textAlign: 'center',
-                        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(10, 10, 15, 0.6))',
-                        borderColor: 'var(--glass-border)',
-                        position: 'relative', overflow: 'hidden'
-                    }}>
-                        <h2 style={{ marginBottom: '1rem' }}>Create Music Bingo cards for free</h2>
-                        <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '2.5rem' }}>Log in, connect spotify playlist and print or order your bingo game!</p>
-                        <button onClick={() => navigate('/auth')} className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.2rem' }}>
-                            Get Started Now <ArrowRight size={22} />
-                        </button>
-                    </div>
-                </section>
             </main>
             <Footer />
         </div>
@@ -237,7 +195,7 @@ const Landing = () => {
 const SectionHeader = ({ title, subtitle }) => (
     <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 5vw, 4rem)' }}>
         <h2 style={{ marginBottom: '1rem' }}>{title}</h2>
-        {subtitle && <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>{subtitle}</p>}
+        {subtitle && <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.2rem)', color: 'var(--text-muted)', marginBottom: '4rem' }}>{subtitle}</p>}
     </div>
 );
 
@@ -310,7 +268,7 @@ const StackedBingoCards = () => {
             }}>
                 <BingoPreview
                     theme="retro"
-                    primaryColor="#f39c12"
+                    primaryColor="var(--bingo-retro)"
                     rows={3}
                     columns={3}
                     eventTitle="Retro Bingo"
@@ -332,7 +290,7 @@ const StackedBingoCards = () => {
             }}>
                 <BingoPreview
                     theme="wedding"
-                    primaryColor="#d4af37"
+                    primaryColor="var(--bingo-wedding)"
                     rows={3}
                     columns={3}
                     eventTitle="Wedding Bingo"
@@ -353,7 +311,7 @@ const StackedBingoCards = () => {
             }}>
                 <BingoPreview
                     theme="classic"
-                    primaryColor="#2c3e50"
+                    primaryColor="var(--bingo-classic)"
                     rows={3}
                     columns={3}
                     eventTitle="Classic Bingo"

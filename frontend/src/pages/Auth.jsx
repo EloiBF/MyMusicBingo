@@ -66,22 +66,20 @@ const Auth = () => {
           <div style={{ width: '100%', maxWidth: '450px' }}>
           <div className="glass animate-fade-in" style={{ width: '100%', padding: '3rem', textAlign: 'center' }}>
 
-        <div style={{
-          width: '64px',
-          height: '64px',
-          background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-          borderRadius: '1rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto 1.5rem',
-          boxShadow: '0 8px 20px rgba(139, 92, 246, 0.3)'
-        }}>
-          <Music size={32} color="white" />
-        </div>
+        <img 
+          src="/images/logo.png" 
+          alt="BingoMusicMaker Logo"
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '1rem',
+            margin: '0 auto 0.05rem',
+            objectFit: 'contain'
+          }}
+        />
 
-        <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => navigate('/')}>BingoMusicMaker</h1>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>
+        <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '1rem', cursor: 'pointer', lineHeight: 1.1 }} onClick={() => navigate('/')}>BingoMusic<br />Maker</h1>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
           {mode === 'login' ? 'Welcome back! Sign in to continue.' : 'Create an account to start building bingos.'}
         </p>
 
@@ -91,7 +89,7 @@ const Auth = () => {
             background: 'rgba(239, 68, 68, 0.1)',
             border: '1px solid rgba(239, 68, 68, 0.2)',
             borderRadius: '0.5rem',
-            color: '#ef4444',
+            color: 'var(--error)',
             fontSize: '0.85rem',
             marginBottom: '1.5rem'
           }}>

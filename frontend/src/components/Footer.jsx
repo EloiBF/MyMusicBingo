@@ -33,17 +33,16 @@ const Footer = () => {
                             gap: '0.75rem',
                             marginBottom: '1rem'
                         }}>
-                            <div style={{
-                                width: '32px',
-                                height: '32px',
-                                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                                borderRadius: '0.5rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <span style={{ fontSize: '1.2rem' }}>🎵</span>
-                            </div>
+                            <img 
+                                src="/images/logo.png" 
+                                alt="BingoMusicMaker Logo"
+                                style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '0.5rem',
+                                    objectFit: 'contain'
+                                }}
+                            />
                             <span style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                                 BingoMusicMaker
                             </span>

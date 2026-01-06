@@ -81,7 +81,7 @@ const PrintView = () => {
             <iframe
                 ref={iframeRef}
                 title="Printable Bingo"
-                style={{ width: '100%', height: 'calc(100vh - 64px - clamp(2rem, 4vw, 3rem))', border: 'none', display: 'block', background: '#fff' }}
+                style={{ width: '100%', height: 'calc(100vh - 64px - clamp(2rem, 4vw, 3rem))', border: 'none', display: 'block', background: 'var(--white)' }}
                 srcDoc={html}
             />
 

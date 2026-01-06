@@ -8,7 +8,7 @@ const ConfirmationModal = ({
     title, 
     message, 
     confirmText = "Confirm", 
-    confirmColor = "#ef4444", 
+    confirmColor = "var(--error)", 
     icon = <AlertCircle size={44} />,
     isLoading = false
 }) => {

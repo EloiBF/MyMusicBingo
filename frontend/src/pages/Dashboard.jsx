@@ -186,7 +186,7 @@ const Dashboard = () => {
                                             fontSize: '0.95rem'
                                         }}>
                                             <span style={{ 
-                                                color: '#1DB954', 
+                                                color: 'var(--spotify-green)', 
                                                 display: 'inline-flex', 
                                                 alignItems: 'center',
                                                 width: '20px',
@@ -208,16 +208,15 @@ const Dashboard = () => {
                                         className="btn-icon-only"
                                         title="Print Cards"
                                         style={{
-                                            background: 'var(--glass)',
-                                            backdropFilter: 'var(--glass-blur)',
-                                            WebkitBackdropFilter: 'var(--glass-blur)',
-                                            border: '1px solid var(--glass-border)',
+                                            background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
+                                            border: '1px solid var(--primary)',
+                                            color: 'white',
+                                            backdropFilter: 'none',
+                                            WebkitBackdropFilter: 'none',
                                             borderRadius: 'var(--radius-lg)',
                                             width: '44px', height: '44px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            cursor: 'pointer', transition: 'var(--transition)',
-                                            color: 'var(--text-muted)',
-                                            boxShadow: 'var(--shadow-sm)',
+                                            cursor: 'pointer',
                                             flexShrink: 0
                                         }}
                                     >
@@ -364,7 +363,7 @@ const Dashboard = () => {
                     border-color: var(--primary)50 !important;
                     background: hsla(0, 0%, 100%, 0.08) !important;
                 }
-                .card-hover:hover .btn-icon-only {
+                .card-hover:hover .btn-icon-only:not([title="Print Cards"]) {
                     background: var(--primary)20 !important;
                     color: var(--primary) !important;
                     border-color: var(--primary)50 !important;
@@ -384,6 +383,7 @@ const Dashboard = () => {
                 .card-hover:hover div[style*="background: linear-gradient(135deg, var(--primary)15"] > div:first-child {
                     opacity: 1 !important;
                 }
+
             `}</style>
         </PageLayout>
     );
