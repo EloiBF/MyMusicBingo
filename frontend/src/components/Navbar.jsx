@@ -70,7 +70,7 @@ const Navbar = () => {
                         }} 
                         onClick={() => navigate('/dashboard')}
                     >
-                        MyMusicBingo
+                        BingoMusicMaker
                     </span>
                 </div>
 
@@ -290,7 +290,7 @@ const Navbar = () => {
                                     <Music size={32} color="white" />
                                 </div>
                                 
-                                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Welcome to MyMusicBingo</h3>
+                                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Welcome to BingoMusicMaker</h3>
                                 <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>
                                     Create an account to start building amazing music bingo cards
                                 </p>

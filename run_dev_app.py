@@ -51,7 +51,7 @@ def run_local():
         print("Bye!")
 
 def run_app():
-    parser = argparse.ArgumentParser(description='Run MyMusicBingo in development mode')
+    parser = argparse.ArgumentParser(description='Run BingoMusicMaker in development mode')
     parser.add_argument('--local', '-l', action='store_true',
                        help='Run locally (development mode)')
     

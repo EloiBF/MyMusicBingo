@@ -80,7 +80,7 @@ const Auth = () => {
           <Music size={32} color="white" />
         </div>
 
-        <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => navigate('/')}>MyMusicBingo</h1>
+        <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => navigate('/')}>BingoMusicMaker</h1>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>
           {mode === 'login' ? 'Welcome back! Sign in to continue.' : 'Create an account to start building bingos.'}
         </p>

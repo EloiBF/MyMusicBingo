@@ -45,7 +45,7 @@ const Footer = () => {
                                 <span style={{ fontSize: '1.2rem' }}>🎵</span>
                             </div>
                             <span style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-primary)' }}>
-                                MyMusicBingo
+                                BingoMusicMaker
                             </span>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
@@ -149,7 +149,7 @@ const Footer = () => {
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             <li>
                                 <a
-                                    href="mailto:support@mymusicbingo.com"
+                                    href="mailto:support@BingoMusicMaker.com"
                                     style={{
                                         color: 'var(--text-secondary)',
                                         textDecoration: 'none',
@@ -163,7 +163,7 @@ const Footer = () => {
                             </li>
                             <li>
                                 <a
-                                    href="mailto:privacy@mymusicbingo.com"
+                                    href="mailto:privacy@BingoMusicMaker.com"
                                     style={{
                                         color: 'var(--text-secondary)',
                                         textDecoration: 'none',
@@ -190,7 +190,7 @@ const Footer = () => {
                     gap: '1rem'
                 }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0 }}>
-                        © 2026 MyMusicBingo. All rights reserved.
+                        © 2026 BingoMusicMaker. All rights reserved.
                     </p>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                         <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>

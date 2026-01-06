@@ -12,7 +12,7 @@ from django.http import HttpResponse
 @permission_classes([permissions.AllowAny])
 def home(request):
     return Response({
-        "message": "MyMusicBingo API is running",
+        "message": "BingoMusicMaker API is running",
         "endpoints": {
             "api": "/api/",
             "admin": "/admin/"

@@ -1,4 +1,4 @@
-# MyMusicBingo
+# BingoMusicMaker
 
 **Musical Bingo Generator** with Spotify integration to create bingo cards from playlists.
 
