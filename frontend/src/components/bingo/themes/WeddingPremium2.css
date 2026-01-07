@@ -1,0 +1,74 @@
+.wedding-p2-header {
+    text-align: center;
+    margin-bottom: 25pt;
+    position: relative;
+    z-index: 1;
+}
+
+.wedding-p2-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 38pt;
+    font-weight: 200;
+    color: var(--primary);
+    margin: 0;
+    letter-spacing: 8pt;
+    text-transform: uppercase;
+}
+
+.wedding-p2-header h2 {
+    font-size: 14pt;
+    color: #888;
+    margin: 5pt 0 0;
+    text-transform: uppercase;
+    font-weight: 300;
+    letter-spacing: 4pt;
+}
+
+.wedding-p2-cell {
+    border-radius: 50% 50% 0 0;
+    border: 1pt solid #f3e5f5;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fff;
+}
+
+.wedding-p2-song {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #444;
+}
+
+.wedding-p2-artist {
+    font-size: 9pt;
+    color: var(--primary);
+    margin-top: 3pt;
+    font-style: italic;
+}
+
+.wedding-p2-decor .petal {
+    position: absolute;
+    font-size: 30pt;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.wedding-p2-decor .p1 {
+    top: 10%;
+    right: 10%;
+    transform: rotate(15deg);
+}
+
+.wedding-p2-decor .p2 {
+    bottom: 15%;
+    left: 5%;
+    transform: rotate(-20deg);
+}
+
+.wedding-p2-decor .p3 {
+    top: 40%;
+    left: 2%;
+    opacity: 0.1;
+}

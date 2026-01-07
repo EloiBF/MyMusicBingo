@@ -1,93 +1,168 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Printer, ArrowLeft } from 'lucide-react';
+import { Printer, ArrowLeft, Loader2 } from 'lucide-react';
 import api from '../api';
+import ThemeRenderer from '../components/bingo/ThemeRenderer';
 
 const PrintView = () => {
     const { eventId } = useParams();
     const navigate = useNavigate();
-    const iframeRef = useRef(null);
-
-    const [html, setHtml] = useState('');
+    const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const printableUrl = useMemo(() => `/bingo/${eventId}/printable_html/`, [eventId]);
-
     useEffect(() => {
-        let cancelled = false;
-
-        const fetchPrintableHtml = async () => {
+        const fetchPrintableData = async () => {
             try {
-                const res = await api.get(printableUrl, { responseType: 'text' });
-                if (!cancelled) setHtml(res.data || '');
+                const res = await api.get(`/bingo/${eventId}/printable_data/`);
+                setData(res.data);
             } catch (err) {
-                const status = err?.response?.status;
-                if (status === 401 || status === 403) {
-                    navigate('/auth', { replace: true });
-                    return;
-                }
-                console.error('Error fetching printable HTML:', err);
+                console.error('Error fetching printable data:', err);
                 navigate('/dashboard', { replace: true });
             } finally {
-                if (!cancelled) setLoading(false);
+                setLoading(false);
             }
         };
 
-        fetchPrintableHtml();
-        return () => {
-            cancelled = true;
-        };
-    }, [navigate, printableUrl]);
+        fetchPrintableData();
+    }, [eventId, navigate]);
 
     const handlePrint = () => {
-        const win = iframeRef.current?.contentWindow;
-        if (!win) return;
-        win.focus();
-        win.print();
+        window.print();
     };
 
     if (loading) {
         return (
-            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--background)', minHeight: '100vh' }}>
-                Loading printable view...
+            <div style={{
+                height: '100vh',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '1rem',
+                color: 'var(--text-muted)',
+                background: 'var(--background)'
+            }}>
+                <Loader2 className="animate-spin" size={32} />
+                <p>Preparing high-quality cards...</p>
             </div>
         );
     }
 
+    if (!data) return null;
+
+    const { event, cards } = data;
+    const isLandscape = event.orientation === 'landscape';
+
     return (
-        <div style={{ minHeight: '100vh', background: 'var(--background)', color: 'var(--text)' }}>
-            <div className="no-print glass" style={{
-                margin: 'clamp(1rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem)',
-                position: 'sticky',
+        <div className="print-view-container" style={{ background: '#f0f2f5', minHeight: '100vh' }}>
+            {/* Control Bar - Hidden on print */}
+            <div className="no-print" style={{
+                position: 'fixed',
                 top: 0,
-                zIndex: 100,
-                padding: '0.8rem clamp(1rem, 2vw, 2rem)',
-                background: 'var(--surface)',
-                borderBottom: '1px solid var(--glass-border)',
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                padding: '0.75rem 2rem',
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(10px)',
+                borderBottom: '1px solid rgba(0,0,0,0.1)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                backdropFilter: 'var(--glass-blur)',
-                WebkitBackdropFilter: 'var(--glass-blur)'
+                boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
             }}>
-                <button className="btn btn-secondary glass glass-hover" onClick={() => navigate('/dashboard')}>
-                    <ArrowLeft size={18} /> Back
+                <button
+                    className="btn btn-secondary"
+                    onClick={() => navigate(`/bingo/${eventId}`)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                    <ArrowLeft size={18} /> Back to Event
                 </button>
-                <button onClick={handlePrint} className="btn btn-primary">
-                    <Printer size={18} /> Print
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>{event.event_title}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{cards.length} Cards • {event.rows}x{event.columns}</div>
+                </div>
+                <button onClick={handlePrint} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Printer size={18} /> Print All Cards
                 </button>
             </div>
 
-            <iframe
-                ref={iframeRef}
-                title="Printable Bingo"
-                style={{ width: '100%', height: 'calc(100vh - 64px - clamp(2rem, 4vw, 3rem))', border: 'none', display: 'block', background: 'var(--white)' }}
-                srcDoc={html}
-            />
+            {/* Printable Content */}
+            <div className="printable-content" style={{
+                padding: '80px 0 40px 0',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '40px'
+            }}>
+                {cards.map((card, index) => (
+                    <div
+                        key={card.id || index}
+                        className="print-page"
+                        style={{
+                            width: isLandscape ? '297mm' : '210mm',
+                            height: isLandscape ? '210mm' : '297mm',
+                            background: 'white',
+                            boxShadow: '0 0 20px rgba(0,0,0,0.1)',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            pageBreakAfter: 'always',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                    >
+                        {/* No scale needed for print as we use mm units in sizes or 100% container */}
+                        <div style={{
+                            width: isLandscape ? '297mm' : '210mm',
+                            height: isLandscape ? '210mm' : '297mm',
+                            transform: 'scale(1)', // Pure 1:1 for actual print
+                            transformOrigin: 'center center'
+                        }}>
+                            <ThemeRenderer
+                                themeId={event.theme}
+                                primaryColor={event.primary_color}
+                                rows={event.rows}
+                                columns={event.columns}
+                                orientation={event.orientation}
+                                eventTitle={event.event_title}
+                                cardData={card.data}
+                                cardNumber={card.card_index}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
 
             <style>{`
                 @media print {
-                    .no-print { display: none !important; }
+                    body {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: white !important;
+                    }
+                    .no-print {
+                        display: none !important;
+                    }
+                    .print-view-container {
+                        background: white !important;
+                        padding: 0 !important;
+                    }
+                    .printable-content {
+                        padding: 0 !important;
+                        gap: 0 !important;
+                    }
+                    .print-page {
+                        margin: 0 !important;
+                        box-shadow: none !important;
+                        width: ${isLandscape ? '297mm' : '210mm'} !important;
+                        height: ${isLandscape ? '210mm' : '297mm'} !important;
+                        page-break-after: always !important;
+                    }
+                    @page {
+                        size: A4 ${event.orientation};
+                        margin: 0;
+                    }
                 }
             `}</style>
         </div>

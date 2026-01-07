@@ -1,0 +1,73 @@
+.birthday-basic-header {
+    text-align: center;
+    margin-bottom: 25pt;
+    position: relative;
+    z-index: 1;
+}
+
+.birthday-basic-header h1 {
+    font-size: 42pt;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0;
+    letter-spacing: -1px;
+}
+
+.birthday-basic-header h2 {
+    font-size: 16pt;
+    color: #555;
+    margin: 5pt 0 0;
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: 5pt;
+}
+
+.birthday-cell {
+    border: 1pt solid #ddd;
+    background: #fff;
+    padding: 8px;
+    border-radius: 8pt;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.birthday-song {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #333;
+}
+
+.birthday-artist {
+    font-size: 10pt;
+    color: var(--primary);
+    margin-top: 5pt;
+    font-weight: 600;
+}
+
+.birthday-basic-decor .icon {
+    position: absolute;
+    font-size: 50pt;
+    opacity: 0.12;
+    z-index: 0;
+}
+
+.birthday-basic-decor .b1 {
+    top: 10%;
+    right: 10%;
+    transform: rotate(-20deg);
+}
+
+.birthday-basic-decor .b2 {
+    bottom: 15%;
+    left: 5%;
+    transform: rotate(15deg);
+}
+
+.birthday-basic-decor .b3 {
+    top: 40%;
+    left: 2%;
+    opacity: 0.08;
+}

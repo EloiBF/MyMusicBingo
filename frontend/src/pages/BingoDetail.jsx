@@ -9,7 +9,7 @@ import API_URLS from '../config/api';
 import PageLayout from '../components/PageLayout';
 import SplitLayout from '../components/SplitLayout';
 import ConfirmationModal from '../components/ConfirmationModal';
-import BingoPreview from '../components/BingoPreview';
+import BingoCardPreview from '../components/BingoCardPreview';
 
 const BingoDetail = () => {
     const { id } = useParams();
@@ -19,16 +19,21 @@ const BingoDetail = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [card, setCard] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [eventRes, statsRes] = await Promise.all([
+                const [eventRes, statsRes, cardsRes] = await Promise.all([
                     api.get(`/bingo/${id}/`),
-                    api.get(`/bingo/${id}/statistics/`)
+                    api.get(`/bingo/${id}/statistics/`),
+                    api.get(`/bingo/${id}/get_cards/`)
                 ]);
                 setEvent(eventRes.data);
                 setStats(statsRes.data);
+                if (cardsRes.data.length > 0) {
+                    setCard(cardsRes.data[0]);
+                }
             } catch (err) {
                 console.error('Error fetching bingo details:', err);
                 navigate('/dashboard');
@@ -134,22 +139,25 @@ const BingoDetail = () => {
             <SplitLayout
                 desktopColumns="minmax(0, 1fr) clamp(350px, 30vw, 450px)"
                 sidebar={
-                    <div style={{ 
-                        height: '100%', 
-                        display: 'flex', 
-                        flexDirection: 'column',
-                        marginLeft: 'auto',
-                        marginRight: '0'
+                    <div style={{
+                        background: 'white',
+                        borderRadius: 'var(--radius-xl)',
+                        boxShadow: 'var(--shadow-lg)',
+                        overflow: 'hidden',
+                        width: '100%',
+                        maxWidth: event.orientation === 'landscape' ? '100%' : '450px',
+                        margin: '0 auto',
+                        aspectRatio: event.orientation === 'landscape' ? '297/210' : '210/297'
                     }}>
-                        <BingoPreview
-                            theme={event.theme}
-                            primaryColor={event.primary_color}
-                            rows={event.rows}
-                            columns={event.columns}
-                            eventTitle={event.event_title}
-                            scale="auto"
-                            showFullscreen={false}
-                            containerStyle={{ flex: 1 }}
+                        <BingoCardPreview 
+                            event={event} 
+                            cardData={card?.data || []}
+                            isMini={false}
+                            containerStyle={{
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 'var(--radius-xl)'
+                            }}
                         />
                     </div>
                 }

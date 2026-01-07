@@ -1,62 +1,52 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef } from 'react';
 import API_URLS from '../config/api';
+import ThemeRenderer from './bingo/ThemeRenderer';
+import useA4Scale from '../hooks/useA4Scale';
 
 const BingoPreview = ({
     theme = 'classic',
     primaryColor = '#2c3e50',
     rows = 3,
     columns = 3,
+    orientation = 'portrait',
     eventTitle = 'Music Bingo',
+    cardData = [],
+    cardNumber = 1,
     scale = 'auto',
     showFullscreen = true,
     hideFooter = false,
+    isMini = false,
     padding = 12,
     containerStyle = {},
-    iframeStyle = {}
+    previewStyle = {}
 }) => {
     const containerRef = useRef(null);
-    const [previewScale, setPreviewScale] = React.useState(typeof scale === 'number' ? scale : 0.4);
+    const manualScale = typeof scale === 'number' ? scale : null;
+    const { scale: previewScale, a4Width, a4Height } = useA4Scale(containerRef, orientation, padding, manualScale);
 
-    useLayoutEffect(() => {
-        if (scale !== 'auto') {
-            setPreviewScale(scale);
-            return;
-        }
+    const isLandscape = orientation === 'landscape';
 
-        const updateScale = () => {
-            if (containerRef.current) {
-                const containerWidth = containerRef.current.offsetWidth;
-                // 794px is the A4 width in pixels at 96 DPI
-                // Subtract padding (x2 for both sides) and 2px for border from available width
-                const safeMargin = (padding * 2) + 2;
-                const newScale = Math.min((containerWidth - safeMargin) / 794, 1);
-                setPreviewScale(newScale > 0 ? newScale : 0.4);
-            }
-        };
-
-        const observer = new ResizeObserver(updateScale);
-        if (containerRef.current) {
-            observer.observe(containerRef.current);
-            updateScale(); // Initial calculation
-        }
-
-        return () => observer.disconnect();
-    }, [scale, padding]); // Add padding to dependencies
-
-    // Use a unique ID for the iframe to ensure it refreshes when vital params change
-    const params = `theme=${theme}&primary_color=${encodeURIComponent(primaryColor)}&rows=${rows}&columns=${columns}&preview=1&event_title=${encodeURIComponent(eventTitle)}`;
-    const previewUrl = API_URLS.BINGO_LIVE_PREVIEW(params);
+    // Mock data if cardData is empty (for live preview)
+    const displayData = cardData.length > 0 ? cardData : Array(rows * columns).fill({
+        nom: 'Song Title',
+        artista: 'Artist Name'
+    });
 
     const handleFullscreen = () => {
-        // Reuse live preview for fullscreen if we are in creation mode (no ID usually)
-        // Or if we strictly wanted the card preview, we'd need a different endpoint that accepts params.
-        // For now, using live preview is safest as it accepts params.
-        window.open(previewUrl, '_blank');
+        const params = new URLSearchParams({
+            theme,
+            orientation,
+            primary_color: primaryColor,
+            rows,
+            columns,
+            event_title: eventTitle
+        }).toString();
+        window.open(`/preview?${params}`, '_blank');
     };
 
     return (
-        <div style={{ width: '100%', ...containerStyle }}>
-            {showFullscreen && (
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', ...containerStyle }}>
+            {!isMini && showFullscreen && (
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -71,7 +61,7 @@ const BingoPreview = ({
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em'
                     }}>
-                        Live Preview
+                        Live Preview ({orientation})
                     </h3>
                     <button
                         onClick={handleFullscreen}
@@ -99,40 +89,40 @@ const BingoPreview = ({
                     padding: `${padding}px`,
                     background: 'white',
                     borderRadius: 'var(--radius-md)',
-                    aspectRatio: '210/297', // A4 aspect ratio
+                    aspectRatio: isLandscape ? '297/210' : '210/297',
                     overflow: 'hidden',
                     position: 'relative',
                     boxShadow: 'var(--shadow-xl)',
                     border: '1px solid var(--border)',
-                    ...iframeStyle
+                    width: '100%',
+                    ...previewStyle
                 }}
             >
                 <div style={{
-                    width: '794px',
-                    height: '1123px',
+                    width: `${a4Width}px`,
+                    height: `${a4Height}px`,
                     transform: `scale(${previewScale})`,
                     transformOrigin: 'top left',
-                    position: 'absolute',
-                    top: `${padding}px`,
-                    left: `${padding}px`,
-                    pointerEvents: 'none' // Prevent interaction with iframe
+                    position: isMini ? 'relative' : 'absolute',
+                    top: isMini ? 0 : `${padding}px`,
+                    left: isMini ? 0 : `${padding}px`,
+                    pointerEvents: 'none',
+                    background: 'white'
                 }}>
-                    <iframe
-                        key={params} // Force re-render on param change
-                        src={previewUrl}
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'block', // Prevent inline spacing issues
-                            border: 'none',
-                            background: 'white'
-                        }}
-                        title="Bingo Card Preview"
+                    <ThemeRenderer
+                        themeId={theme}
+                        primaryColor={primaryColor}
+                        rows={rows}
+                        columns={columns}
+                        orientation={orientation}
+                        eventTitle={eventTitle}
+                        cardData={displayData}
+                        cardNumber={cardNumber}
                     />
                 </div>
             </div>
 
-            {!hideFooter && (
+            {!hideFooter && !isMini && (
                 <p style={{
                     marginTop: '1rem',
                     fontSize: '0.75rem',

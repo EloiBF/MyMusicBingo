@@ -1,0 +1,131 @@
+.classic-header {
+    margin-bottom: 10mm;
+    padding: 10mm;
+    border: 1pt solid var(--primary);
+    position: relative;
+    background: white;
+    z-index: 1;
+    text-align: center;
+}
+
+.landscape .classic-header {
+    margin-bottom: 5mm;
+    padding: 5mm;
+}
+
+.classic-header::before {
+    content: '';
+    position: absolute;
+    top: 3pt;
+    left: 3pt;
+    right: 3pt;
+    bottom: 3pt;
+    border: 2pt solid var(--primary);
+}
+
+.classic-header h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 42pt;
+    color: var(--primary);
+    margin: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4pt;
+    white-space: nowrap;
+    position: relative;
+    display: inline-block;
+}
+
+.classic-header h1::before,
+.classic-header h1::after {
+    content: '🎼';
+    position: absolute;
+    font-size: 0.6em;
+    color: var(--primary);
+    opacity: 0.7;
+}
+
+.classic-header h1::before {
+    left: -1.2em;
+    top: 0;
+}
+
+.classic-header h1::after {
+    right: -1.2em;
+    top: 0;
+}
+
+.classic-header h2 {
+    font-size: 16pt;
+    color: #555;
+    margin: 10pt 0 0;
+    font-weight: 400;
+    letter-spacing: 2pt;
+    text-transform: uppercase;
+}
+
+.classic-cell {
+    border: 1.5pt solid #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    box-sizing: border-box;
+    background: white;
+    position: relative;
+    text-align: center;
+}
+
+.classic-cell::after {
+    content: '';
+    position: absolute;
+    top: 2pt;
+    left: 2pt;
+    right: 2pt;
+    bottom: 2pt;
+    border: 0.5pt solid #d1d1d1;
+}
+
+.classic-song {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.1;
+    margin-bottom: 2pt;
+    word-break: break-word;
+    z-index: 2;
+}
+
+.classic-artist {
+    font-family: 'Crimson Pro', serif;
+    font-size: 10pt;
+    color: var(--primary);
+    font-weight: 600;
+    font-style: italic;
+    z-index: 2;
+}
+
+/* Decorations */
+.classic-decor .note {
+    position: absolute;
+    font-size: 30pt;
+    color: var(--primary);
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.classic-decor .n1 {
+    top: 15%;
+    right: 10%;
+}
+
+.classic-decor .n2 {
+    bottom: 20%;
+    left: 5%;
+}
+
+.classic-decor .n3 {
+    top: 40%;
+    left: 2%;
+}

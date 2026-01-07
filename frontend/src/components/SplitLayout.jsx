@@ -15,7 +15,10 @@ const SplitLayout = ({
             }}
         >
             {/* Main Content Area */}
-            <div style={{ minWidth: 0 }}>
+            <div style={{
+                minWidth: 0,
+                order: reverseOnMobile ? 2 : 1
+            }}>
                 {children}
             </div>
 
@@ -23,7 +26,8 @@ const SplitLayout = ({
             <aside style={{
                 height: sidebarSticky ? 'fit-content' : '100%',
                 position: sidebarSticky ? 'sticky' : 'static',
-                top: sidebarSticky ? '8rem' : 'auto'
+                top: sidebarSticky ? '8rem' : 'auto',
+                order: reverseOnMobile ? 1 : 2
             }}>
                 {sidebar}
             </aside>

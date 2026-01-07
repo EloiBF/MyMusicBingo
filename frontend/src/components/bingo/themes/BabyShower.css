@@ -1,0 +1,72 @@
+.baby-shower-header {
+    text-align: center;
+    margin-bottom: 25pt;
+    position: relative;
+    z-index: 1;
+}
+
+.baby-shower-header h1 {
+    font-size: 42pt;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+}
+
+.baby-shower-header h2 {
+    font-size: 16pt;
+    color: #888;
+    margin: 5pt 0 0;
+    text-transform: uppercase;
+    font-weight: 300;
+    letter-spacing: 5pt;
+}
+
+.baby-cell {
+    border: 1.5pt solid #fce4ec;
+    background: #fff;
+    padding: 8px;
+    border-radius: 12pt;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.baby-song {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #444;
+}
+
+.baby-artist {
+    font-size: 10pt;
+    color: var(--primary);
+    margin-top: 4pt;
+    font-weight: 600;
+}
+
+.baby-shower-decor .icon {
+    position: absolute;
+    font-size: 60pt;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.baby-shower-decor .b1 {
+    top: 5%;
+    left: 5%;
+    transform: rotate(-10deg);
+}
+
+.baby-shower-decor .b2 {
+    bottom: 10%;
+    right: 10%;
+    transform: rotate(10deg);
+}
+
+.baby-shower-decor .b3 {
+    top: 15%;
+    right: 5%;
+    opacity: 0.05;
+}

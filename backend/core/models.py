@@ -32,6 +32,8 @@ class BingoEvent(models.Model):
     rows = models.PositiveIntegerField(default=3)
     columns = models.PositiveIntegerField(default=3)
     theme = models.CharField(max_length=50, default='classic')
+    orientation = models.CharField(max_length=10, default='portrait')
+    is_premium = models.BooleanField(default=False)
     primary_color = models.CharField(max_length=7, default='#3f51b5') # Hex color
     songs_per_card = models.PositiveIntegerField() # rows * columns
     

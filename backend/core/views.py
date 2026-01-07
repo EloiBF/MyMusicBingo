@@ -223,6 +223,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         rows = int(request.data.get('rows', 3))
         columns = int(request.data.get('columns', 3))
         theme = request.data.get('theme', 'classic')
+        orientation = request.data.get('orientation', 'portrait')
         primary_color = request.data.get('primary_color', '#3f51b5')
         
         # Spotify credentials (if private)
@@ -240,6 +241,9 @@ class BingoViewSet(viewsets.ModelViewSet):
             if not tracks:
                 return Response({"error": "No tracks found in playlist."}, status=400)
             
+            # Determine if premium
+            is_premium = theme not in ['classic', 'modern'] and not theme.endswith('_basic')
+
             # Create the event
             event = BingoEvent.objects.create(
                 user=request.user,
@@ -250,6 +254,8 @@ class BingoViewSet(viewsets.ModelViewSet):
                 rows=rows,
                 columns=columns,
                 theme=theme,
+                orientation=orientation,
+                is_premium=is_premium,
                 primary_color=primary_color
             )
             
@@ -344,90 +350,24 @@ class BingoViewSet(viewsets.ModelViewSet):
         serializer = BingoCardSerializer(cards, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
-    def live_preview(self, request):
-        theme = request.query_params.get('theme', 'classic')
-        color = request.query_params.get('primary_color', '#3f51b5')
-        rows = int(request.query_params.get('rows', 3))
-        cols = int(request.query_params.get('columns', 3))
-        is_preview = request.query_params.get('preview') == '1'
-        event_title = request.query_params.get('event_title', 'Disco Night 2025')
-        
-        # Simple data for preview
-        dummy_data = []
-        for i in range(rows * cols):
-            dummy_data.append({"nom": f"Song {i+1}", "artista": f"Artist {i+1}"})
-        
-        # Use a simple class for template compatibility
-        class MockObj:
-            def __init__(self, **kwargs):
-                for k, v in kwargs.items():
-                    setattr(self, k, v)
-        
-        mock_event = MockObj(
-            theme=theme,
-            primary_color=color,
-            rows=rows,
-            columns=cols,
-            event_title=event_title
-        )
-        
-        mock_card = MockObj(
-            data=dummy_data,
-            card_index=1
-        )
-        
-        html = self._generate_card_html(mock_event, mock_card, standalone=True, is_preview=is_preview)
-        return HttpResponse(html, content_type='text/html')
-
-    @action(detail=True, methods=['get'], permission_classes=[permissions.IsAuthenticated])
-    def preview_card(self, request, pk=None):
-        # Use BingoEvent.objects directly to bypass filtered get_queryset if needed, 
-        # but get_queryset now handles it.
-        event = self.get_object()
-        card = event.cards.first()
-        if not card:
-            return Response({"error": "No cards found"}, status=404)
-        
-        is_preview = request.query_params.get('preview') == '1'
-        # We generate a standalone HTML for preview (no banner, single card)
-        html = self._generate_card_html(event, card, standalone=True, is_preview=is_preview)
-        return HttpResponse(html, content_type='text/html')
-
     @action(detail=True, methods=['get'])
-    def printable_html(self, request, pk=None):
+    def printable_data(self, request, pk=None):
+        """Returns JSON data needed for the frontend to render the printable set."""
         event = self.get_object()
         cards = event.cards.all().order_by('card_index')
         
-        html_content = self._generate_printable_html(event, cards)
-        return HttpResponse(html_content, content_type='text/html')
-
-    def _generate_card_html(self, event, card, standalone=True, is_preview=False):
-        """Generates HTML for a single card using Django templates."""
-        template_name = f"bingo/{event.theme}.html"
-        # Fallback to classic if template doesn't exist
-        try:
-            return render_to_string(template_name, {
-                'event': event,
-                'card': card,
-                'color': event.primary_color,
-                'is_preview': is_preview
-            })
-        except Exception as e:
-            return render_to_string("bingo/classic.html", {
-                'event': event,
-                'card': card,
-                'color': event.primary_color,
-                'is_preview': is_preview
-            })
-
-    def _generate_printable_html(self, event, cards):
-        """Generates the full printable set using templates."""
-        return render_to_string('bingo/printable.html', {
-            'event': event,
-            'cards': cards,
-            'now': timezone.now()
+        serializer = BingoEventSerializer(event)
+        cards_serializer = BingoCardSerializer(cards, many=True)
+        
+        return Response({
+            "event": serializer.data,
+            "cards": cards_serializer.data
         })
+
+    @action(detail=True, methods=['get'])
+    def printable_html(self, request, pk=None):
+        """Deprecated: Use printable_data instead."""
+        return Response({"error": "This endpoint is deprecated. Use /printable_data/ for JSON data."}, status=410)
         
     @action(detail=True, methods=['get'])
     def songs(self, request, pk=None):

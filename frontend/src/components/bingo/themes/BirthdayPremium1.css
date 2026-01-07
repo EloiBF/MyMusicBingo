@@ -1,0 +1,89 @@
+.birthday-p1-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--primary) 0%, #fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.birthday-p1-header h1 {
+    font-size: 44pt;
+    font-weight: 900;
+    margin: 0;
+    background: linear-gradient(to right, var(--primary), #ff00de);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.birthday-p1-header h2 {
+    font-size: 16pt;
+    color: #444;
+    margin-top: 5px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    -webkit-text-fill-color: #444;
+    /* Reset clip */
+}
+
+.celebration-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 8pt;
+    font-weight: 900;
+    margin-bottom: 10px;
+    -webkit-text-fill-color: white;
+}
+
+.birthday-p1-cell {
+    border: 2pt solid #eee;
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.birthday-p1-song {
+    font-size: 11.5pt;
+    font-weight: 800;
+    color: #222;
+}
+
+.birthday-p1-artist {
+    font-size: 9pt;
+    color: var(--primary);
+    margin-top: 4pt;
+    font-weight: 600;
+}
+
+.birthday-p1-decor .sparkle {
+    position: absolute;
+    font-size: 40pt;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.birthday-p1-decor .s1 {
+    top: 10%;
+    left: 5%;
+}
+
+.birthday-p1-decor .s2 {
+    bottom: 10%;
+    right: 5%;
+}
+
+.birthday-p1-decor .s3 {
+    top: 40%;
+    right: 10%;
+    opacity: 0.1;
+}

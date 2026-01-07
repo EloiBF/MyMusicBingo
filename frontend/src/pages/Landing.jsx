@@ -8,7 +8,7 @@ import {
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import API_URLS from '../config/api';
-import BingoPreview from '../components/BingoPreview';
+import BingoCardPreview from '../components/BingoCardPreview';
 
 const STACKED_STYLES = `
     .stacked-cards-wrapper {
@@ -26,11 +26,14 @@ const STACKED_STYLES = `
         width: 100%; height: 100%;
         transition: var(--transition);
         border-radius: var(--radius-md);
-        /* No background or overflow needed as BingoPreview handles it, 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* No background or overflow needed as BingoCardPreview handles it, 
            but keep relative positioning context just in case */
     }
     @media (max-width: 480px) {
-        .stacked-cards-wrapper { max-width: 260px; }
+        .stacked-cards-wrapper { max-width: 280px; }
     }
 `;
 
@@ -255,71 +258,114 @@ const TestimonialCard = ({ name, text, rating }) => (
     </div>
 );
 
+const SAMPLE_DATA = [
+    { name: "Shape of You", artist: "Ed Sheeran" },
+    { name: "Blinding Lights", artist: "The Weeknd" },
+    { name: "Flowers", artist: "Miley Cyrus" },
+    { name: "Stay", artist: "The Kid LAROI" },
+    { name: "Cruel Summer", artist: "Taylor Swift" },
+    { name: "As It Was", artist: "Harry Styles" },
+    { name: "Levitating", artist: "Dua Lipa" },
+    { name: "Anti-Hero", artist: "Taylor Swift" },
+    { name: "Bad Guy", artist: "Billie Eilish" }
+];
+
+const FEATURED_THEMES = [
+    {
+        id: 'retro',
+        color: '#FF3CAC',
+        title: 'Retro Party'
+    },
+    {
+        id: 'birthday_premium_2',
+        color: '#D4AF37',
+        title: 'Luxury Night'
+    },
+    {
+        id: 'party_premium_1',
+        color: '#00f3ff',
+        title: 'Glow Bingo'
+    }
+];
+
 const StackedBingoCards = () => {
     return (
         <div className="stacked-cards-wrapper">
-            {/* 1. Retro (Background) */}
+            {/* 1. Background Card */}
             <div className="card-item" style={{
-                transform: 'rotate(-10deg) translateX(-18%) translateY(5%)',
-                border: 'none',
-                background: 'transparent',
-                boxShadow: 'none',
+                transform: 'rotate(-8deg) translateX(-15%) translateY(3%)',
                 zIndex: 1
             }}>
-                <BingoPreview
-                    theme="retro"
-                    primaryColor="var(--bingo-retro)"
-                    rows={3}
-                    columns={3}
-                    eventTitle="Retro Bingo"
-                    scale="auto"
-                    showFullscreen={false}
-                    hideFooter={true}
-                    padding={0}
-                    iframeStyle={{ border: '1px solid var(--gray-700)' }}
+                <BingoCardPreview
+                    event={{
+                        theme: FEATURED_THEMES[0].id,
+                        primary_color: FEATURED_THEMES[0].color,
+                        rows: 3,
+                        columns: 3,
+                        orientation: 'portrait',
+                        event_title: FEATURED_THEMES[0].title
+                    }}
+                    cardData={SAMPLE_DATA}
+                    isMini={false}
+                    containerStyle={{
+                        width: '100%',
+                        height: '100%',
+                        border: '2px solid #333',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        borderRadius: '8px'
+                    }}
                 />
             </div>
 
-            {/* 2. Wedding (Middle) */}
+            {/* 2. Middle Card */}
             <div className="card-item" style={{
-                transform: 'rotate(8deg) translateX(15%) translateY(-2%)',
-                border: 'none',
-                background: 'transparent',
-                boxShadow: 'none',
+                transform: 'rotate(6deg) translateX(12%) translateY(-1%)',
                 zIndex: 2
             }}>
-                <BingoPreview
-                    theme="wedding"
-                    primaryColor="var(--bingo-wedding)"
-                    rows={3}
-                    columns={3}
-                    eventTitle="Wedding Bingo"
-                    scale="auto"
-                    showFullscreen={false}
-                    hideFooter={true}
-                    padding={0}
+                <BingoCardPreview
+                    event={{
+                        theme: FEATURED_THEMES[1].id,
+                        primary_color: FEATURED_THEMES[1].color,
+                        rows: 3,
+                        columns: 3,
+                        orientation: 'portrait',
+                        event_title: FEATURED_THEMES[1].title
+                    }}
+                    cardData={SAMPLE_DATA}
+                    isMini={false}
+                    containerStyle={{
+                        width: '100%',
+                        height: '100%',
+                        border: '2px solid #444',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        borderRadius: '8px'
+                    }}
                 />
             </div>
 
-            {/* 3. Classic (Front) */}
+            {/* 3. Front Card */}
             <div className="card-item" style={{
-                transform: 'rotate(-2deg)',
-                border: 'none',
-                background: 'transparent',
-                boxShadow: 'none',
+                transform: 'rotate(-1deg) translateY(-2%)',
                 zIndex: 3
             }}>
-                <BingoPreview
-                    theme="classic"
-                    primaryColor="var(--bingo-classic)"
-                    rows={3}
-                    columns={3}
-                    eventTitle="Classic Bingo"
-                    scale="auto"
-                    showFullscreen={false}
-                    hideFooter={true}
-                    padding={0}
-                    iframeStyle={{ border: '1px solid var(--gray-600)' }}
+                <BingoCardPreview
+                    event={{
+                        theme: FEATURED_THEMES[2].id,
+                        primary_color: FEATURED_THEMES[2].color,
+                        rows: 3,
+                        columns: 3,
+                        orientation: 'portrait',
+                        event_title: FEATURED_THEMES[2].title
+                    }}
+                    cardData={SAMPLE_DATA}
+                    isMini={false}
+                    containerStyle={{
+                        width: '100%',
+                        height: '100%',
+                        border: '2px solid #555',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        borderRadius: '8px'
+                    }}
                 />
             </div>
         </div>

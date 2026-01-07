@@ -14,6 +14,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Layout from './components/Layout';
 
 import AuthCallback from './pages/AuthCallback';
+import LivePreview from './pages/LivePreview';
 
 const ProtectedRoute = ({ children, withLayout = true }) => {
   const token = localStorage.getItem('token');
@@ -88,6 +89,7 @@ function App() {
         />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/preview" element={<LivePreview />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
