@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import API_URLS from '../config/api';
 import BingoCardPreview from '../components/BingoCardPreview';
+import { blogArticles } from '../data/blogLoader';
 
 const STACKED_STYLES = `
     .stacked-cards-wrapper {
@@ -187,6 +188,47 @@ const Landing = () => {
                     </div>
                 </section>
 
+                {/* Blog Section */}
+                <section className="container" style={{ padding: 'clamp(3rem, 6vw, 6rem) 1rem' }}>
+                    <SectionHeader title="Latest from Blog" subtitle="Tips, tricks, and inspiration for amazing music bingo events" />
+                    <div className="grid-auto-fit" style={{ marginBottom: '2rem' }}>
+                        {blogArticles.slice(0, 3).map(article => (
+                            <article key={article.id} className="glass glass-hover" style={{ cursor: 'pointer' }} onClick={() => navigate(`/blog/${article.id}`)}>
+                                <div style={{ height: '200px', borderRadius: 'var(--radius-md)', overflow: 'hidden', marginBottom: '1rem', position: 'relative' }}>
+                                    <img
+                                        src={article.featuredImage}
+                                        alt={article.title}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                    <div style={{ position: 'absolute', top: '1rem', left: '1rem' }}>
+                                        <span className="btn btn-primary" style={{ fontSize: '0.8rem', padding: '0.5rem 1rem' }}>
+                                            {article.category}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style={{ padding: '1.5rem' }}>
+                                    <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.75rem', color: 'var(--text)' }}>
+                                        {article.title}
+                                    </h3>
+                                    <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: '1.6' }}>
+                                        {article.excerpt}
+                                    </p>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>{article.readTime}</span>
+                                        <ArrowRight size={16} style={{ color: 'var(--primary)' }} />
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                        <button onClick={() => navigate('/blog')} className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
+                            View All Articles
+                            <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
+                        </button>
+                    </div>
+                </section>
+
             </main>
             <Footer />
         </div>
@@ -272,19 +314,19 @@ const SAMPLE_DATA = [
 
 const FEATURED_THEMES = [
     {
-        id: 'retro',
-        color: '#FF3CAC',
+        id: 'party_classic',
+        color: '#dacb4aff',
+        title: 'Party Classic'
+    },
+    {
+        id: 'birthday_premium',
+        color: '#000000ff',
         title: 'Retro Party'
     },
     {
-        id: 'birthday_premium_2',
-        color: '#D4AF37',
+        id: 'party_premium',
+        color: '#71aaffff',
         title: 'Luxury Night'
-    },
-    {
-        id: 'party_premium_1',
-        color: '#00f3ff',
-        title: 'Glow Bingo'
     }
 ];
 

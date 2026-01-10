@@ -10,6 +10,9 @@ import SongTrackingPage from './pages/SongTrackingPage';
 import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Blog from './pages/Blog';
+import BlogArticle from './pages/BlogArticle';
+import ArticleCreator from './components/ArticleCreator';
 
 import Layout from './components/Layout';
 
@@ -89,6 +92,9 @@ function App() {
         />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogArticle />} />
+        <Route path="/create-article" element={<ArticleCreator />} />
         <Route path="/preview" element={<LivePreview />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-    Music, Menu, X, Home, PlusCircle, Settings, LogOut, User
+    Music, Menu, X, Home, PlusCircle, Settings, LogOut, User, BookOpen
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api';
@@ -57,6 +57,7 @@ const Navbar = () => {
     const navLinks = [
         { icon: <Home size={20} />, label: 'Dashboard', path: '/dashboard' },
         { icon: <PlusCircle size={20} />, label: 'Create New', path: '/create' },
+        { icon: <BookOpen size={20} />, label: 'Blog', path: '/blog', debug: true },
         { icon: <Settings size={20} />, label: 'Settings', path: '/settings' }
     ];
 
@@ -120,7 +121,12 @@ const Navbar = () => {
                                 {navLinks.map((link) => (
                                     <button
                                         key={link.path}
-                                        onClick={() => navigate(link.path)}
+                                        onClick={() => {
+                                            if (link.debug) {
+                                                console.log('Blog nav link clicked!');
+                                            }
+                                            navigate(link.path);
+                                        }}
                                         className={`nav-link ${isActive(link.path) ? 'active' : ''}`}
                                         style={{
                                             padding: '0.5rem 1rem',
@@ -133,7 +139,9 @@ const Navbar = () => {
                                             fontWeight: '500',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            gap: '0.5rem'
+                                            gap: '0.5rem',
+                                            position: 'relative',
+                                            zIndex: 1001
                                         }}
                                     >
                                         {link.icon}
@@ -195,6 +203,25 @@ const Navbar = () => {
                             gap: '1rem',
                             minHeight: '48px' // Match authenticated height
                         }}>
+                            <button 
+                                onClick={() => {
+                                    console.log('Blog button clicked!');
+                                    navigate('/blog');
+                                }} 
+                                className="btn btn-secondary" 
+                                style={{ 
+                                    background: 'transparent', 
+                                    border: 'none',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    cursor: 'pointer',
+                                    zIndex: 1001
+                                }}
+                            >
+                                <BookOpen size={18} />
+                                <span>Blog</span>
+                            </button>
                             <button onClick={() => navigate('/auth')} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>Login</button>
                             <button onClick={() => navigate('/auth')} className="btn btn-primary join-button">Join Now</button>
                         </div>
@@ -291,7 +318,12 @@ const Navbar = () => {
                                     {navLinks.map((link) => (
                                         <button
                                             key={link.path}
-                                            onClick={() => navigate(link.path)}
+                                            onClick={() => {
+                                                if (link.debug) {
+                                                    console.log('Mobile authenticated blog button clicked!');
+                                                }
+                                                navigate(link.path);
+                                            }}
                                             className={`mobile-nav-link ${isActive(link.path) ? 'active' : ''}`}
                                             style={{
                                                 padding: '1rem',
@@ -357,6 +389,26 @@ const Navbar = () => {
                                 </p>
                                 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <button
+                                        onClick={() => {
+                                            console.log('Mobile blog button clicked!');
+                                            navigate('/blog');
+                                        }}
+                                        className="btn btn-secondary"
+                                        style={{
+                                            width: '100%',
+                                            justifyContent: 'center',
+                                            background: 'transparent',
+                                            border: '1px solid var(--glass-border)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        <BookOpen size={18} />
+                                        Blog
+                                    </button>
                                     <button
                                         onClick={() => navigate('/auth')}
                                         className="btn btn-primary"

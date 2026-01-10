@@ -1,0 +1,43 @@
+{
+  "id": "seasonal-music-bingo-guide",
+  "title": "Seasonal Music Bingo: Holiday & Event Themes",
+  "excerpt": "Create memorable music bingo events for every season with these themed playlists and decorating ideas.",
+  "author": "Event Planning Team",
+  "publishDate": "2024-01-18",
+  "readTime": "6 min read",
+  "category": "Themes",
+  "tags": [
+    "seasonal",
+    "holidays",
+    "themes",
+    "playlists"
+  ],
+  "featuredImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=400&fit=crop",
+  "template": "image-text",
+  "content": {
+    "sections": [
+      {
+        "type": "image",
+        "src": "https://images.unsplash.com/photo-1482575832494-771f74bf6857?w=800&h=400&fit=crop",
+        "alt": "Holiday music bingo setup",
+        "caption": "Transform your space for seasonal celebrations"
+      },
+      {
+        "type": "text",
+        "title": "Why Seasonal Themes Matter",
+        "content": "Seasonal music bingo events create lasting memories and bring people together in meaningful ways. Whether it's a summer party, winter holiday gathering, or spring celebration, the right theme elevates the entire experience.\n\nThemed events show attention to detail and create Instagram-worthy moments that participants will share long after the event ends."
+      },
+      {
+        "type": "image",
+        "src": "https://images.unsplash.com/photo-1464047736614-af63643285bf?w=800&h=400&fit=crop",
+        "alt": "Seasonal decorations",
+        "caption": "Simple decorations can transform any space"
+      },
+      {
+        "type": "text",
+        "title": "Popular Seasonal Themes",
+        "content": "**Winter Wonderland**: Holiday classics and cozy winter songs\n**Summer Vibes**: Beach tunes and upbeat summer hits\n**Spring Fling**: Fresh, energetic songs for new beginnings\n**Fall Festival**: Autumn favorites and nostalgic tracks\n**Halloween Spooktacular**: Thriller theme and spooky songs\n**Valentine's Romance**: Love songs and romantic duets"
+      }
+    ]
+  }
+}

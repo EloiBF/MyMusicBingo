@@ -1,0 +1,41 @@
+{
+  "id": "playlist-mastery-techniques",
+  "title": "Playlist Mastery: Building the Perfect Music Bingo Sets",
+  "excerpt": "Learn the art of crafting playlists that keep players engaged and make every round exciting.",
+  "author": "DJ & Music Curator",
+  "publishDate": "2024-01-16",
+  "readTime": "8 min read",
+  "category": "Playlists",
+  "tags": [
+    "playlists",
+    "curation",
+    "techniques",
+    "music-theory"
+  ],
+  "featuredImage": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=400&fit=crop",
+  "template": "text-heavy",
+  "content": {
+    "sections": [
+      {
+        "type": "text",
+        "title": "The Science of Great Playlists",
+        "content": "Creating the perfect music bingo playlist is both an art and a science. It's not just about picking popular songs - it's about crafting an emotional journey that keeps participants engaged from start to finish.\n\nA great playlist balances familiarity with discovery, energy levels, and crowd appeal. Think of yourself as a storyteller, with each song building on the last to create a cohesive experience."
+      },
+      {
+        "type": "text",
+        "title": "Understanding Your Audience",
+        "content": "Before building any playlist, consider:\n\n• **Age Range**: Include songs from different decades to include everyone\n• **Cultural Background**: Diverse genres appeal to mixed crowds\n• **Event Purpose**: High-energy for parties, mellow for networking\n• **Time of Day**: Evening events need different energy than afternoon gatherings\n• **Group Size**: Smaller groups allow more niche selections"
+      },
+      {
+        "type": "text",
+        "title": "The Golden Ratio Formula",
+        "content": "Professional playlist curators use this proven formula:\n\n• **60% Familiar Hits**: Songs everyone knows and loves\n• **25% Nostalgia**: Throwbacks that create emotional connections\n• **10% Recent Releases**: Current popular tracks\n• **5% Surprise Elements**: Unexpected songs that delight\n\nThis formula ensures engagement while maintaining comfort and discovery."
+      },
+      {
+        "type": "text",
+        "title": "Technical Considerations",
+        "content": "Don't let technical issues ruin your perfect playlist:\n\n• **Audio Quality**: Use high-quality files (320kbps or better)\n• **Volume Consistency**: Normalize audio levels across all tracks\n• **Transitions**: Consider how songs flow into each other\n• **Backup Systems**: Have offline copies and alternative devices ready\n• **Testing**: Always do a full soundcheck before guests arrive"
+      }
+    ]
+  }
+}

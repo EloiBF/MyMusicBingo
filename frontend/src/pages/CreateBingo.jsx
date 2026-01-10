@@ -10,13 +10,14 @@ import API_URLS from '../config/api';
 import PageLayout from '../components/PageLayout';
 import BingoCardPreview from '../components/BingoCardPreview';
 import SplitLayout from '../components/SplitLayout';
+import { getAvailableThemes } from '../utils/themeLoader';
 
 const CreateBingo = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
 
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(isEditMode ? 3 : 1);
     const totalSteps = 3;
 
     const [config, setConfig] = useState({
@@ -25,9 +26,9 @@ const CreateBingo = () => {
         numCards: 20,
         rows: 3,
         columns: 3,
-        theme: 'birthday_basic', // Classic has been over-used, let's pick a fresh default for preview
+        theme: 'birthday_classic', // Fixed: was birthday_basic
         orientation: 'portrait',
-        primary_color: 'var(--primary)'
+        primary_color: 'default' // Default: use theme's predefined color
     });
 
     const [loading, setLoading] = useState(false);
@@ -90,60 +91,27 @@ const CreateBingo = () => {
         'var(--bingo-indigo)': '#6366f1'
     };
 
-    const getColorValue = (color) => colorMap[color] || color;
+    // Theme default colors
+    const themeDefaultColors = {
+        'birthday_classic': '#ff6b9d',
+        'birthday_premium': '#d946ef',
+        'wedding_classic': '#849b87',
+        'wedding_premium': '#C5A059',
+        'party_classic': '#ec4899',
+        'party_premium': '#8b5cf6',
+        'corporate_classic': '#475569',
+        'corporate_premium': '#0ea5e9'
+    };
 
-    const categorizedThemes = [
-        {
-            category: 'Essentials',
-            options: [
-                { id: 'classic', label: 'Classic', tier: 'Basic' },
-                { id: 'modern', label: 'Modern', tier: 'Premium I' },
-                { id: 'retro', label: 'Retro', tier: 'Premium II' },
-            ]
-        },
-        {
-            category: 'Party',
-            options: [
-                { id: 'party_basic', label: 'Party Basic', tier: 'Basic' },
-                { id: 'party_premium_1', label: 'Neon Night', tier: 'Premium I' },
-                { id: 'party_premium_2', label: 'Electro Dance', tier: 'Premium II' },
-            ]
-        },
-        {
-            category: 'Birthday',
-            options: [
-                { id: 'birthday_basic', label: 'Birthday Basic', tier: 'Basic' },
-                { id: 'birthday_premium_1', label: 'Festive Glamour', tier: 'Premium I' },
-                { id: 'birthday_premium_2', label: 'Luxury Bash', tier: 'Premium II' },
-            ]
-        },
-        {
-            category: 'Wedding',
-            options: [
-                { id: 'wedding_basic', label: 'Wedding Basic', tier: 'Basic' },
-                { id: 'wedding_premium_1', label: 'Royal Ceremony', tier: 'Premium I' },
-                { id: 'wedding_premium_2', label: 'Floral Extravaganza', tier: 'Premium II' },
-            ]
-        },
-        {
-            category: 'Corporate',
-            options: [
-                { id: 'corporate_basic', label: 'Corporate Basic', tier: 'Basic' },
-                { id: 'corporate_premium_1', label: 'Executive Suite', tier: 'Premium I' },
-                { id: 'corporate_premium_2', label: 'Global Summit', tier: 'Premium II' },
-            ]
-        },
-        {
-            category: 'Specials',
-            options: [
-                { id: 'baby_shower', label: 'Baby Shower', tier: 'Premium I' },
-                { id: 'christmas', label: 'Christmas', tier: 'Premium II' },
-                { id: 'graduation', label: 'Graduation', tier: 'Premium I' },
-            ]
+    const getColorValue = (color, theme = null) => {
+        if (color === 'default' && theme) {
+            return themeDefaultColors[theme] || '#8b5cf6';
         }
-    ];
+        return colorMap[color] || color;
+    };
 
-    const allThemes = categorizedThemes.flatMap(cat => cat.options);
+    // Load available themes dynamically
+    const { categorizedThemes, allThemes } = getAvailableThemes();
 
     const fetchUserPlaylists = async () => {
         setParamLoading(true);
@@ -190,7 +158,7 @@ const CreateBingo = () => {
                 columns: config.columns,
                 theme: config.theme,
                 orientation: config.orientation,
-                primary_color: config.primary_color
+                primary_color: getColorValue(config.primary_color, config.theme)
             };
             if (isEditMode) {
                 response = await api.put(`/bingo/${id}/`, payload);
@@ -259,7 +227,7 @@ const CreateBingo = () => {
                         <BingoCardPreview
                             event={{
                                 theme: config.theme,
-                                primary_color: config.primary_color,
+                                primary_color: config.primary_color === 'default' ? null : getColorValue(config.primary_color),
                                 rows: config.rows,
                                 columns: config.columns,
                                 orientation: config.orientation,
@@ -399,6 +367,29 @@ const CreateBingo = () => {
                                         <div style={{ marginBottom: '1.25rem' }}>
                                             <label className="label-bold-mini">Choose your color</label>
                                             <div className="color-grid-mini">
+                                                {/* Default Option */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setConfig({ ...config, primary_color: 'default' })}
+                                                    style={{
+                                                        background: config.primary_color === 'default'
+                                                            ? `linear-gradient(135deg, ${themeDefaultColors[config.theme] || '#8b5cf6'} 0%, ${themeDefaultColors[config.theme] || '#8b5cf6'} 100%)`
+                                                            : 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
+                                                        position: 'relative',
+                                                        overflow: 'hidden',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center'
+                                                    }}
+                                                    className={`dot-mini ${config.primary_color === 'default' ? 'selected' : ''}`}
+                                                    title="Default (Theme Color)"
+                                                >
+                                                    {config.primary_color === 'default' ? (
+                                                        <span style={{ fontSize: '12px', color: 'white', fontWeight: 'bold' }}>✓</span>
+                                                    ) : (
+                                                        <span style={{ fontSize: '14px', color: '#64748b', fontWeight: 'bold' }}>∅</span>
+                                                    )}
+                                                </button>
                                                 {['var(--primary)', 'var(--bingo-cyan)', 'var(--bingo-emerald)', 'var(--bingo-amber)', 'var(--bingo-pink)', 'var(--bingo-indigo)'].map(color => (
                                                     <button
                                                         key={color}
@@ -409,8 +400,12 @@ const CreateBingo = () => {
                                                     />
                                                 ))}
                                                 <div className="custom-wrapper-mini">
-                                                    <input type="color" value={config.primary_color.startsWith('var(') ? '#8b5cf6' : config.primary_color} onChange={(e) => setConfig({ ...config, primary_color: e.target.value })} />
-                                                    <div className="wheel-mini" style={{ background: getColorValue(config.primary_color) }} />
+                                                    <input 
+                                                        type="color" 
+                                                        value={config.primary_color === 'default' || config.primary_color.startsWith('var(') ? '#8b5cf6' : config.primary_color} 
+                                                        onChange={(e) => setConfig({ ...config, primary_color: e.target.value })} 
+                                                    />
+                                                    <div className="wheel-mini" style={{ background: config.primary_color === 'default' ? themeDefaultColors[config.theme] : getColorValue(config.primary_color) }} />
                                                 </div>
                                             </div>
                                         </div>
@@ -427,7 +422,7 @@ const CreateBingo = () => {
                                                                         <BingoCardPreview
                                                                             event={{
                                                                                 theme: t.id,
-                                                                                primary_color: config.primary_color,
+                                                                                primary_color: null, // Always show theme default in mini previews
                                                                                 rows: 3,
                                                                                 columns: 3,
                                                                                 orientation: 'portrait',

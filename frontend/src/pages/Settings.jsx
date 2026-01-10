@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
-    User, Mail, Settings as SettingsIcon, Link2, Link2Off, LogOut, CheckCircle2, AlertCircle, Music, Lock, Eye, EyeOff
+    User, Mail, Settings as SettingsIcon, LogOut, CheckCircle2, AlertCircle, Lock, Eye, EyeOff
 } from 'lucide-react';
 import api from '../api';
 import PageLayout from '../components/PageLayout';
@@ -12,7 +12,6 @@ const Settings = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [syncing, setSyncing] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
     const [passwordData, setPasswordData] = useState({
         old_password: '',
@@ -41,15 +40,6 @@ const Settings = () => {
 
     useEffect(() => {
         fetchUser();
-
-        const linked = searchParams.get('spotify_linked');
-        if (linked === 'true') {
-            setMessage({ text: 'Spotify account linked successfully!', type: 'success' });
-        }
-        const error = searchParams.get('error');
-        if (error) {
-            setMessage({ text: `Failed to link Spotify: ${error}`, type: 'error' });
-        }
     }, [searchParams]);
 
     const fetchUser = async () => {
@@ -62,45 +52,6 @@ const Settings = () => {
             setMessage({ text: 'Failed to load user profile.', type: 'error' });
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleLinkSpotify = async () => {
-        setSyncing(true);
-        try {
-            const response = await api.get('/auth/spotify/login/');
-            if (response.data.url) {
-                window.location.href = response.data.url;
-            }
-        } catch (err) {
-            setMessage({ text: 'Could not connect to Spotify auth.', type: 'error' });
-            setSyncing(false);
-        }
-    };
-
-    const confirmUnlinkSpotify = () => {
-        setModalConfig({
-            isOpen: true,
-            title: 'Unlink Spotify Account?',
-            message: 'Are you sure you want to unlink your Spotify account? You will lose access to your private playlists and easy music importing.',
-            confirmText: 'Unlink Account',
-            confirmColor: 'var(--error)',
-            icon: <Link2Off size={44} color="var(--error)" />,
-            onConfirm: handleUnlinkSpotify
-        });
-    };
-
-    const handleUnlinkSpotify = async () => {
-        setSyncing(true);
-        try {
-            await api.post('/auth/unlink_spotify/');
-            await fetchUser();
-            setMessage({ text: 'Spotify account unlinked.', type: 'info' });
-        } catch (err) {
-            setMessage({ text: 'Failed to unlink account.', type: 'error' });
-        } finally {
-            setSyncing(false);
-            closeModal();
         }
     };
 
@@ -160,7 +111,7 @@ const Settings = () => {
     return (
         <PageLayout
             title="Account Settings"
-            subtitle="Manage your profile and external integrations."
+            subtitle="Manage your profile and security settings."
             icon={<SettingsIcon size={32} />}
         >
             <ConfirmationModal
@@ -172,7 +123,7 @@ const Settings = () => {
                 confirmText={modalConfig.confirmText}
                 confirmColor={modalConfig.confirmColor}
                 icon={modalConfig.icon}
-                isLoading={syncing}
+                isLoading={false}
             />
 
             {message.text && (
@@ -216,67 +167,6 @@ const Settings = () => {
                                 <span>{user.email}</span>
                             </div>
                         </div>
-                    </div>
-                </section>
-
-                {/* Integrations Section */}
-                <section className="glass" style={{ padding: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Integrations</h2>
-
-                    <div style={{
-                        background: 'rgba(29, 185, 84, 0.05)',
-                        border: '1px solid rgba(29, 185, 84, 0.1)',
-                        borderRadius: '1rem',
-                        padding: '1.5rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: '1.5rem'
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{
-                                width: '48px', height: '48px',
-                                background: 'var(--spotify-green)',
-                                borderRadius: '50%',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                boxShadow: '0 4px 15px rgba(29, 185, 84, 0.3)'
-                            }}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Spotify Integration</h3>
-                                <p style={{ margin: 0, fontSize: '0.85rem', color: user.is_spotify_linked ? 'var(--spotify-green)' : 'var(--text-muted)' }}>
-                                    {user.is_spotify_linked ? (
-                                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><CheckCircle2 size={12} /> Account Linked</span>
-                                    ) : (
-                                        'Not connected'
-                                    )}
-                                </p>
-                            </div>
-                        </div>
-
-                        {user.is_spotify_linked ? (
-                            <button
-                                onClick={confirmUnlinkSpotify}
-                                disabled={syncing}
-                                className="btn btn-secondary"
-                                style={{ borderRadius: '0.75rem', gap: '0.5rem', borderColor: 'var(--error)', color: 'var(--error)' }}
-                            >
-                                <Link2Off size={18} /> Unlink Spotify
-                            </button>
-                        ) : (
-                            <button
-                                onClick={handleLinkSpotify}
-                                disabled={syncing}
-                                className="btn btn-primary"
-                                style={{ background: 'var(--spotify-green)', border: 'none', borderRadius: '0.75rem', gap: '0.5rem', boxShadow: '0 4px 15px rgba(29, 185, 84, 0.2)' }}
-                            >
-                                <Link2 size={18} /> Connect Spotify
-                            </button>
-                        )}
                     </div>
                 </section>
 

@@ -1,0 +1,12 @@
+/* Bingo Themes Specific Styles & Fonts */
+
+/* 
+ * Fonts used in Bingo Themes:
+ * - Dancing Script: Wedding Classic
+ * - Great Vibes: Wedding Classic (Header)
+ * - Pacifico: Birthday Classic
+ * - Playfair Display: Birthday/Wedding Premium
+ */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;700;900&family=Pacifico&family=Playfair+Display:wght@400;700&display=swap');
+
+/* You can add common theme classes or variables here if needed in the future */
