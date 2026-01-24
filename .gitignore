@@ -7,7 +7,7 @@ __pycache__/
 .env_back
 .env_front
 CREDENTIALS SPOTY.TXT
-
+RAILWAY_DB_MIGRATIONS.md
 # C extensions
 *.so
 
