@@ -107,129 +107,6 @@ class RefreshTokenView(viewsets.GenericViewSet):
         except Token.DoesNotExist:
             return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
-class SpotifyAuthViewSet(viewsets.GenericViewSet):
-    permission_classes = [permissions.AllowAny]
-
-    @action(detail=False, methods=['get'])
-    def login(self, request):
-        show_dialog = request.query_params.get('show_dialog', 'false').lower() == 'true'
-        # Linking logic: if user is authenticated, we want to link
-        state = 'auth'
-        if request.user.is_authenticated:
-            state = f"link_{request.user.id}"
-            
-        scopes = 'user-read-private playlist-read-private user-read-email'
-        params = {
-            'scope': scopes,
-            'response_type': 'code',
-            'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
-            'client_id': settings.SPOTIFY_CLIENT_ID,
-            'state': state
-        }
-        if show_dialog:
-            params['show_dialog'] = 'true'
-            
-        url = requests.Request('GET', 'https://accounts.spotify.com/authorize', params=params).prepare().url
-        return Response({'url': url})
-
-    @action(detail=False, methods=['get'])
-    def callback(self, request):
-        code = request.query_params.get('code')
-        error = request.query_params.get('error')
-        state = request.query_params.get('state', 'auth')
-
-        if error:
-            return redirect(f'{settings.FRONTEND_URL}/auth?error=SpotifyAccessDenied')
-
-        # Exchange code for tokens
-        try:
-            response = requests.post('https://accounts.spotify.com/api/token', data={
-                'grant_type': 'authorization_code',
-                'code': code,
-                'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
-                'client_id': settings.SPOTIFY_CLIENT_ID,
-                'client_secret': settings.SPOTIFY_CLIENT_SECRET
-            })
-            
-            if not response.ok:
-                return redirect(f'{settings.FRONTEND_URL}/auth?error=TokenExchangeFailed')
-
-            tokens = response.json()
-            access_token = tokens.get('access_token')
-            refresh_token = tokens.get('refresh_token')
-            expires_in = tokens.get('expires_in')
-            
-            # Get User Profile
-            profile_response = requests.get('https://api.spotify.com/v1/me', headers={
-                'Authorization': f'Bearer {access_token}'
-            })
-            
-            if not profile_response.ok:
-                return redirect(f'{settings.FRONTEND_URL}/auth?error=ProfileFetchFailed')
-                
-            profile = profile_response.json()
-        except Exception as e:
-            return redirect(f'{settings.FRONTEND_URL}/auth?error={str(e)}')
-
-        spotify_id = profile.get('id')
-        email = profile.get('email')
-        display_name = profile.get('display_name') or spotify_id
-
-        # Determine target user
-        user = None
-        is_linking = state.startswith('link_')
-        
-        if is_linking:
-            try:
-                user_id = state.split('_')[1]
-                user = BingoUser.objects.get(pk=user_id)
-            except (IndexError, BingoUser.DoesNotExist):
-                return redirect(f'{settings.FRONTEND_URL}/settings?error=UserNotFound')
-        else:
-            # Traditional Spotify Login path
-            # Search by Spotify ID via token relation or username
-            try:
-                token_entry = SpotifyToken.objects.get(user__username=spotify_id)
-                user = token_entry.user
-            except SpotifyToken.DoesNotExist:
-                # Try by email if not found by spotify_id
-                if email:
-                    try:
-                        user = BingoUser.objects.get(email=email)
-                    except BingoUser.DoesNotExist:
-                        pass
-            
-            if not user:
-                # Create a new account from Spotify
-                user = BingoUser.objects.create_user(
-                    username=spotify_id,
-                    email=email or f"{spotify_id}@spotify.user",
-                    first_name=display_name.split(' ')[0] if display_name else '',
-                    last_name=' '.join(display_name.split(' ')[1:]) if display_name and ' ' in display_name else ''
-                )
-
-        # Update or Create Tokens
-        expires_at = timezone.now() + timedelta(seconds=expires_in)
-        
-        SpotifyToken.objects.update_or_create(
-            user=user,
-            defaults={
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'expires_at': expires_at
-            }
-        )
-
-        # Get DRF Token
-        token, _ = Token.objects.get_or_create(user=user)
-
-        # Redirect back
-        if is_linking:
-            return redirect(f'{settings.FRONTEND_URL}/settings?spotify_linked=true')
-        
-        # Redirect to Frontend with Token and Spotify info
-        frontend_url = f'{settings.FRONTEND_URL}/auth/callback'
-        return redirect(f'{frontend_url}?token={token.key}&spotify_id={spotify_id}&display_name={display_name}')
 
 class AuthViewSet(viewsets.GenericViewSet):
     queryset = BingoUser.objects.all()
@@ -317,13 +194,6 @@ class AuthViewSet(viewsets.GenericViewSet):
             return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'])
-    def unlink_spotify(self, request):
-        try:
-            SpotifyToken.objects.filter(user=request.user).delete()
-            return Response({'status': 'success'})
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def logout(self, request):
@@ -367,14 +237,10 @@ class BingoViewSet(viewsets.ModelViewSet):
         orientation = request.data.get('orientation', 'portrait')
         primary_color = request.data.get('primary_color', '#3f51b5')
         
-        # Spotify credentials (if private)
-        client_id = request.data.get('client_id')
-        client_secret = request.data.get('client_secret')
-
         try:
-            sp = get_spotify_client(user=request.user, client_id=client_id, client_secret=client_secret)
+            sp = get_spotify_client()
             if not sp:
-                return Response({"error": "Failed to connect to Spotify. Check credentials."}, status=400)
+                return Response({"error": "Failed to connect to Spotify."}, status=400)
             
             playlist = sp.playlist(playlist_id)
             tracks = fetch_playlist_tracks(sp, playlist_id)
@@ -430,32 +296,6 @@ class BingoViewSet(viewsets.ModelViewSet):
         except Exception as e:
             import traceback
             print(traceback.format_exc())
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=False, methods=['get'])
-    def user_playlists(self, request):
-        """Fetches the current user's playlists."""
-        try:
-            sp = get_spotify_client(user=request.user)
-            if not sp:
-                return Response({"error": "Spotify connection failed. Please log in again."}, status=400)
-            
-            results = sp.current_user_playlists(limit=50)
-            playlists = []
-            
-            for item in results['items']:
-                # Safe get for images
-                image_url = item['images'][0]['url'] if item['images'] else None
-                
-                playlists.append({
-                    'id': item['id'],
-                    'name': item['name'],
-                    'image': image_url,
-                    'tracks_count': item['tracks']['total']
-                })
-                
-            return Response(playlists)
-        except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['get'])

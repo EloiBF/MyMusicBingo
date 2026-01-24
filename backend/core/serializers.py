@@ -2,15 +2,10 @@ from rest_framework import serializers
 from .models import BingoUser, BingoEvent, BingoCard
 
 class BingoUserSerializer(serializers.ModelSerializer):
-    is_spotify_linked = serializers.SerializerMethodField()
-
     class Meta:
         model = BingoUser
-        fields = ('id', 'username', 'email', 'password', 'is_spotify_linked')
+        fields = ('id', 'username', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
-
-    def get_is_spotify_linked(self, obj):
-        return hasattr(obj, 'spotify_token')
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
