@@ -4,30 +4,37 @@ const SplitLayout = ({
     children,
     sidebar,
     sidebarSticky = false,
-    desktopColumns = '1fr clamp(350px, 25vw, 450px)',
-    reverseOnMobile = false // If we ever want sidebar on top
+    desktopColumns = '1fr clamp(350px, 20vw, 450px)',
+    reverseOnMobile = false,
+    containerHeight = 'clamp(400px, 50vh, 600px)'
 }) => {
     return (
         <div
             className="grid-layout"
             style={{
-                gridTemplateColumns: desktopColumns
+                display: 'grid',
+                gridTemplateColumns: desktopColumns,
+                height: containerHeight + ' !important',
+                alignItems: 'stretch',
+                gap: '2rem'
             }}
         >
             {/* Main Content Area */}
             <div style={{
-                minWidth: 0,
-                order: reverseOnMobile ? 2 : 1
+                order: reverseOnMobile ? 2 : 1,
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0 // Permite que el contenido se contraiga correctamente
             }}>
                 {children}
             </div>
 
             {/* Sidebar Area */}
             <aside style={{
-                height: sidebarSticky ? 'fit-content' : '100%',
-                position: sidebarSticky ? 'sticky' : 'static',
-                top: sidebarSticky ? '8rem' : 'auto',
-                order: reverseOnMobile ? 1 : 2
+                order: reverseOnMobile ? 1 : 2,
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0 // Permite que el sidebar se contraiga correctamente
             }}>
                 {sidebar}
             </aside>

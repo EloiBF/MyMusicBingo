@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     User, Mail, Settings as SettingsIcon, LogOut, CheckCircle2, AlertCircle, Lock, Eye, EyeOff
 } from 'lucide-react';
@@ -8,6 +9,7 @@ import PageLayout from '../components/PageLayout';
 import ConfirmationModal from '../components/ConfirmationModal';
 
 const Settings = () => {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -49,7 +51,7 @@ const Settings = () => {
             setUser(response.data);
         } catch (err) {
             console.error('Error fetching user:', err);
-            setMessage({ text: 'Failed to load user profile.', type: 'error' });
+            setMessage({ text: t('settings.errors.load_failed'), type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -58,9 +60,9 @@ const Settings = () => {
     const confirmLogout = () => {
         setModalConfig({
             isOpen: true,
-            title: 'Sign Out?',
-            message: 'Are you sure you want to sign out of your account? You will need to log in again to access your bingos.',
-            confirmText: 'Sign Out',
+            title: t('settings.session.modal.title'),
+            message: t('settings.session.modal.message'),
+            confirmText: t('settings.session.modal.confirm'),
             confirmColor: 'var(--text)',
             icon: <LogOut size={44} />,
             onConfirm: handleLogout
@@ -77,22 +79,22 @@ const Settings = () => {
         e.preventDefault();
 
         if (passwordData.new_password !== passwordData.confirm_password) {
-            setMessage({ text: 'New passwords do not match.', type: 'error' });
+            setMessage({ text: t('settings.password.match_error'), type: 'error' });
             return;
         }
 
         if (passwordData.new_password.length < 8) {
-            setMessage({ text: 'Password must be at least 8 characters long.', type: 'error' });
+            setMessage({ text: t('settings.password.length_error'), type: 'error' });
             return;
         }
 
         setChangingPassword(true);
         try {
             await api.post('/auth/change_password/', passwordData);
-            setMessage({ text: 'Password changed successfully!', type: 'success' });
+            setMessage({ text: t('settings.password.success'), type: 'success' });
             setPasswordData({ old_password: '', new_password: '', confirm_password: '' });
         } catch (err) {
-            setMessage({ text: err.response?.data?.message || 'Failed to change password.', type: 'error' });
+            setMessage({ text: err.response?.data?.message || t('settings.password.failed'), type: 'error' });
         } finally {
             setChangingPassword(false);
         }
@@ -106,12 +108,12 @@ const Settings = () => {
         setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
     };
 
-    if (loading) return <div style={{ padding: '2rem' }}>Loading settings...</div>;
+    if (loading) return <div style={{ padding: '2rem' }}>{t('settings.loading')}</div>;
 
     return (
         <PageLayout
-            title="Account Settings"
-            subtitle="Manage your profile and security settings."
+            title={t('settings.title')}
+            subtitle={t('settings.subtitle')}
             icon={<SettingsIcon size={32} />}
         >
             <ConfirmationModal
@@ -151,17 +153,17 @@ const Settings = () => {
             <div style={{ display: 'grid', gap: '2rem' }}>
                 {/* Profile Section */}
                 <section className="glass" style={{ padding: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Personal Information</h2>
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>{t('settings.profile.title')}</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Username</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.profile.username')}</label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
                                 <User size={16} color="var(--primary)" />
                                 <span>{user.username}</span>
                             </div>
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Email</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.profile.email')}</label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
                                 <Mail size={16} color="var(--primary)" />
                                 <span>{user.email}</span>
@@ -172,10 +174,10 @@ const Settings = () => {
 
                 {/* Change Password Section */}
                 <section className="glass" style={{ padding: '2rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>Change Password</h2>
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>{t('settings.password.title')}</h2>
                     <form onSubmit={handlePasswordChange} style={{ display: 'grid', gap: '1.5rem' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Current Password</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.password.current')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.old ? 'text' : 'password'}
@@ -191,7 +193,7 @@ const Settings = () => {
                                         fontSize: '1rem',
                                         color: 'var(--text)'
                                     }}
-                                    placeholder="Enter current password"
+                                    placeholder={t('settings.password.current_placeholder')}
                                 />
                                 <Lock size={16} color="var(--primary)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
                                 <button
@@ -214,7 +216,7 @@ const Settings = () => {
                         </div>
 
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>New Password</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.password.new')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.new ? 'text' : 'password'}
@@ -231,7 +233,7 @@ const Settings = () => {
                                         fontSize: '1rem',
                                         color: 'var(--text)'
                                     }}
-                                    placeholder="Enter new password (min. 8 characters)"
+                                    placeholder={t('settings.password.new_placeholder')}
                                 />
                                 <Lock size={16} color="var(--primary)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
                                 <button
@@ -254,7 +256,7 @@ const Settings = () => {
                         </div>
 
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>Confirm New Password</label>
+                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.password.confirm')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.confirm ? 'text' : 'password'}
@@ -271,7 +273,7 @@ const Settings = () => {
                                         fontSize: '1rem',
                                         color: 'var(--text)'
                                     }}
-                                    placeholder="Confirm new password"
+                                    placeholder={t('settings.password.confirm_placeholder')}
                                 />
                                 <Lock size={16} color="var(--primary)" style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)' }} />
                                 <button
@@ -300,7 +302,7 @@ const Settings = () => {
                                 className="btn btn-secondary"
                                 style={{ borderRadius: '0.75rem' }}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                             <button
                                 type="submit"
@@ -309,7 +311,7 @@ const Settings = () => {
                                 style={{ borderRadius: '0.75rem', gap: '0.5rem' }}
                             >
                                 <Lock size={16} />
-                                {changingPassword ? 'Changing...' : 'Change Password'}
+                                {changingPassword ? t('settings.password.changing') : t('settings.password.submit')}
                             </button>
                         </div>
                     </form>
@@ -317,16 +319,16 @@ const Settings = () => {
 
                 {/* Dangerous Zone */}
                 <section className="glass" style={{ padding: '2rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--error)' }}>Session Management</h2>
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', color: 'var(--error)' }}>{t('settings.session.title')}</h2>
                     <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                        Logging out will end your current session. You will need to sign in again to access My Bingos.
+                        {t('settings.session.desc')}
                     </p>
                     <button
                         onClick={confirmLogout}
                         className="btn btn-secondary"
                         style={{ background: 'rgba(239, 68, 68, 0.05)', borderColor: 'rgba(239, 68, 68, 0.2)', color: 'var(--error)' }}
                     >
-                        <LogOut size={18} /> Sign Out of All Devices
+                        <LogOut size={18} /> {t('settings.session.logout_all')}
                     </button>
                 </section>
             </div>

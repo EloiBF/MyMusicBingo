@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, User, Tag, ArrowLeft, Share2 } from 'lucide-react';
-import { getArticleBySlug, getRecentArticles } from '../data/blogLoader';
+import { useTranslation } from 'react-i18next';
+import { loadBlogArticles, getArticleBySlug, getRecentArticles } from '../data/blogLoader';
 import { handleImageError } from '../utils/blogImageUtils';
 import Layout from '../components/Layout';
 
@@ -114,9 +115,30 @@ const MixedTemplate = ({ sections }) => (
 
 const BlogArticle = () => {
   const { slug } = useParams();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const article = getArticleBySlug(slug);
-  const recentArticles = getRecentArticles(3).filter(a => a.id !== slug);
+  const [article, setArticle] = useState(null);
+  const [recentArticles, setRecentArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticleData = async () => {
+      setLoading(true);
+      const articles = await loadBlogArticles(i18n.language.split('-')[0]);
+      setArticle(getArticleBySlug(slug));
+      setRecentArticles(getRecentArticles(3).filter(a => a.id !== slug));
+      setLoading(false);
+    };
+    fetchArticleData();
+  }, [slug, i18n.language]);
+
+  if (loading) return (
+    <Layout>
+      <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="spin-m" />
+      </div>
+    </Layout>
+  );
 
   if (!article) {
     return (
@@ -131,7 +153,7 @@ const BlogArticle = () => {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
             >
               <ArrowLeft style={{ width: '20px', height: '20px' }} />
-              Back to Blog
+              {t('create.nav.back')}
             </button>
           </div>
         </div>
@@ -140,7 +162,7 @@ const BlogArticle = () => {
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : (i18n.language === 'ca' ? 'ca-ES' : 'en-GB'), {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -222,7 +244,7 @@ const BlogArticle = () => {
               style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
               <Share2 style={{ width: '16px', height: '16px' }} />
-              Share
+              {t('common.share', { defaultValue: 'Share' })}
             </button>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -251,7 +273,7 @@ const BlogArticle = () => {
         {/* Related Articles */}
         {recentArticles.length > 0 && (
           <div className="glass" style={{ padding: '2rem' }}>
-            <h2 className="brand" style={{ marginBottom: '1.5rem' }}>Recent Articles</h2>
+            <h2 className="brand" style={{ marginBottom: '1.5rem' }}>{t('landing.blog.title')}</h2>
             <div className="grid-auto-fit">
               {recentArticles.map(relatedArticle => (
                 <article

@@ -14,8 +14,14 @@ const useA4Scale = (containerRef, orientation = 'portrait', padding = 12, manual
 
         const updateScale = () => {
             if (containerRef.current) {
-                const containerWidth = containerRef.current.offsetWidth;
-                const newScale = Math.min(containerWidth / a4Width, 1);
+                const containerWidth = containerRef.current.clientWidth - (padding * 2);
+                const containerHeight = containerRef.current.clientHeight - (padding * 2);
+
+                // Scale to fit both width and height within padding
+                const widthScale = containerWidth / a4Width;
+                const heightScale = containerHeight / a4Height;
+
+                const newScale = Math.min(widthScale, heightScale, 1);
                 setScale(newScale > 0 ? newScale : 0.4);
             }
         };

@@ -4,6 +4,7 @@ import {
     BarChart3, Printer, Music, Users, ChevronLeft,
     TrendingUp, TrendingDown, Eye, Trash2, Edit, ExternalLink, LayoutGrid
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../api';
 import API_URLS from '../config/api';
 import PageLayout from '../components/PageLayout';
@@ -12,6 +13,7 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import BingoCardPreview from '../components/BingoCardPreview';
 
 const BingoDetail = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [event, setEvent] = useState(null);
@@ -50,13 +52,13 @@ const BingoDetail = () => {
             await api.delete(`/bingo/${id}/`);
             navigate('/dashboard');
         } catch (err) {
-            alert('Failed to delete the bingo event.');
+            alert(t('detail.alerts.delete_failed'));
             setDeleting(false);
             setShowDeleteModal(false);
         }
     };
 
-    if (loading) return <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>Loading event details...</div>;
+    if (loading) return <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }}>{t('detail.loading')}</div>;
     if (!event || !stats) return null;
 
     const pageSubtitle = (
@@ -74,9 +76,6 @@ const BingoDetail = () => {
                     </svg>
                 </span> <span>{event.playlist_name}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <LayoutGrid size={16} /> <span>{event.theme} Theme</span>
-            </div>
         </div>
     );
 
@@ -87,20 +86,20 @@ const BingoDetail = () => {
                 className="btn btn-primary"
                 style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: 'var(--shadow-lg)' }}
             >
-                <Printer size={18} /> Print Cards
+                <Printer size={18} /> {t('detail.actions.print')}
             </button>
             <button
                 onClick={() => navigate(`/bingo/${id}/track`)}
                 className="btn btn-secondary glass"
                 style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
-                <Music size={18} /> Track Songs
+                <Music size={18} /> {t('detail.actions.track')}
             </button>
             <button
                 onClick={() => navigate(`/bingo/${id}/edit`)}
                 className="btn btn-secondary"
                 style={{ padding: '0.7rem' }}
-                title="Edit Event"
+                title={t('detail.actions.edit')}
             >
                 <Edit size={18} />
             </button>
@@ -108,7 +107,7 @@ const BingoDetail = () => {
                 onClick={() => setShowDeleteModal(true)}
                 className="btn btn-secondary"
                 style={{ padding: '0.7rem', color: 'var(--accent)' }}
-                title="Delete Event"
+                title={t('detail.actions.delete')}
             >
                 <Trash2 size={18} />
             </button>
@@ -119,17 +118,15 @@ const BingoDetail = () => {
         <PageLayout
             title={event.event_title}
             subtitle={pageSubtitle}
-            backPath="/dashboard"
-            backLabel="Dashboard"
             actions={pageActions}
         >
             <ConfirmationModal
                 isOpen={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleDelete}
-                title="Delete this event?"
-                message={`All generated cards and statistics for "${event.event_title}" will be permanently removed.`}
-                confirmText="Yes, Delete"
+                title={t('detail.delete_modal.title')}
+                message={t('detail.delete_modal.message', { title: event.event_title })}
+                confirmText={t('detail.delete_modal.confirm')}
                 confirmColor="var(--error)"
                 icon={<Trash2 size={44} color="var(--error)" />}
                 isLoading={deleting}
@@ -137,49 +134,56 @@ const BingoDetail = () => {
 
             {/* Main Content Grid */}
             <SplitLayout
+                containerHeight="clamp(500px, 70vh, 850px)"
                 desktopColumns="minmax(0, 1fr) clamp(350px, 30vw, 450px)"
                 sidebar={
                     <div style={{
-                        background: 'white',
+                        background: 'var(--surface-blur)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid var(--glass-border)',
                         borderRadius: 'var(--radius-xl)',
-                        boxShadow: 'var(--shadow-lg)',
+                        boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                         overflow: 'hidden',
+                        padding: '2rem',
                         width: '100%',
                         maxWidth: event.orientation === 'landscape' ? '100%' : '450px',
                         margin: '0 auto',
-                        aspectRatio: event.orientation === 'landscape' ? '297/210' : '210/297'
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        height: '100%'
                     }}>
-                        <BingoCardPreview 
-                            event={event} 
+                        <BingoCardPreview
+                            event={event}
                             cardData={card?.data || []}
                             isMini={false}
                             containerStyle={{
                                 width: '100%',
-                                height: '100%',
-                                borderRadius: 'var(--radius-xl)'
+                                borderRadius: 'var(--radius-xl)',
+                                flex: 1
                             }}
                         />
                     </div>
                 }
             >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1, height: '100%' }}>
                     {/* Metrics Overview */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '1.25rem' }}>
-                        <StatCard icon={<Users size={20} />} label="Participants" value={stats.num_participants} color="var(--primary)" />
-                        <StatCard icon={<Music size={20} />} label="Songs Pool" value={stats.total_songs_in_pool} color="var(--secondary)" />
-                        <StatCard icon={<BarChart3 size={20} />} label="Grid Size" value={`${event.rows}x${event.columns}`} color="var(--accent)" />
+                        <StatCard icon={<Users size={20} />} label={t('detail.stats.participants')} value={stats.num_participants} color="var(--primary)" />
+                        <StatCard icon={<Music size={20} />} label={t('detail.stats.pool')} value={stats.total_songs_in_pool} color="var(--secondary)" />
+                        <StatCard icon={<BarChart3 size={20} />} label={t('detail.stats.grid')} value={`${event.rows}x${event.columns}`} color="var(--accent)" />
                     </div>
 
                     {/* Insights Box */}
                     <section className="glass" style={{
                         padding: '2rem',
                         borderRadius: 'var(--radius-lg)',
-                        height: '100%',
                         display: 'flex',
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+                        flex: 1
                     }}>
                         <h3 style={{ margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.25rem' }}>
-                            <TrendingUp size={20} color="var(--primary)" /> Most Appearing
+                            <TrendingUp size={20} color="var(--primary)" /> {t('detail.insights.most')}
                         </h3>
                         <div style={{
                             display: 'grid',
@@ -201,7 +205,7 @@ const BingoDetail = () => {
                         </div>
 
                         <h3 style={{ margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.25rem' }}>
-                            <TrendingDown size={20} color="var(--secondary)" /> Least Appearing
+                            <TrendingDown size={20} color="var(--secondary)" /> {t('detail.insights.least')}
                         </h3>
                         <div style={{
                             display: 'grid',
@@ -228,10 +232,65 @@ const BingoDetail = () => {
 };
 
 const StatCard = ({ icon, label, value, color }) => (
-    <div className="glass" style={{ padding: '1.25rem', borderRadius: 'var(--radius-lg)' }}>
-        <div style={{ color: color, marginBottom: '0.75rem', opacity: 0.8 }}>{icon}</div>
-        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{label}</div>
-        <div style={{ fontSize: '1.5rem', fontWeight: '800' }}>{value}</div>
+    <div className="glass" style={{
+        padding: '0',
+        borderRadius: 'var(--radius-lg)',
+        display: 'flex',
+        overflow: 'hidden',
+        border: '1px solid var(--glass-border)',
+        background: 'linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%)',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+    }}>
+        {/* Icon Section */}
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            background: `linear-gradient(135deg, ${color}15 0%, ${color}08 100%)`,
+            borderRight: `1px solid ${color}20`,
+            minWidth: '50px'
+        }}>
+            <div style={{
+                color: color,
+                opacity: 0.9,
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+            }}>
+                {icon}
+            </div>
+        </div>
+
+        {/* Content Section */}
+        <div style={{
+            padding: '0.9rem 1.2rem',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+        }}>
+            <div style={{
+                fontSize: '0.6rem',
+                color: 'var(--text-muted)',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                marginBottom: '3px',
+                opacity: 0.8
+            }}>
+                {label}
+            </div>
+            <div style={{
+                fontSize: '1.4rem',
+                fontWeight: '800',
+                background: `linear-gradient(135deg, var(--text) 0%, ${color} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                lineHeight: 1.1
+            }}>
+                {value}
+            </div>
+        </div>
     </div>
 );
 

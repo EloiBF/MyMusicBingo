@@ -1,0 +1,293 @@
+{
+    "nav": {
+        "dashboard": "Els meus bingos",
+        "create": "Crear Bingo",
+        "settings": "Configuració",
+        "blog": "Blog",
+        "login": "Iniciar sessió",
+        "signup": "Registrar-se",
+        "logout": "Tancar sessió",
+        "logout_confirm_title": "Tancar sessió",
+        "logout_confirm_message": "Estàs segur que vols tancar la sessió? Hauràs de tornar a iniciar sessió per accedir al teu compte.",
+        "spotify_connected": "Spotify Connectat",
+        "free_account": "Compte Gratuït"
+    },
+    "landing": {
+        "hero": {
+            "title": "Juga, canta i guanya <0 /> amb <1> ¡Bingo Musical!</1>",
+            "title1": "Bingo Musical",
+            "title2": "des de les teves llistes de Spotify",
+            "subtitle": "Connecta les teves llistes de Spotify per crear cartons de bingo únics. <0 /> Ràpid, fàcil i gratuït.",
+            "cta": "Començar Gratis",
+            "secondaryCta": "Com funciona"
+        },
+        "why": {
+            "title_from": "De Spotify ",
+            "title_to": "a BingoMusicMaker",
+            "features": {
+                "custom": {
+                    "title": "Cartons Personalitzables",
+                    "desc": "Totalment tematitzables. Des de bodes fins a aniversaris, inclús esdeveniments corporatius."
+                },
+                "print": {
+                    "title": "Llest per Imprimir",
+                    "desc": "Obtén cartons d'alta qualitat a l'instant o demana impressions premium per als teus esdeveniments."
+                },
+                "ai": {
+                    "title": "Reconeixement per IA",
+                    "desc": "Controla les cançons reproduïdes amb la nostra eina d'identificació per IA."
+                }
+            }
+        },
+        "how": {
+            "title": "Com Funciona",
+            "subtitle": "Comença la teva festa en minuts amb el nostre procés senzill.",
+            "steps": {
+                "1": {
+                    "title": "Registre Ràpid",
+                    "desc": "Crea un compte gratuït per desar esdeveniments i accedir a eines premium."
+                },
+                "2": {
+                    "title": "Connecta Spotify",
+                    "desc": "Enganxa qualsevol ID de llista pública (enllaç compartit de l'app de Spotify)."
+                },
+                "3": {
+                    "title": "Personalitza",
+                    "desc": "Tria temes i colors que encaixin amb el teu estil."
+                },
+                "4": {
+                    "title": "Exporta i Imprimeix",
+                    "desc": "Imprimeix tu mateix o demana còpies professionals."
+                },
+                "5": {
+                    "title": "Reconeixement per IA",
+                    "desc": "Rastreja les cançons i verifica guanyadors automàticament."
+                }
+            },
+            "cta": "Comença la teva primera partida"
+        },
+        "testimonials": {
+            "title": "Casos d'Èxit",
+            "items": {
+                "1": "El seguiment de cançons durant el bingo és súper fàcil, em vaig poder centrar en divertir-me.",
+                "2": "Vam demanar un joc de bingo personalitzat, la qualitat i el disseny són realment bons. La festa va ser increïble!",
+                "3": "Fàcil de connectar amb Spotify i crear un joc de bingo complet amb les meves cançons, en menys d'un minut..."
+            }
+        },
+        "blog": {
+            "title": "L'últim del Blog",
+            "subtitle": "Consells, trucs i inspiració per a esdeveniments de bingo musical increïbles",
+            "cta": "Veure tots els articles"
+        }
+    },
+    "footer": {
+        "description": "Crea i juga jocs de bingo musical amb els teus amics. Connecta amb Spotify per a la millor experiència musical.",
+        "links": {
+            "title": "Enllaços Ràpids",
+            "dashboard": "Els meus bingos",
+            "create": "Crear Joc",
+            "settings": "Configuració"
+        },
+        "legal": {
+            "title": "Legal",
+            "terms": "Termes de Servei",
+            "privacy": "Política de Privadesa"
+        },
+        "support": {
+            "title": "Suport",
+            "contact": "Contactar Suport",
+            "privacy": "Consultes de Privadesa"
+        },
+        "bottom": {
+            "rights": "© 2026 BingoMusicMaker. Tots els drets reservats.",
+            "madeWith": "Fet amb <0 /> i <1 />"
+        }
+    },
+    "dashboard": {
+        "loading": "Carregant el teu panell...",
+        "new_bingo": "Crear Nou Bingo",
+        "welcome": "Benvingut de nou",
+        "subtitle": "Gestiona els teus bingos musicals i crea'n de nous en pocs clics.",
+        "empty": {
+            "title": "Crea el teu primer bingo musical",
+            "desc": "Comença ara! Converteix qualsevol llista de Spotify en un joc de bingo professional en segons.",
+            "cta": "Començar"
+        }
+    },
+    "auth": {
+        "login": {
+            "welcome": "Benvingut de nou! Inicia sessió per continuar."
+        },
+        "register": {
+            "welcome": "Crea un compte per començar a construir els teus bingos."
+        },
+        "username": "Nom d'usuari",
+        "username_placeholder": "Tria un nom d'usuari",
+        "email": "Correu electrònic",
+        "email_placeholder": "Introdueix el teu correu electrònic",
+        "password": "Contrasenya",
+        "signin": "Iniciar Sessió",
+        "signup": "Crear Compte",
+        "processing": "Processant...",
+        "no_account": "No tens un compte?",
+        "have_account": "Ja tens un compte?",
+        "create_one": "Crea'n un",
+        "sign_in_link": "Inicia sessió",
+        "errors": {
+            "cancelled": "Has cancel·lat la connexió amb Spotify.",
+            "failed": "L'inici de sessió ha fallat: {{error}}",
+            "generic": "Error d'autenticació. Si us plau, comprova les teves dades."
+        }
+    },
+    "detail": {
+        "loading": "Carregant detalls de l'esdeveniment...",
+        "theme_suffix": "Tema",
+        "actions": {
+            "print": "Imprimir Cartons",
+            "track": "Seguir Cançons",
+            "edit": "Editar Esdeveniment",
+            "delete": "Eliminar Esdeveniment"
+        },
+        "delete_modal": {
+            "title": "Eliminar aquest esdeveniment?",
+            "message": "Tots els cartons generats i estadístiques de \"{{title}}\" s'eliminaran de forma permanent.",
+            "confirm": "Sí, Eliminar"
+        },
+        "stats": {
+            "participants": "Participants",
+            "pool": "Cançons",
+            "grid": "Quadrícula"
+        },
+        "insights": {
+            "most": "Més freqüents",
+            "least": "Menys freqüents"
+        },
+        "alerts": {
+            "delete_failed": "Error en eliminar l'esdeveniment de bingo."
+        }
+    },
+    "themes": {
+        "categories": {
+            "essentials": "Essencials",
+            "celebrations": "Celebracions",
+            "other": "Altres"
+        },
+        "labels": {
+            "basic": "Bàsic",
+            "luxurynight": "Nit de Luxe",
+            "pop": "Èxits Pop",
+            "wedding": "Boda"
+        }
+    },
+    "create": {
+        "title": "Crear Bingo",
+        "edit_title": "Editar Bingo",
+        "subtitle": "Genera cartons únics des de Spotify.",
+        "edit_subtitle": "Actualitza la configuració de l'esdeveniment.",
+        "default_title": "Nit de Disco",
+        "steps": {
+            "playlist": "Llista",
+            "theme": "Tema",
+            "layout": "Disseny"
+        },
+        "playlist": {
+            "label": "Enganxa l'enllaç de la llista de Spotify",
+            "placeholder": "Enganxa l'enllaç...",
+            "loading": "Carregant llistes...",
+            "error": "Error en carregar les llistes.",
+            "guide": {
+                "desktop": {
+                    "title": "Windows/Mac",
+                    "step1": "Obre Spotify Desktop",
+                    "step2": "Busca la teva playlist",
+                    "step3": "Fes clic dret a la llista",
+                    "step4": "Selecciona 'Compartir'",
+                    "step5": "Fes clic a 'Copia l'enllaç de la llista'"
+                },
+                "mobile": {
+                    "title": "iOS/Android",
+                    "step1": "Obre Spotify",
+                    "step2": "Busca la teva playlist",
+                    "step3": "Toca els tres punts (...)",
+                    "step4": "Llisca i selecciona 'Compartir'",
+                    "step5": "Toca 'Copia l'enllaç'"
+                }
+            }
+        },
+        "theme": {
+            "label": "Tria un tema"
+        },
+        "layout": {
+            "name_label": "Tria un nom per als teus cartons",
+            "name_placeholder": "ej. Nit de Disco",
+            "num_cards_label": "Nombre de cartons a generar",
+            "grid_label": "Mida de la quadrícula",
+            "orientation_label": "Orientació del cartó",
+            "portrait": "Vertical",
+            "landscape": "Horitzontal"
+        },
+        "nav": {
+            "back": "Enrere",
+            "next": "Següent",
+            "generate": "Generar"
+        },
+        "playlist_modal": {
+            "title": "Les Teves Llistes"
+        },
+        "alerts": {
+            "provide_info": "Si us plau, indica un títol i una llista de Spotify.",
+            "load_failed": "Error en carregar les dades de l'esdeveniment.",
+            "playlist_required": "Si us plau, introdueix un ID o enllaç de llista."
+        }
+    },
+    "settings": {
+        "title": "Configuració del compte",
+        "subtitle": "Gestiona el teu perfil i la configuració de seguretat.",
+        "loading": "Carregant Configuració...",
+        "profile": {
+            "title": "Informació Personal",
+            "username": "Nom d'usuari",
+            "email": "Correu electrònic"
+        },
+        "password": {
+            "title": "Canviar Contrasenya",
+            "current": "Contrasenya Actual",
+            "current_placeholder": "Introdueix la contrasenya actual",
+            "new": "Nova Contrasenya",
+            "new_placeholder": "Introdueix la nova contrasenya (mín. 8 caràcters)",
+            "confirm": "Confirmar Nova Contrasenya",
+            "confirm_placeholder": "Confirma la nova contrasenya",
+            "submit": "Canviar Contrasenya",
+            "changing": "Canviant...",
+            "success": "Contrasenya canviada amb èxit!",
+            "match_error": "Les noves contrasenyes no coincideixen.",
+            "length_error": "La contrasenya ha de tenir almenys 8 caràcters.",
+            "failed": "Error en canviar la contrasenya."
+        },
+        "session": {
+            "title": "Gestió de Sessió",
+            "desc": "Tancar la sessió finalitzarà la teva sessió actual. Hauràs de tornar a iniciar sessió per accedir a Mis Bingos.",
+            "logout_all": "Tancar sessió a tots els dispositius",
+            "modal": {
+                "title": "Tancar sessió?",
+                "message": "Estàs segur que vols tancar la sessió del teu compte? Hauràs de tornar a iniciar sessió per accedir als teus bingos.",
+                "confirm": "Tancar sessió"
+            }
+        },
+        "errors": {
+            "load_failed": "Error en carregar el perfil d'usuari."
+        }
+    },
+    "common": {
+        "loading": "Carregant...",
+        "generating": "Generant...",
+        "error": "Alguna cosa ha anat malament",
+        "cancel": "Cancel·lar",
+        "confirm": "Confirmar",
+        "save": "Desar",
+        "share": "Compartir",
+        "guest": "Convidat",
+        "no_articles": "No s'han trobat articles",
+        "check_back": "¡Torna aviat per veure contingut nou!"
+    }
+}

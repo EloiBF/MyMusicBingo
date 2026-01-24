@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
     Music, Menu, X, Home, PlusCircle, Settings, LogOut, User, BookOpen
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../api';
 import ConfirmationModal from './ConfirmationModal';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(null);
@@ -55,10 +58,10 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     const navLinks = [
-        { icon: <Home size={20} />, label: 'Dashboard', path: '/dashboard' },
-        { icon: <PlusCircle size={20} />, label: 'Create New', path: '/create' },
-        { icon: <BookOpen size={20} />, label: 'Blog', path: '/blog', debug: true },
-        { icon: <Settings size={20} />, label: 'Settings', path: '/settings' }
+        { icon: <Home size={20} />, label: t('nav.dashboard'), path: '/dashboard' },
+        { icon: <PlusCircle size={20} />, label: t('nav.create'), path: '/create' },
+        { icon: <BookOpen size={20} />, label: t('nav.blog'), path: '/blog', debug: true },
+        { icon: <Settings size={20} />, label: t('nav.settings'), path: '/settings' }
     ];
 
     return (
@@ -75,22 +78,22 @@ const Navbar = () => {
                 borderRadius: 'var(--radius-lg)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <img 
-                        src="/images/logo.png" 
+                    <img
+                        src="/images/logo.png"
                         alt="BingoMusicMaker Logo"
                         style={{
-                            width: '40px', 
+                            width: '40px',
                             height: '40px',
                             borderRadius: 'var(--radius-md)',
                             objectFit: 'contain'
                         }}
                     />
-                    <span 
-                        className="brand" 
-                        style={{ 
+                    <span
+                        className="brand"
+                        style={{
                             fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)',
                             cursor: 'pointer'
-                        }} 
+                        }}
                         onClick={() => navigate('/')}
                     >
                         BingoMusicMaker
@@ -98,9 +101,9 @@ const Navbar = () => {
                 </div>
 
                 {/* Desktop Navigation */}
-                <div className="desktop-nav" style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                <div className="desktop-nav" style={{
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: '2rem',
                     minHeight: '48px' // Ensure consistent height
                 }}>
@@ -172,14 +175,16 @@ const Navbar = () => {
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                         <span style={{ fontSize: '0.9rem', fontWeight: 600, lineHeight: 1.2 }}>
-                                            {user?.username || 'Guest'}
+                                            {user?.username || t('common.guest')}
                                         </span>
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1 }}>
-                                            {user?.is_spotify_linked ? 'Spotify Connected' : 'Free Account'}
+                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : t('nav.free_account')}
                                         </span>
                                     </div>
                                 </div>
-                                
+
+                                <LanguageSwitcher />
+
                                 <button
                                     onClick={handleLogout}
                                     className="btn btn-secondary"
@@ -197,20 +202,20 @@ const Navbar = () => {
                         </>
                     ) : (
                         /* Non-authenticated user navigation */
-                        <div className="nav-buttons" style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
+                        <div className="nav-buttons" style={{
+                            display: 'flex',
+                            alignItems: 'center',
                             gap: '1rem',
                             minHeight: '48px' // Match authenticated height
                         }}>
-                            <button 
+                            <button
                                 onClick={() => {
                                     console.log('Blog button clicked!');
                                     navigate('/blog');
-                                }} 
-                                className="btn btn-secondary" 
-                                style={{ 
-                                    background: 'transparent', 
+                                }}
+                                className="btn btn-secondary"
+                                style={{
+                                    background: 'transparent',
                                     border: 'none',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -222,8 +227,9 @@ const Navbar = () => {
                                 <BookOpen size={18} />
                                 <span>Blog</span>
                             </button>
-                            <button onClick={() => navigate('/auth')} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>Login</button>
-                            <button onClick={() => navigate('/auth')} className="btn btn-primary join-button">Join Now</button>
+                            <button onClick={() => navigate('/auth')} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>{t('nav.login')}</button>
+                            <button onClick={() => navigate('/auth')} className="btn btn-primary join-button">{t('nav.signup')}</button>
+                            <LanguageSwitcher />
                         </div>
                     )}
                 </div>
@@ -305,10 +311,10 @@ const Navbar = () => {
                                     </div>
                                     <div>
                                         <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.25rem' }}>
-                                            {user?.username || 'Guest'}
+                                            {user?.username || t('common.guest')}
                                         </div>
                                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            {user?.is_spotify_linked ? 'Spotify Connected' : 'Free Account'}
+                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : t('nav.free_account')}
                                         </div>
                                     </div>
                                 </div>
@@ -358,8 +364,11 @@ const Navbar = () => {
                                         border: 'none'
                                     }}
                                 >
-                                    <LogOut size={18} /> Logout
+                                    <LogOut size={18} /> {t('nav.logout')}
                                 </button>
+                                <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+                                    <LanguageSwitcher />
+                                </div>
                             </>
                         ) : (
                             /* Non-authenticated user mobile menu */
@@ -372,8 +381,8 @@ const Navbar = () => {
                                     justifyContent: 'center',
                                     margin: '0 auto 2rem'
                                 }}>
-                                    <img 
-                                        src="/images/logo.png" 
+                                    <img
+                                        src="/images/logo.png"
                                         alt="BingoMusicMaker Logo"
                                         style={{
                                             width: '100%',
@@ -382,12 +391,12 @@ const Navbar = () => {
                                         }}
                                     />
                                 </div>
-                                
+
                                 <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Welcome to BingoMusicMaker</h3>
                                 <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>
                                     Create an account to start building amazing music bingo cards
                                 </p>
-                                
+
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                     <button
                                         onClick={() => {
@@ -430,8 +439,11 @@ const Navbar = () => {
                                             border: '1px solid var(--glass-border)'
                                         }}
                                     >
-                                        Login
+                                        {t('nav.login')}
                                     </button>
+                                    <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+                                        <LanguageSwitcher />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -444,9 +456,9 @@ const Navbar = () => {
                 isOpen={showLogoutModal}
                 onClose={() => setShowLogoutModal(false)}
                 onConfirm={confirmLogout}
-                title="Logout"
-                message="Are you sure you want to logout? You'll need to login again to access your account."
-                confirmText="Logout"
+                title={t('nav.logout_confirm_title') || 'Logout'}
+                message={t('nav.logout_confirm_message') || "Are you sure you want to logout? You'll need to login again to access your account."}
+                confirmText={t('nav.logout') || "Logout"}
                 confirmColor="var(--error)"
                 icon={<LogOut size={44} />}
             />

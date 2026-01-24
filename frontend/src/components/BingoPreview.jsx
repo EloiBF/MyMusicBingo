@@ -5,7 +5,6 @@ import useA4Scale from '../hooks/useA4Scale';
 
 const BingoPreview = ({
     theme = 'classic',
-    primaryColor = '#2c3e50',
     rows = 3,
     columns = 3,
     orientation = 'portrait',
@@ -16,6 +15,8 @@ const BingoPreview = ({
     showFullscreen = true,
     hideFooter = false,
     isMini = false,
+    transparentPage = false,
+    gridSize = null,
     padding = 12,
     containerStyle = {},
     previewStyle = {}
@@ -36,7 +37,6 @@ const BingoPreview = ({
         const params = new URLSearchParams({
             theme,
             orientation,
-            primary_color: primaryColor,
             rows,
             columns,
             event_title: eventTitle
@@ -87,13 +87,10 @@ const BingoPreview = ({
                 ref={containerRef}
                 style={{
                     padding: `${padding}px`,
-                    background: 'white',
-                    borderRadius: 'var(--radius-md)',
+                    background: 'transparent',
                     aspectRatio: isLandscape ? '297/210' : '210/297',
-                    overflow: 'hidden',
+                    overflow: 'visible',
                     position: 'relative',
-                    boxShadow: 'var(--shadow-xl)',
-                    border: '1px solid var(--border)',
                     width: '100%',
                     ...previewStyle
                 }}
@@ -101,23 +98,24 @@ const BingoPreview = ({
                 <div style={{
                     width: `${a4Width}px`,
                     height: `${a4Height}px`,
-                    transform: `scale(${previewScale})`,
-                    transformOrigin: 'top left',
-                    position: isMini ? 'relative' : 'absolute',
-                    top: isMini ? 0 : `${padding}px`,
-                    left: isMini ? 0 : `${padding}px`,
+                    transform: `translate(-50%, -50%) scale(${previewScale})`,
+                    transformOrigin: 'center',
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
                     pointerEvents: 'none',
-                    background: 'white'
+                    background: 'transparent'
                 }}>
                     <ThemeRenderer
                         themeId={theme}
-                        primaryColor={primaryColor}
                         rows={rows}
                         columns={columns}
                         orientation={orientation}
                         eventTitle={eventTitle}
                         cardData={displayData}
                         cardNumber={cardNumber}
+                        transparentPage={transparentPage}
+                        gridSize={gridSize}
                     />
                 </div>
             </div>

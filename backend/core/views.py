@@ -1,7 +1,11 @@
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from django.template.loader import render_to_string
+from django.utils import timezone
+from datetime import timedelta
 from .models import BingoUser, BingoEvent, BingoCard, PlaylistTrack
 from .serializers import BingoUserSerializer, BingoEventSerializer, BingoCardSerializer
 from .spotify import get_spotify_client, fetch_playlist_tracks
@@ -20,13 +24,88 @@ def home(request):
         "frontend_note": "Ensure the React frontend is running (usually on port 5173)"
     })
 
-from django.conf import settings
-import requests
-from django.shortcuts import redirect
-from django.utils import timezone
-from datetime import timedelta
-from .models import SpotifyToken
-from rest_framework.authtoken.models import Token
+class CustomAuthToken(ObtainAuthToken):
+    """Custom token authentication with expiration."""
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        
+        # Delete old token and create new one
+        Token.objects.filter(user=user).delete()
+        token = Token.objects.create(user=user)
+        
+        # Set token expiration (1 hour from now)
+        token_created = timezone.now()
+        token_expires = token_created + timedelta(hours=1)
+        
+        response_data = {
+            'token': token.key,
+            'user': BingoUserSerializer(user).data,
+            'expires_at': token_expires.isoformat()
+        }
+        
+        response = Response(response_data)
+        
+        # Set httpOnly cookie for additional security
+        response.set_cookie(
+            'auth_token',
+            token.key,
+            expires=token_expires,
+            httponly=True,
+            secure=not request.META.get('HTTP_HOST', '').startswith('localhost'),
+            samesite='Lax'
+        )
+        
+        return response
+
+class RefreshTokenView(viewsets.GenericViewSet):
+    """Refresh authentication token."""
+    
+    @action(detail=False, methods=['post'])
+    def refresh(self, request):
+        token_key = request.COOKIES.get('auth_token') or request.headers.get('Authorization', '').replace('Token ', '')
+        
+        if not token_key:
+            return Response({'error': 'No token provided'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            token = Token.objects.select_related('user').get(key=token_key)
+            
+            # Check if token is older than 1 hour
+            if timezone.now() - token.created > timedelta(hours=1):
+                token.delete()
+                return Response({'error': 'Token expired'}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            # Create new token
+            Token.objects.filter(user=token.user).delete()
+            new_token = Token.objects.create(user=token.user)
+            
+            token_expires = timezone.now() + timedelta(hours=1)
+            
+            response_data = {
+                'token': new_token.key,
+                'expires_at': token_expires.isoformat()
+            }
+            
+            response = Response(response_data)
+            
+            # Update httpOnly cookie
+            response.set_cookie(
+                'auth_token',
+                new_token.key,
+                expires=token_expires,
+                httponly=True,
+                secure=not request.META.get('HTTP_HOST', '').startswith('localhost'),
+                samesite='Lax'
+            )
+            
+            return response
+            
+        except Token.DoesNotExist:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class SpotifyAuthViewSet(viewsets.GenericViewSet):
     permission_classes = [permissions.AllowAny]
@@ -162,6 +241,13 @@ class AuthViewSet(viewsets.GenericViewSet):
             return [permissions.AllowAny()]
         return super().get_permissions()
 
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
+
+
     @action(detail=False, methods=['post'])
     def login(self, request):
         from django.contrib.auth import authenticate
@@ -170,11 +256,32 @@ class AuthViewSet(viewsets.GenericViewSet):
         
         user = authenticate(username=username, password=password)
         if user:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({
+            # Delete old token and create new one
+            Token.objects.filter(user=user).delete()
+            token = Token.objects.create(user=user)
+            
+            # Set token expiration
+            token_expires = timezone.now() + timedelta(hours=1)
+            
+            response_data = {
                 'token': token.key,
-                'user': BingoUserSerializer(user).data
-            })
+                'user': BingoUserSerializer(user).data,
+                'expires_at': token_expires.isoformat()
+            }
+            
+            response = Response(response_data)
+            
+            # Set httpOnly cookie
+            response.set_cookie(
+                'auth_token',
+                token.key,
+                expires=token_expires,
+                httponly=True,
+                secure=not request.META.get('HTTP_HOST', '').startswith('localhost'),
+                samesite='Lax'
+            )
+            
+            return response
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
@@ -182,11 +289,32 @@ class AuthViewSet(viewsets.GenericViewSet):
         serializer = BingoUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({
+            
+            # Create token for new user
+            token = Token.objects.create(user=user)
+            
+            # Set token expiration
+            token_expires = timezone.now() + timedelta(hours=1)
+            
+            response_data = {
                 'token': token.key,
-                'user': BingoUserSerializer(user).data
-            }, status=status.HTTP_201_CREATED)
+                'user': BingoUserSerializer(user).data,
+                'expires_at': token_expires.isoformat()
+            }
+            
+            response = Response(response_data, status=status.HTTP_201_CREATED)
+            
+            # Set httpOnly cookie
+            response.set_cookie(
+                'auth_token',
+                token.key,
+                expires=token_expires,
+                httponly=True,
+                secure=not request.META.get('HTTP_HOST', '').startswith('localhost'),
+                samesite='Lax'
+            )
+            
+            return response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
@@ -197,13 +325,26 @@ class AuthViewSet(viewsets.GenericViewSet):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['get'])
-    def me(self, request):
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+    @action(detail=False, methods=['post'])
+    def logout(self, request):
+        """Logout user and delete token."""
+        try:
+            # Delete token from database
+            token_key = request.COOKIES.get('auth_token') or request.headers.get('Authorization', '').replace('Token ', '')
+            if token_key:
+                Token.objects.filter(key=token_key).delete()
+            
+            response = Response({'status': 'success'})
+            
+            # Clear httpOnly cookie
+            response.delete_cookie('auth_token')
+            
+            return response
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class BingoViewSet(viewsets.ModelViewSet):
-    queryset = BingoEvent.objects.all()
+    queryset = BingoEvent.objects.all().order_by('-created_at')
     serializer_class = BingoEventSerializer
 
     def get_queryset(self):

@@ -1,0 +1,43 @@
+{
+    "id": "seasonal-music-bingo-guide",
+    "title": "Bingo Musical Estacional: Temes per a Vacances i Esdeveniments",
+    "excerpt": "Crea esdeveniments de bingo musical memorables per a cada estació amb aquestes llistes de reproducció temàtiques i idees de decoració.",
+    "author": "Equip de Planificació d'Esdeveniments",
+    "publishDate": "2024-01-18",
+    "readTime": "6 min de lectura",
+    "category": "Temes",
+    "tags": [
+        "estacional",
+        "vacances",
+        "temes",
+        "playlists"
+    ],
+    "featuredImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=400&fit=crop",
+    "template": "image-text",
+    "content": {
+        "sections": [
+            {
+                "type": "image",
+                "src": "https://images.unsplash.com/photo-1482575832494-771f74bf6857?w=800&h=400&fit=crop",
+                "alt": "Configuració de bingo musical de vacances",
+                "caption": "Transforma el teu espai per a celebracions estacionals"
+            },
+            {
+                "type": "text",
+                "title": "Per què importen els temes estacionals",
+                "content": "Els esdeveniments de bingo musical estacionals creen records duradors i uneixen a les persones de maneres significatives. Ja sigui una festa d'estiu, una reunió de vacances d'hivern o una celebració de primavera, el tema adequat eleva tota l'experiència.\n\nEls esdeveniments temàtics mostren atenció al detall i creen moments dignes d'Instagram que els participants compartiran molt després que acabi l'esdeveniment."
+            },
+            {
+                "type": "image",
+                "src": "https://images.unsplash.com/photo-1464047736614-af63643285bf?w=800&h=400&fit=crop",
+                "alt": "Decoracions estacionals",
+                "caption": "Decoracions senzilles poden transformar qualsevol espai"
+            },
+            {
+                "type": "text",
+                "title": "Temes Estacionals Populars",
+                "content": "**País de les Meravelles d'Hivern**: Clàssics de vacances i cançons acollidores d'hivern\n**Vibracions d'Estiu**: Cançons de platja i èxits alegres d'estiu\n**Festa de Primavera**: Cançons fresques i enèrgiques per a nous començaments\n**Festival de Tardor**: Favorits de tardor i pistes nostàlgiques\n**Halloween Spooktacular**: Tema de suspens i cançons esgarrifoses\n**Romance de Sant Valentí**: Cançons d'amor i duets romàntics"
+            }
+        ]
+    }
+}

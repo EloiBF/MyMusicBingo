@@ -1,0 +1,293 @@
+{
+    "nav": {
+        "dashboard": "My Bingos",
+        "create": "Create Bingo",
+        "settings": "Settings",
+        "blog": "Blog",
+        "login": "Log In",
+        "signup": "Sign Up",
+        "logout": "Log Out",
+        "logout_confirm_title": "Logout",
+        "logout_confirm_message": "Are you sure you want to logout? You'll need to login again to access your account.",
+        "spotify_connected": "Spotify Connected",
+        "free_account": "Free Account"
+    },
+    "landing": {
+        "hero": {
+            "title": "Play, sing and win <0 /> with <1> Music Bingo!</1>",
+            "title1": "Musical Bingo",
+            "title2": "from your Spotify Playlists",
+            "subtitle": "Connect Spotify playlists to create unique bingo cards. <0 /> Fast, easy and free to use.",
+            "cta": "Get Started Free",
+            "secondaryCta": "How it works"
+        },
+        "why": {
+            "title_from": "From Spotify ",
+            "title_to": "to BingoMusicMaker",
+            "features": {
+                "custom": {
+                    "title": "Customizable Cards",
+                    "desc": "Fully themeable. From weddings to birthday parties, even corporate events."
+                },
+                "print": {
+                    "title": "Print Ready",
+                    "desc": "Get high quality bingo cards instantly or order custom premium prints for your special events."
+                },
+                "ai": {
+                    "title": "AI Song Recognition",
+                    "desc": "Control played songs with our AI song identification tool."
+                }
+            }
+        },
+        "how": {
+            "title": "How It Works",
+            "subtitle": "Start your party in minutes with our simple process.",
+            "steps": {
+                "1": {
+                    "title": "Quick Sign In",
+                    "desc": "Create a free account to save events and access premium tools."
+                },
+                "2": {
+                    "title": "Connect Spotify",
+                    "desc": "Paste any public playlist ID (share link from Spotify app)."
+                },
+                "3": {
+                    "title": "Style Cards",
+                    "desc": "Choose themes and colors to match your vibe."
+                },
+                "4": {
+                    "title": "Export & Print",
+                    "desc": "Print yourself or order professional copies."
+                },
+                "5": {
+                    "title": "AI Song Recognition",
+                    "desc": "Track played songs and verify winners automatically."
+                }
+            },
+            "cta": "Start Your First Game"
+        },
+        "testimonials": {
+            "title": "Success Stories",
+            "items": {
+                "1": "Song tracking during the Bingo is super easy, I could focus on having fun.",
+                "2": "We ordered custom Bingo Game, the quality and design is really good. The party was amazing!!",
+                "3": "Easy to connect to Spotify and create full Bingo game with my songs, in less than a minute..."
+            }
+        },
+        "blog": {
+            "title": "Latest from Blog",
+            "subtitle": "Tips, tricks, and inspiration for amazing music bingo events",
+            "cta": "View All Articles"
+        }
+    },
+    "footer": {
+        "description": "Create and play music bingo games with your friends. Connect with Spotify for the ultimate music experience.",
+        "links": {
+            "title": "Quick Links",
+            "dashboard": "My Bingos",
+            "create": "Create Game",
+            "settings": "Settings"
+        },
+        "legal": {
+            "title": "Legal",
+            "terms": "Terms of Service",
+            "privacy": "Privacy Policy"
+        },
+        "support": {
+            "title": "Support",
+            "contact": "Contact Support",
+            "privacy": "Privacy Inquiries"
+        },
+        "bottom": {
+            "rights": "© 2026 BingoMusicMaker. All rights reserved.",
+            "madeWith": "Made with <0 /> and <1 />"
+        }
+    },
+    "dashboard": {
+        "loading": "Loading your dashboard...",
+        "new_bingo": "Create New Bingo",
+        "welcome": "Welcome back",
+        "subtitle": "Manage your music bingos and create new ones in a few clicks.",
+        "empty": {
+            "title": "Create your first music bingo",
+            "desc": "Start now! Turn any Spotify playlist into a professional bingo game in seconds.",
+            "cta": "Start"
+        }
+    },
+    "auth": {
+        "login": {
+            "welcome": "Welcome back! Sign in to continue."
+        },
+        "register": {
+            "welcome": "Create an account to start building bingos."
+        },
+        "username": "Username",
+        "username_placeholder": "Choose a username",
+        "email": "Email Address",
+        "email_placeholder": "Enter your email",
+        "password": "Password",
+        "signin": "Sign In",
+        "signup": "Create Account",
+        "processing": "Processing...",
+        "no_account": "Don't have an account?",
+        "have_account": "Already have an account?",
+        "create_one": "Create one",
+        "sign_in_link": "Sign in",
+        "errors": {
+            "cancelled": "You cancelled the connection to Spotify.",
+            "failed": "Login failed: {{error}}",
+            "generic": "Authentication failed. Please check your data."
+        }
+    },
+    "detail": {
+        "loading": "Loading event details...",
+        "theme_suffix": "Theme",
+        "actions": {
+            "print": "Print Cards",
+            "track": "Track Songs",
+            "edit": "Edit Event",
+            "delete": "Delete Event"
+        },
+        "delete_modal": {
+            "title": "Delete this event?",
+            "message": "All generated cards and statistics for \"{{title}}\" will be permanently removed.",
+            "confirm": "Yes, Delete"
+        },
+        "stats": {
+            "participants": "Participants",
+            "pool": "Songs Pool",
+            "grid": "Grid Size"
+        },
+        "insights": {
+            "most": "Most Appearing",
+            "least": "Least Appearing"
+        },
+        "alerts": {
+            "delete_failed": "Failed to delete the bingo event."
+        }
+    },
+    "themes": {
+        "categories": {
+            "essentials": "Essentials",
+            "celebrations": "Celebrations",
+            "other": "Other"
+        },
+        "labels": {
+            "basic": "Basic",
+            "luxurynight": "Luxury Night",
+            "pop": "Pop Hits",
+            "wedding": "Wedding"
+        }
+    },
+    "create": {
+        "title": "Create Bingo",
+        "edit_title": "Edit Bingo",
+        "subtitle": "Generate unique cards from Spotify.",
+        "edit_subtitle": "Update event settings.",
+        "default_title": "Disco Night",
+        "steps": {
+            "playlist": "Playlist",
+            "theme": "Theme",
+            "layout": "Layout"
+        },
+        "playlist": {
+            "label": "Paste the Spotify Playlist link",
+            "placeholder": "Paste link...",
+            "loading": "Loading playlists...",
+            "error": "Failed to load playlists.",
+            "guide": {
+                "desktop": {
+                    "title": "Windows/Mac",
+                    "step1": "Open Spotify Desktop",
+                    "step2": "Find your playlist",
+                    "step3": "Right click on the list",
+                    "step4": "Select 'Share'",
+                    "step5": "Click 'Copy link to playlist'"
+                },
+                "mobile": {
+                    "title": "iOS/Android",
+                    "step1": "Open Spotify",
+                    "step2": "Find your playlist",
+                    "step3": "Tap the three dots (...)",
+                    "step4": "Swipe and select 'Share'",
+                    "step5": "Tap 'Copy link'"
+                }
+            }
+        },
+        "theme": {
+            "label": "Select a theme"
+        },
+        "layout": {
+            "name_label": "Choose a Name to appear in your bingo cards",
+            "name_placeholder": "e.g. Disco Night",
+            "num_cards_label": "Number of bingo cards to generate",
+            "grid_label": "Grid layout",
+            "orientation_label": "Choose card orientation",
+            "portrait": "Portrait",
+            "landscape": "Landscape"
+        },
+        "nav": {
+            "back": "Back",
+            "next": "Next Step",
+            "generate": "Generate"
+        },
+        "playlist_modal": {
+            "title": "Playlists"
+        },
+        "alerts": {
+            "provide_info": "Please provide an event title and a Spotify playlist.",
+            "load_failed": "Failed to load event data.",
+            "playlist_required": "Please enter a playlist ID or link."
+        }
+    },
+    "settings": {
+        "title": "Account Settings",
+        "subtitle": "Manage your profile and security settings.",
+        "loading": "Loading settings...",
+        "profile": {
+            "title": "Personal Information",
+            "username": "Username",
+            "email": "Email"
+        },
+        "password": {
+            "title": "Change Password",
+            "current": "Current Password",
+            "current_placeholder": "Enter current password",
+            "new": "New Password",
+            "new_placeholder": "Enter new password (min. 8 characters)",
+            "confirm": "Confirm New Password",
+            "confirm_placeholder": "Confirm new password",
+            "submit": "Change Password",
+            "changing": "Changing...",
+            "success": "Password changed successfully!",
+            "match_error": "New passwords do not match.",
+            "length_error": "Password must be at least 8 characters long.",
+            "failed": "Failed to change password."
+        },
+        "session": {
+            "title": "Session Management",
+            "desc": "Logging out will end your current session. You will need to sign in again to access My Bingos.",
+            "logout_all": "Sign Out of All Devices",
+            "modal": {
+                "title": "Sign Out?",
+                "message": "Are you sure you want to sign out of your account? You will need to log in again to access your bingos.",
+                "confirm": "Sign Out"
+            }
+        },
+        "errors": {
+            "load_failed": "Failed to load user profile."
+        }
+    },
+    "common": {
+        "loading": "Loading...",
+        "generating": "Generating...",
+        "error": "Something went wrong",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "save": "Save",
+        "share": "Share",
+        "guest": "Guest",
+        "no_articles": "No articles found",
+        "check_back": "Check back soon for new content!"
+    }
+}

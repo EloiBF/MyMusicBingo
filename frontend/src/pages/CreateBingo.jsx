@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../api';
 import API_URLS from '../config/api';
 import PageLayout from '../components/PageLayout';
@@ -13,6 +14,7 @@ import SplitLayout from '../components/SplitLayout';
 import { getAvailableThemes } from '../utils/themeLoader';
 
 const CreateBingo = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
@@ -26,9 +28,8 @@ const CreateBingo = () => {
         numCards: 20,
         rows: 3,
         columns: 3,
-        theme: 'birthday_classic', // Fixed: was birthday_basic
-        orientation: 'portrait',
-        primary_color: 'default' // Default: use theme's predefined color
+        theme: 'basic',
+        orientation: 'portrait'
     });
 
     const [loading, setLoading] = useState(false);
@@ -62,12 +63,11 @@ const CreateBingo = () => {
                         rows: event.rows,
                         columns: event.columns,
                         theme: event.theme,
-                        orientation: event.orientation || 'portrait',
-                        primary_color: event.primary_color
+                        orientation: event.orientation || 'portrait'
                     });
                 } catch (err) {
                     console.error('Error fetching event data:', err);
-                    alert('Failed to load event data.');
+                    alert(t('create.alerts.load_failed'));
                     navigate('/dashboard');
                 }
             };
@@ -82,32 +82,8 @@ const CreateBingo = () => {
         { label: '5x5 (25 songs)', rows: 5, cols: 5 },
     ];
 
-    const colorMap = {
-        'var(--primary)': '#8b5cf6',
-        'var(--bingo-cyan)': '#06b6d4',
-        'var(--bingo-emerald)': '#10b981',
-        'var(--bingo-amber)': '#f59e0b',
-        'var(--bingo-pink)': '#ec4899',
-        'var(--bingo-indigo)': '#6366f1'
-    };
-
-    // Theme default colors
-    const themeDefaultColors = {
-        'birthday_classic': '#ff6b9d',
-        'birthday_premium': '#d946ef',
-        'wedding_classic': '#849b87',
-        'wedding_premium': '#C5A059',
-        'party_classic': '#ec4899',
-        'party_premium': '#8b5cf6',
-        'corporate_classic': '#475569',
-        'corporate_premium': '#0ea5e9'
-    };
-
     const getColorValue = (color, theme = null) => {
-        if (color === 'default' && theme) {
-            return themeDefaultColors[theme] || '#8b5cf6';
-        }
-        return colorMap[color] || color;
+        return color;
     };
 
     // Load available themes dynamically
@@ -121,7 +97,7 @@ const CreateBingo = () => {
             setPlaylists(response.data);
         } catch (err) {
             console.error(err);
-            alert('Failed to load playlists.');
+            alert(t('create.playlist.error'));
             setShowPlaylistModal(false);
         } finally {
             setParamLoading(false);
@@ -144,7 +120,7 @@ const CreateBingo = () => {
 
     const handleGenerate = async () => {
         if (!config.playlistId) {
-            alert('Please enter a playlist ID or link.');
+            alert(t('create.alerts.playlist_required'));
             return;
         }
         setLoading(true);
@@ -157,8 +133,7 @@ const CreateBingo = () => {
                 rows: config.rows,
                 columns: config.columns,
                 theme: config.theme,
-                orientation: config.orientation,
-                primary_color: getColorValue(config.primary_color, config.theme)
+                orientation: config.orientation
             };
             if (isEditMode) {
                 response = await api.put(`/bingo/${id}/`, payload);
@@ -169,15 +144,15 @@ const CreateBingo = () => {
             navigate(`/bingo/${eventId}`);
         } catch (err) {
             console.error(err);
-            alert(`Error: ` + (err.response?.data?.error || err.message));
+            alert(`${t('common.error')}: ` + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
         }
     };
 
     const nextStep = () => {
-        if (currentStep === 1 && (!config.eventTitle || !config.playlistId)) {
-            alert('Please provide an event title and a Spotify playlist.');
+        if (currentStep === 1 && !config.playlistId) {
+            alert(t('create.alerts.playlist_required'));
             return;
         }
         if (currentStep < totalSteps) {
@@ -198,53 +173,58 @@ const CreateBingo = () => {
     };
 
     const steps = [
-        { id: 1, name: 'Playlist', icon: <Search size={14} /> },
-        { id: 2, name: 'Settings', icon: <Layers size={14} /> },
-        { id: 3, name: 'Style', icon: <Palette size={14} /> }
+        { id: 1, name: t('create.steps.playlist'), icon: <Search size={14} /> },
+        { id: 2, name: t('create.steps.theme'), icon: <Palette size={14} /> },
+        { id: 3, name: t('create.steps.layout'), icon: <Layers size={14} /> }
     ];
 
     return (
         <PageLayout
-            title={isEditMode ? 'Edit Bingo' : 'Create Bingo'}
-            subtitle={isEditMode ? 'Update event settings.' : 'Generate unique cards from Spotify.'}
+            title={isEditMode ? t('create.edit_title') : t('create.title')}
+            subtitle={isEditMode ? t('create.edit_subtitle') : t('create.subtitle')}
             icon={<Wand2 size={24} />}
             hideScrollingBackground={true}
         >
             <SplitLayout
+                containerHeight="clamp(500px, 70vh, 850px)"
                 desktopColumns="minmax(0, 1fr) clamp(350px, 30vw, 450px)"
                 sidebar={
                     <div style={{
-                        background: 'white',
+                        background: 'var(--surface-blur)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid var(--glass-border)',
                         borderRadius: 'var(--radius-xl)',
-                        boxShadow: 'var(--shadow-lg)',
+                        boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                         overflow: 'hidden',
+                        padding: '2rem',
                         width: '100%',
-                        maxWidth: '450px',
+                        maxWidth: config.orientation === 'landscape' ? '100%' : '450px',
                         margin: '0 auto',
-                        height: config.orientation === 'landscape' ? 'calc(450px * 297 / 210)' : 'auto',
-                        aspectRatio: config.orientation === 'portrait' ? '210/297' : '297/210'
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1
                     }}>
                         <BingoCardPreview
                             event={{
                                 theme: config.theme,
-                                primary_color: config.primary_color === 'default' ? null : getColorValue(config.primary_color),
                                 rows: config.rows,
                                 columns: config.columns,
                                 orientation: config.orientation,
-                                event_title: config.eventTitle || 'Disco Night'
+                                event_title: config.eventTitle || t('create.default_title')
                             }}
                             cardData={[]}
                             isMini={false}
                             containerStyle={{
                                 width: '100%',
-                                height: '100%',
-                                borderRadius: 'var(--radius-xl)'
+                                borderRadius: 'var(--radius-xl)',
+                                flex: 1,
+                                maxHeight: 'calc(100% - 4rem)'
                             }}
                         />
                     </div>
                 }
             >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', height: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
                     {/* Form Content */}
                     <div className="glass" style={{
                         borderRadius: 'var(--radius-xl)',
@@ -253,9 +233,9 @@ const CreateBingo = () => {
                         border: '1px solid var(--glass-border)',
                         boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                         overflow: 'hidden',
-                        height: '100%',
                         display: 'flex',
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+                        flex: 1
                     }}>
                         {/* Stepper */}
                         <div style={{ padding: '1.5rem 1.5rem 0' }}>
@@ -282,136 +262,67 @@ const CreateBingo = () => {
                         </div>
 
                         {/* Step Content */}
-                        <div style={{ padding: '0 1.5rem 1.5rem', flexGrow: 1, overflowY: 'auto' }}>
-                            <div className="step-content-box-mini">
+                        <div style={{
+                            padding: '0 1.5rem 1.5rem',
+                            overflowY: 'auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1
+                        }}>
+                            <div className="step-content-box-mini" style={{ flex: 1 }}>
                                 {currentStep === 1 && (
                                     <div className="animate-fade-in section-compact-mini">
                                         <div className="input-group-mini">
-                                            <label>Choose a Name to appear in your bingo cards</label>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g. Disco Night"
-                                                value={config.eventTitle}
-                                                onChange={(e) => setConfig({ ...config, eventTitle: e.target.value })}
-                                            />
-                                        </div>
-                                        <div className="input-group-mini">
-                                            <label>Paste the Spotify Playlist link</label>
-                                            <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                                <div style={{ position: 'relative', flex: 1 }}>
-                                                    <Search size={14} className="input-icon-left-mini" />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Paste link..."
-                                                        value={config.playlistId}
-                                                        onChange={(e) => handlePlaylistChange(e.target.value)}
-                                                        style={{ paddingLeft: '2.5rem' }}
-                                                    />
+                                            <label>{t('create.playlist.label')}</label>
+                                            <div style={{ position: 'relative' }}>
+                                                <Search size={14} className="input-icon-left-mini" />
+                                                <input
+                                                    type="text"
+                                                    placeholder={t('create.playlist.placeholder')}
+                                                    value={config.playlistId}
+                                                    onChange={(e) => handlePlaylistChange(e.target.value)}
+                                                    style={{ paddingLeft: '2.5rem' }}
+                                                />
+                                            </div>
+                                            <div className="text-sm text-gray-500" style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.4', marginTop: '2rem' }}>
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.5rem' }}>
+                                                    <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                            <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>💻</span>
+                                                            <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.desktop.title')}</strong>
+                                                        </div>
+                                                        <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
+                                                            <li>{t('create.playlist.guide.desktop.step1')}</li>
+                                                            <li>{t('create.playlist.guide.desktop.step2')}</li>
+                                                            <li>{t('create.playlist.guide.desktop.step3')}</li>
+                                                            <li>{t('create.playlist.guide.desktop.step4')}</li>
+                                                            <li>{t('create.playlist.guide.desktop.step5')}</li>
+                                                        </ol>
+                                                    </div>
+                                                    <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                            <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>📱</span>
+                                                            <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.mobile.title')}</strong>
+                                                        </div>
+                                                        <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
+                                                            <li>{t('create.playlist.guide.mobile.step1')}</li>
+                                                            <li>{t('create.playlist.guide.mobile.step2')}</li>
+                                                            <li>{t('create.playlist.guide.mobile.step3')}</li>
+                                                            <li>{t('create.playlist.guide.mobile.step4')}</li>
+                                                            <li>{t('create.playlist.guide.mobile.step5')}</li>
+                                                        </ol>
+                                                    </div>
                                                 </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={user?.is_spotify_linked ? fetchUserPlaylists : () => navigate('/settings')}
-                                                    className="btn btn-secondary glass-hover btn-square-mini"
-                                                >
-                                                    {user?.is_spotify_linked ? <ListMusic size={18} /> : <Link2Off size={18} />}
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
                                 {currentStep === 2 && (
-                                    <div className="animate-fade-in section-compact-mini">
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                            <div className="input-group-mini">
-                                                <label>Number of bingo cards to generate</label>
-                                                <input
-                                                    type="number"
-                                                    value={config.numCards}
-                                                    onChange={(e) => setConfig({ ...config, numCards: parseInt(e.target.value) })}
-                                                />
-                                            </div>
-                                            <div className="input-group-mini">
-                                                <label>Grid layout</label>
-                                                <select
-                                                    value={`${config.rows}x${config.columns}`}
-                                                    onChange={(e) => {
-                                                        const [r, c] = e.target.value.split('x').map(Number);
-                                                        setConfig({ ...config, rows: r, columns: c });
-                                                    }}
-                                                >
-                                                    {gridOptions.map(opt => <option key={opt.label} value={`${opt.rows}x${opt.cols}`}>{opt.label.split(' ')[0]}</option>)}
-                                                </select>
-                                            </div>
-                                            <div className="input-group-mini" style={{ gridColumn: '1 / -1' }}>
-                                                <label>Choose card orientation</label>
-                                                <div className="toggle-group-mini glass">
-                                                    {['portrait', 'landscape'].map(o => (
-                                                        <button
-                                                            key={o}
-                                                            type="button"
-                                                            onClick={() => setConfig({ ...config, orientation: o })}
-                                                            className={`toggle-btn-mini ${config.orientation === o ? 'active' : ''}`}
-                                                        >
-                                                            {o}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {currentStep === 3 && (
-                                    <div className="animate-fade-in section-compact-mini">
-                                        <div style={{ marginBottom: '1.25rem' }}>
-                                            <label className="label-bold-mini">Choose your color</label>
-                                            <div className="color-grid-mini">
-                                                {/* Default Option */}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setConfig({ ...config, primary_color: 'default' })}
-                                                    style={{
-                                                        background: config.primary_color === 'default'
-                                                            ? `linear-gradient(135deg, ${themeDefaultColors[config.theme] || '#8b5cf6'} 0%, ${themeDefaultColors[config.theme] || '#8b5cf6'} 100%)`
-                                                            : 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)',
-                                                        position: 'relative',
-                                                        overflow: 'hidden',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center'
-                                                    }}
-                                                    className={`dot-mini ${config.primary_color === 'default' ? 'selected' : ''}`}
-                                                    title="Default (Theme Color)"
-                                                >
-                                                    {config.primary_color === 'default' ? (
-                                                        <span style={{ fontSize: '12px', color: 'white', fontWeight: 'bold' }}>✓</span>
-                                                    ) : (
-                                                        <span style={{ fontSize: '14px', color: '#64748b', fontWeight: 'bold' }}>∅</span>
-                                                    )}
-                                                </button>
-                                                {['var(--primary)', 'var(--bingo-cyan)', 'var(--bingo-emerald)', 'var(--bingo-amber)', 'var(--bingo-pink)', 'var(--bingo-indigo)'].map(color => (
-                                                    <button
-                                                        key={color}
-                                                        type="button"
-                                                        onClick={() => setConfig({ ...config, primary_color: color })}
-                                                        style={{ background: color }}
-                                                        className={`dot-mini ${config.primary_color === color ? 'selected' : ''}`}
-                                                    />
-                                                ))}
-                                                <div className="custom-wrapper-mini">
-                                                    <input 
-                                                        type="color" 
-                                                        value={config.primary_color === 'default' || config.primary_color.startsWith('var(') ? '#8b5cf6' : config.primary_color} 
-                                                        onChange={(e) => setConfig({ ...config, primary_color: e.target.value })} 
-                                                    />
-                                                    <div className="wheel-mini" style={{ background: config.primary_color === 'default' ? themeDefaultColors[config.theme] : getColorValue(config.primary_color) }} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="theme-compact-gallery">
-                                            <label className="label-bold-mini">Select a theme</label>
-                                            <div className="scroll-box-mini">
+                                    <div className="animate-fade-in section-compact-mini" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                        <div className="theme-compact-gallery" style={{ marginTop: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                            <label className="label-bold-mini">{t('create.theme.label')}</label>
+                                            <div className="scroll-box-mini" style={{ flex: 1, overflowY: 'auto' }}>
                                                 <div className="grid-mini">
                                                     {allThemes.map(t => {
                                                         const isSelected = config.theme === t.id;
@@ -422,11 +333,10 @@ const CreateBingo = () => {
                                                                         <BingoCardPreview
                                                                             event={{
                                                                                 theme: t.id,
-                                                                                primary_color: null, // Always show theme default in mini previews
                                                                                 rows: 3,
                                                                                 columns: 3,
                                                                                 orientation: 'portrait',
-                                                                                event_title: 'Bingo'
+                                                                                event_title: t('common.guest')
                                                                             }}
                                                                             cardData={[]}
                                                                             isMini={true}
@@ -439,11 +349,62 @@ const CreateBingo = () => {
                                                                     </div>
                                                                 </div>
                                                                 <div className="box-info">
-                                                                    <span className="name-m">{t.label}</span>
+                                                                    <span className="name-m">{t(`themes.labels.${t.id.toLowerCase()}`, { defaultValue: t.label })}</span>
                                                                 </div>
                                                             </div>
                                                         );
                                                     })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {currentStep === 3 && (
+                                    <div className="animate-fade-in section-compact-mini">
+                                        <div className="input-group-mini">
+                                            <label>{t('create.layout.name_label')}</label>
+                                            <input
+                                                type="text"
+                                                placeholder={t('create.layout.name_placeholder')}
+                                                value={config.eventTitle}
+                                                onChange={(e) => setConfig({ ...config, eventTitle: e.target.value })}
+                                            />
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                            <div className="input-group-mini">
+                                                <label>{t('create.layout.num_cards_label')}</label>
+                                                <input
+                                                    type="number"
+                                                    value={config.numCards}
+                                                    onChange={(e) => setConfig({ ...config, numCards: parseInt(e.target.value) })}
+                                                />
+                                            </div>
+                                            <div className="input-group-mini">
+                                                <label>{t('create.layout.grid_label')}</label>
+                                                <select
+                                                    value={`${config.rows}x${config.columns}`}
+                                                    onChange={(e) => {
+                                                        const [r, c] = e.target.value.split('x').map(Number);
+                                                        setConfig({ ...config, rows: r, columns: c });
+                                                    }}
+                                                >
+                                                    {gridOptions.map(opt => <option key={opt.label} value={`${opt.rows}x${opt.cols}`}>{opt.label.split(' ')[0]}</option>)}
+                                                </select>
+                                            </div>
+                                            <div className="input-group-mini" style={{ gridColumn: '1 / -1' }}>
+                                                <label>{t('create.layout.orientation_label')}</label>
+                                                <div className="toggle-group-mini glass">
+                                                    {['portrait', 'landscape'].map(o => (
+                                                        <button
+                                                            key={o}
+                                                            type="button"
+                                                            onClick={() => setConfig({ ...config, orientation: o })}
+                                                            className={`toggle-btn-mini ${config.orientation === o ? 'active' : ''}`}
+                                                        >
+                                                            {t(`create.layout.${o}`)}
+                                                        </button>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
@@ -463,11 +424,11 @@ const CreateBingo = () => {
                         }}>
                             {currentStep > 1 && (
                                 <button onClick={prevStep} className="btn btn-secondary btn-nav-mini">
-                                    <ArrowLeft size={16} /> Back
+                                    <ArrowLeft size={16} /> {t('create.nav.back')}
                                 </button>
                             )}
                             <button onClick={nextStep} className="btn btn-primary btn-nav-mini primary-nav" disabled={loading}>
-                                {loading ? '...' : (currentStep === totalSteps ? 'Generate' : 'Next Step')}
+                                {loading ? t('common.generating') : (currentStep === totalSteps ? t('create.nav.generate') : t('create.nav.next'))}
                                 <ArrowRight size={16} />
                             </button>
                         </div>
@@ -480,7 +441,7 @@ const CreateBingo = () => {
                 <div className="modal-ov">
                     <div className="modal-c glass animate-fade-in">
                         <div className="modal-h">
-                            <h3><ListMusic size={20} /> Playlists</h3>
+                            <h3><ListMusic size={20} /> {t('create.playlist_modal.title')}</h3>
                             <button onClick={() => setShowPlaylistModal(false)} className="close-b"><X size={20} /></button>
                         </div>
                         <div className="modal-b">
@@ -536,8 +497,8 @@ styleSheet.innerHTML = `
         .wizard-form-inner-scroll { flex: 1; overflow-y: auto; padding: 1.5rem; }
         
         .preview-wrap-mini { 
-            width: 90%; 
-            height: 90%; 
+            width: 95%; 
+            height: 100%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -603,8 +564,9 @@ styleSheet.innerHTML = `
     .scroll-box-mini { height: 260px; overflow-y: auto; padding: 1rem; background: var(--surface-light); border-radius: 1.25rem; border: 1px solid var(--glass-border); }
     .grid-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; }
     
-    .theme-box-mini { border-radius: 1rem; border: 2px solid transparent; background: var(--glass-bg); transition: 0.3s; position: relative; overflow: hidden; cursor: pointer; text-align: center; }
-    .theme-box-mini.selected { border-color: var(--primary); background: var(--primary); color: white; }
+    .theme-box-mini { border-radius: 1rem; border: 2px solid var(--glass-border); background: rgba(255,255,255,0.03); transition: 0.3s; position: relative; overflow: hidden; cursor: pointer; text-align: center; }
+    .theme-box-mini:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
+    .theme-box-mini.selected { border-color: var(--primary); background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2); }
     
     .box-preview { 
         height: 110px; 

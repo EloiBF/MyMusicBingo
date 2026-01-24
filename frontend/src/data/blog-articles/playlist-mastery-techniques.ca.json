@@ -1,0 +1,41 @@
+{
+    "id": "playlist-mastery-techniques",
+    "title": "Mestria en Playlists: Construint els Sets Perfectes de Bingo Musical",
+    "excerpt": "Aprèn l'art de crear llistes de reproducció que mantinguin els jugadors compromesos i facin que cada ronda sigui emocionant.",
+    "author": "DJ i Curador Musical",
+    "publishDate": "2024-01-16",
+    "readTime": "8 min de lectura",
+    "category": "Playlists",
+    "tags": [
+        "playlists",
+        "curaduria",
+        "tècniques",
+        "teoria-musical"
+    ],
+    "featuredImage": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=400&fit=crop",
+    "template": "text-heavy",
+    "content": {
+        "sections": [
+            {
+                "type": "text",
+                "title": "La Ciència de les Grans Playlists",
+                "content": "Crear la llista de reproducció perfecta per al bingo musical és tant un art com una ciència. No es tracta només de triar cançons populars, es tracta de crear un viatge emocional que mantingui els participants compromesos de principi a fi.\n\nUna gran playlist equilibra la familiaritat amb el descobriment, els nivells d'energia i l'atractiu per a la multitud. Pensa en tu mateix com un narrador d'històries, on cada cançó es basa en l'anterior per crear una experiència cohesiva."
+            },
+            {
+                "type": "text",
+                "title": "Entenent la teva Audiència",
+                "content": "Abans de crear qualsevol playlist, considera:\n\n• **Rang d'Edat**: Inclou cançons de diferents dècades per incloure tothom\n• **Rerefons Cultural**: Diversos gèneres atrauen a multituds mixtes\n• **Propòsit de l'Esdeveniment**: Alta energia per a festes, tranquil per a networking\n• **Hora del Dia**: Els esdeveniments nocturns necessiten una energia diferent a les reunions matinals\n• **Mida del Grup**: Els grups més petits permeten seleccions més de nínxol"
+            },
+            {
+                "type": "text",
+                "title": "La Fórmula de la Proporció Àuria",
+                "content": "Els curadors de llistes de reproducció professionals utilitzen aquesta fórmula comprovada:\n\n• **60% Èxits Familiars**: Cançons que tothom coneix i estima\n• **25% Nostàlgia**: Èxits del passat que creen connexions emocionals\n• **10% Llançaments Recents**: Pistes populars actuals\n• **5% Elements Sorpresa**: Cançons inesperades que delecten\n\nAquesta fórmula assegura el compromís mentre manté la comoditat i el descobriment."
+            },
+            {
+                "type": "text",
+                "title": "Consideracions Tècniques",
+                "content": "No deixis que els problemes tècnics arruïnin la teva playlist perfecta:\n\n• **Qualitat d'Àudio**: Utilitza arxius d'alta qualitat (320kbps o superior)\n• **Consistència de Volum**: Normalitza els nivells d'àudio en totes les pistes\n• **Transicions**: Considera com flueixen les cançons entre si\n• **Sistemes de Respatller**: Tingues còpies offline i dispositius alternatius llistos\n• **Proves**: Fes sempre una prova de so completa abans que arribin els convidats"
+            }
+        ]
+    }
+}

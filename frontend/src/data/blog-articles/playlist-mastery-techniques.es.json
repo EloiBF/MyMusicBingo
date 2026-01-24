@@ -1,0 +1,41 @@
+{
+    "id": "playlist-mastery-techniques",
+    "title": "Maestría en Playlists: Construyendo los Sets Perfectos de Bingo Musical",
+    "excerpt": "Aprende el arte de crear listas de reproducción que mantengan a los jugadores comprometidos y hagan que cada ronda sea emocionante.",
+    "author": "DJ y Curador Musical",
+    "publishDate": "2024-01-16",
+    "readTime": "8 min de lectura",
+    "category": "Playlists",
+    "tags": [
+        "playlists",
+        "curaduría",
+        "técnicas",
+        "teoría-musical"
+    ],
+    "featuredImage": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=400&fit=crop",
+    "template": "text-heavy",
+    "content": {
+        "sections": [
+            {
+                "type": "text",
+                "title": "La Ciencia de las Grandes Playlists",
+                "content": "Crear la lista de reproducción perfecta para el bingo musical es tanto un arte como una ciencia. No se trata solo de elegir canciones populares, se trata de crear un viaje emocional que mantenga a los participantes comprometidos de principio a fin.\n\nUna gran playlist equilibra la familiaridad con el descubrimiento, los niveles de energía y el atractivo para la multitud. Piensa en ti mismo como un narrador de historias, donde cada canción se basa en la anterior para crear una experiencia cohesiva."
+            },
+            {
+                "type": "text",
+                "title": "Entendiendo a tu Audiencia",
+                "content": "Antes de crear cualquier playlist, considera:\n\n• **Rango de Edad**: Incluye canciones de diferentes décadas para incluir a todos\n• **Trasfondo Cultural**: Diversos géneros atraen a multitudes mixtas\n• **Propósito del Evento**: Alta energía para fiestas, tranquilo para networking\n• **Hora del Día**: Los eventos nocturnos necesitan una energía diferente a las reuniones matutinas\n• **Tamaño del Grupo**: Los grupos más pequeños permiten selecciones más de nicho"
+            },
+            {
+                "type": "text",
+                "title": "La Fórmula de la Proporción Áurea",
+                "content": "Los curadores de listas de reproducción profesionales utilizan esta fórmula comprobada:\n\n• **60% Éxitos Familiares**: Canciones que todos conocen y aman\n• **25% Nostalgia**: Éxitos del pasado que crean conexiones emocionales\n• **10% Lanzamientos Recientes**: Pistas populares actuales\n• **5% Elementos Sorpresa**: Canciones inesperadas que deleitan\n\nEsta fórmula asegura el compromiso mientras mantiene la comodidad y el descubrimiento."
+            },
+            {
+                "type": "text",
+                "title": "Consideraciones Técnicas",
+                "content": "No dejes que los problemas técnicos arruinen tu playlist perfecta:\n\n• **Calidad de Audio**: Usa archivos de alta calidad (320kbps o superior)\n• **Consistencia de Volumen**: Normaliza los niveles de audio en todas las pistas\n• **Transiciones**: Considera cómo fluyen las canciones entre sí\n• **Sistemas de Respaldo**: Ten copias offline y dispositivos alternativos listos\n• **Pruebas**: Haz siempre una prueba de sonido completa antes de que lleguen los invitados"
+            }
+        ]
+    }
+}

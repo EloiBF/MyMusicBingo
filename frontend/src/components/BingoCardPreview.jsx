@@ -2,12 +2,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import BingoPreview from './BingoPreview';
 
-const BingoCardPreview = ({ 
-    event, 
-    cardData = [], 
+const BingoCardPreview = ({
+    event,
+    cardData = [],
     isMini = true,
+    transparentPage = false,
     containerStyle = {},
-    previewStyle = {}
+    previewStyle = {},
+    borderStyle = {}
 }) => {
     const containerRef = useRef(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -21,10 +23,10 @@ const BingoCardPreview = ({
             if (!container) return;
 
             const containerWidth = container.clientWidth;
-            
+
             // Relación de aspecto DIN A4 (1:√2)
-            const aspectRatio = event.orientation === 'landscape' ? Math.SQRT2 : 1/Math.SQRT2;
-            
+            const aspectRatio = event.orientation === 'landscape' ? Math.SQRT2 : 1 / Math.SQRT2;
+
             // Usar el ancho completo y calcular la altura proporcional
             const width = containerWidth;
             const height = width / aspectRatio;
@@ -33,11 +35,11 @@ const BingoCardPreview = ({
         };
 
         updateSize();
-        
+
         // Añadir listener para redimensionamiento
         const resizeObserver = new ResizeObserver(updateSize);
         resizeObserver.observe(containerRef.current);
-        
+
         return () => {
             if (containerRef.current) {
                 resizeObserver.unobserve(containerRef.current);
@@ -59,35 +61,36 @@ const BingoCardPreview = ({
                 width: '100%',
                 height: `${dimensions.height}px`,
                 position: 'relative',
-                background: 'white',
-                ...previewStyle
+                ...previewStyle,
+                ...borderStyle
             }}>
                 <BingoPreview
-                    theme={event.theme || 'classic'}
-                    primaryColor={event.primary_color}
+                    theme={event.theme || 'basic'}
                     rows={event.rows}
                     columns={event.columns}
                     orientation={event.orientation || 'portrait'}
                     eventTitle={event.event_title}
                     cardData={cardData}
+                    gridSize={event.gridSize}
                     cardNumber={cardData?.card_index || 1}
                     showFullscreen={false}
                     hideFooter={true}
                     isMini={isMini}
-                    padding={8}
+                    transparentPage={transparentPage}
+                    padding={0}
                     containerStyle={{
                         width: '100%',
                         height: '100%',
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'flex-start',
+                        alignItems: 'center',
                         overflow: 'hidden'
                     }}
                     previewStyle={{
                         width: '100%',
                         height: '100%',
                         objectFit: 'contain',
-                        objectPosition: 'top center',
+                        objectPosition: 'center',
                         margin: 0,
                         padding: 0
                     }}

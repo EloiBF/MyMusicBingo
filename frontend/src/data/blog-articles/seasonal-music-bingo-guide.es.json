@@ -1,0 +1,43 @@
+{
+    "id": "seasonal-music-bingo-guide",
+    "title": "Bingo Musical Estacional: Temas para Vacaciones y Eventos",
+    "excerpt": "Crea eventos de bingo musical memorables para cada estación con estas listas de reproducción temáticas e ideas de decoración.",
+    "author": "Equipo de Planificación de Eventos",
+    "publishDate": "2024-01-18",
+    "readTime": "6 min de lectura",
+    "category": "Temas",
+    "tags": [
+        "estacional",
+        "vacaciones",
+        "temas",
+        "playlists"
+    ],
+    "featuredImage": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=400&fit=crop",
+    "template": "image-text",
+    "content": {
+        "sections": [
+            {
+                "type": "image",
+                "src": "https://images.unsplash.com/photo-1482575832494-771f74bf6857?w=800&h=400&fit=crop",
+                "alt": "Configuración de bingo musical de vacaciones",
+                "caption": "Transforma tu espacio para celebraciones estacionales"
+            },
+            {
+                "type": "text",
+                "title": "Por qué importan los temas estacionales",
+                "content": "Los eventos de bingo musical estacionales crean recuerdos duraderos y unen a las personas de maneras significativas. Ya sea una fiesta de verano, una reunión de vacaciones de invierno o una celebración de primavera, el tema adecuado eleva toda la experiencia.\n\nLos eventos temáticos muestran atención al detalle y crean momentos dignos de Instagram que los participantes compartirán mucho después de que termine el evento."
+            },
+            {
+                "type": "image",
+                "src": "https://images.unsplash.com/photo-1464047736614-af63643285bf?w=800&h=400&fit=crop",
+                "alt": "Decoraciones estacionales",
+                "caption": "Decoraciones sencillas pueden transformar cualquier espacio"
+            },
+            {
+                "type": "text",
+                "title": "Temas Estacionales Populares",
+                "content": "**País de las Maravillas de Invierno**: Clásicos de vacaciones y canciones acogedoras de invierno\n**Vibras de Verano**: Canciones de playa y éxitos alegres de verano\n**Fiesta de Primavera**: Canciones frescas y enérgicas para nuevos comienzos\n**Festival de Otoño**: Favoritos de otoño y pistas nostálgicas\n**Halloween Spooktacular**: Tema de suspense y canciones espeluznantes\n**Romance de San Valentín**: Canciones de amor y duetos románticos"
+            }
+        ]
+    }
+}

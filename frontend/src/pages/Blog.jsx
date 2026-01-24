@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, Clock, User, Tag } from 'lucide-react';
-import { blogArticles } from '../data/blogLoader';
+import { useTranslation } from 'react-i18next';
+import { loadBlogArticles } from '../data/blogLoader';
 import { handleImageError } from '../utils/blogImageUtils';
 import Layout from '../components/Layout';
 
 const Blog = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Sort articles from new to old (already handled by blogLoader)
-  const sortedArticles = [...blogArticles].sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+  useEffect(() => {
+    const fetchArticles = async () => {
+      setLoading(true);
+      const data = await loadBlogArticles(i18n.language.split('-')[0]);
+      setArticles(data);
+      setLoading(false);
+    };
+    fetchArticles();
+  }, [i18n.language]);
+
+  // Sort articles from new to old
+  const sortedArticles = [...articles].sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 
   return (
     <Layout>
@@ -17,10 +31,10 @@ const Blog = () => {
         {/* Header */}
         <div className="glass" style={{ marginBottom: '3rem', textAlign: 'center' }}>
           <h1 className="brand" style={{ marginBottom: '1rem', color: 'var(--text)', textDecoration: 'none', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
-            Blog
+            {t('nav.blog')}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-            The tips and articles to make an unforgettable event with Music Bingo!
+            {t('landing.blog.subtitle')}
           </p>
         </div>
 
@@ -76,7 +90,7 @@ const Blog = () => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <Calendar style={{ width: '16px', height: '16px' }} />
-                    {new Date(article.publishDate).toLocaleDateString('en-US', {
+                    {new Date(article.publishDate).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : (i18n.language === 'ca' ? 'ca-ES' : 'en-GB'), {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
@@ -106,10 +120,12 @@ const Blog = () => {
         </div>
 
         {/* No Results */}
-        {sortedArticles.length === 0 && (
+        {!loading && sortedArticles.length === 0 && (
           <div className="glass" style={{ textAlign: 'center', padding: '3rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text)' }}>No articles found</h3>
-            <p style={{ color: 'var(--text-muted)' }}>Check back soon for new content!</p>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text)' }}>
+              {t('common.no_articles', { defaultValue: 'No articles found' })}
+            </h3>
+            <p style={{ color: 'var(--text-muted)' }}>{t('common.check_back', { defaultValue: 'Check back soon for new content!' })}</p>
           </div>
         )}
       </div>

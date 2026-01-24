@@ -1,0 +1,293 @@
+{
+    "nav": {
+        "dashboard": "Mis bingos",
+        "create": "Crear Bingo",
+        "settings": "Ajustes",
+        "blog": "Blog",
+        "login": "Iniciar sesión",
+        "signup": "Registrarse",
+        "logout": "Cerrar sesión",
+        "logout_confirm_title": "Cerrar sesión",
+        "logout_confirm_message": "¿Estás seguro de que quieres cerrar sesión? Tendrás que iniciar sesión de nuevo para acceder a tu cuenta.",
+        "spotify_connected": "Spotify Conectado",
+        "free_account": "Cuenta Gratuita"
+    },
+    "landing": {
+        "hero": {
+            "title": "Juega, canta y gana <0 /> con <1> ¡Bingo Musical!</1>",
+            "title1": "Bingo Musical",
+            "title2": "desde tus listas de Spotify",
+            "subtitle": "Conecta tus listas de Spotify para crear cartones de bingo únicos. <0 /> Rápido, fácil y gratuito.",
+            "cta": "Empezar Gratis",
+            "secondaryCta": "Cómo funciona"
+        },
+        "why": {
+            "title_from": "De Spotify ",
+            "title_to": "a BingoMusicMaker",
+            "features": {
+                "custom": {
+                    "title": "Cartones Personalizables",
+                    "desc": "Totalmente tematizables. Desde bodas hasta cumpleaños, incluso eventos corporativos."
+                },
+                "print": {
+                    "title": "Listo para Imprimir",
+                    "desc": "Obtén cartones de alta calidad al instante o pide impresiones premium para tus eventos."
+                },
+                "ai": {
+                    "title": "Reconocimiento por IA",
+                    "desc": "Controla las canciones reproducidas con nuestra herramienta de identificación por IA."
+                }
+            }
+        },
+        "how": {
+            "title": "Cómo Funciona",
+            "subtitle": "Empieza tu fiesta en minutos con nuestro proceso sencillo.",
+            "steps": {
+                "1": {
+                    "title": "Registro Rápido",
+                    "desc": "Crea una cuenta gratuita para guardar eventos y acceder a herramientas premium."
+                },
+                "2": {
+                    "title": "Conecta Spotify",
+                    "desc": "Pega cualquier ID de lista pública (enlace compartido de la app de Spotify)."
+                },
+                "3": {
+                    "title": "Personaliza",
+                    "desc": "Elige temas y colores que encajen con tu estilo."
+                },
+                "4": {
+                    "title": "Exporta e Imprime",
+                    "desc": "Imprime tú mismo o pide copias profesionales."
+                },
+                "5": {
+                    "title": "Reconocimiento por IA",
+                    "desc": "Rastrea las canciones y verifica ganadores automáticamente."
+                }
+            },
+            "cta": "Empieza tu primera partida"
+        },
+        "testimonials": {
+            "title": "Casos de Éxito",
+            "items": {
+                "1": "El seguimiento de canciones durante el bingo es súper fácil, pude centrarme en divertirme.",
+                "2": "Pedimos un juego de bingo personalizado, la calidad y el diseño son realmente buenos. ¡La fiesta fue increíble!",
+                "3": "Fácil de conectar con Spotify y crear un juego de bingo completo con mis canciones, en menos de un minuto..."
+            }
+        },
+        "blog": {
+            "title": "Lo último del Blog",
+            "subtitle": "Consejos, trucos e inspiración para eventos de bingo musical increíbles",
+            "cta": "Ver todos los artículos"
+        }
+    },
+    "footer": {
+        "description": "Crea y juega juegos de bingo musical con tus amigos. Conecta con Spotify para la mejor experiencia musical.",
+        "links": {
+            "title": "Enlaces Rápidos",
+            "dashboard": "Mis bingos",
+            "create": "Crear Juego",
+            "settings": "Ajustes"
+        },
+        "legal": {
+            "title": "Legal",
+            "terms": "Términos de Servicio",
+            "privacy": "Política de Privacidad"
+        },
+        "support": {
+            "title": "Soporte",
+            "contact": "Contactar Soporte",
+            "privacy": "Consultas de Privacidad"
+        },
+        "bottom": {
+            "rights": "© 2026 BingoMusicMaker. Todos los derechos reservados.",
+            "madeWith": "Hecho con <0 /> y <1 />"
+        }
+    },
+    "dashboard": {
+        "loading": "Cargando tu panel...",
+        "new_bingo": "Crear Nuevo Bingo",
+        "welcome": "Bienvenido de nuevo",
+        "subtitle": "Gestiona tus bingos musicales y crea otros nuevos en pocos clics.",
+        "empty": {
+            "title": "Crea tu primer bingo musical",
+            "desc": "¡Comienza ahora! Convierte cualquier playlist de Spotify en un juego de bingo profesional en segundos.",
+            "cta": "Comenzar"
+        }
+    },
+    "auth": {
+        "login": {
+            "welcome": "¡Bienvenido de nuevo! Inicia sesión para continuar."
+        },
+        "register": {
+            "welcome": "Crea una cuenta para empezar a construir tus bingos."
+        },
+        "username": "Nombre de usuario",
+        "username_placeholder": "Elige un nombre de usuario",
+        "email": "Correo electrónico",
+        "email_placeholder": "Introduce tu correo electrónico",
+        "password": "Contraseña",
+        "signin": "Iniciar Sesión",
+        "signup": "Crear Cuenta",
+        "processing": "Procesando...",
+        "no_account": "¿No tienes una cuenta?",
+        "have_account": "¿Ya tienes una cuenta?",
+        "create_one": "Crea una",
+        "sign_in_link": "Inicia sesión",
+        "errors": {
+            "cancelled": "Has cancelado la conexión con Spotify.",
+            "failed": "El inicio de sesión falló: {{error}}",
+            "generic": "Error de autenticación. Por favor, comprueba tus datos."
+        }
+    },
+    "detail": {
+        "loading": "Cargando detalles del evento...",
+        "theme_suffix": "Tema",
+        "actions": {
+            "print": "Imprimir Cartones",
+            "track": "Seguir Canciones",
+            "edit": "Editar Evento",
+            "delete": "Eliminar Evento"
+        },
+        "delete_modal": {
+            "title": "¿Eliminar este evento?",
+            "message": "Todos los cartones generados y estadísticas de \"{{title}}\" se eliminarán de forma permanente.",
+            "confirm": "Sí, Eliminar"
+        },
+        "stats": {
+            "participants": "Participantes",
+            "pool": "Canciones",
+            "grid": "Cuadrícula"
+        },
+        "insights": {
+            "most": "Más frecuentes",
+            "least": "Menos frecuentes"
+        },
+        "alerts": {
+            "delete_failed": "Error al eliminar el evento de bingo."
+        }
+    },
+    "themes": {
+        "categories": {
+            "essentials": "Esenciales",
+            "celebrations": "Celebraciones",
+            "other": "Otros"
+        },
+        "labels": {
+            "basic": "Básico",
+            "luxurynight": "Noche de Lujo",
+            "pop": "Éxitos Pop",
+            "wedding": "Boda"
+        }
+    },
+    "create": {
+        "title": "Crear Bingo",
+        "edit_title": "Editar Bingo",
+        "subtitle": "Genera cartones únicos desde Spotify.",
+        "edit_subtitle": "Actualiza la configuración del evento.",
+        "default_title": "Noche de Disco",
+        "steps": {
+            "playlist": "Lista",
+            "theme": "Tema",
+            "layout": "Diseño"
+        },
+        "playlist": {
+            "label": "Pega el enlace de la lista de Spotify",
+            "placeholder": "Pega el enlace...",
+            "loading": "Cargando listas...",
+            "error": "Error al cargar las listas.",
+            "guide": {
+                "desktop": {
+                    "title": "Windows/Mac",
+                    "step1": "Abre Spotify Desktop",
+                    "step2": "Busca tu playlist",
+                    "step3": "Haz clic derecho en la lista",
+                    "step4": "Selecciona 'Compartir'",
+                    "step5": "Haz clic en 'Copiar enlace de la playlist'"
+                },
+                "mobile": {
+                    "title": "iOS/Android",
+                    "step1": "Abre Spotify",
+                    "step2": "Busca tu playlist",
+                    "step3": "Toca los tres puntos (...)",
+                    "step4": "Desliza y selecciona 'Compartir'",
+                    "step5": "Toca 'Copiar enlace'"
+                }
+            }
+        },
+        "theme": {
+            "label": "Elige un tema"
+        },
+        "layout": {
+            "name_label": "Elige un nombre para tus cartones",
+            "name_placeholder": "ej. Noche de Disco",
+            "num_cards_label": "Número de cartones a generar",
+            "grid_label": "Tamaño de la cuadrícula",
+            "orientation_label": "Orientación del cartón",
+            "portrait": "Vertical",
+            "landscape": "Horizontal"
+        },
+        "nav": {
+            "back": "Atrás",
+            "next": "Siguiente",
+            "generate": "Generar"
+        },
+        "playlist_modal": {
+            "title": "Tus Listas"
+        },
+        "alerts": {
+            "provide_info": "Por favor, indica un título y una lista de Spotify.",
+            "load_failed": "Error al cargar los datos del evento.",
+            "playlist_required": "Por favor, introduce un ID o enlace de lista."
+        }
+    },
+    "settings": {
+        "title": "Ajustes de cuenta",
+        "subtitle": "Gestiona tu perfil y configuración de seguridad.",
+        "loading": "Cargando ajustes...",
+        "profile": {
+            "title": "Información Personal",
+            "username": "Nombre de usuario",
+            "email": "Correo electrónico"
+        },
+        "password": {
+            "title": "Cambiar Contraseña",
+            "current": "Contraseña Actual",
+            "current_placeholder": "Introduce la contraseña actual",
+            "new": "Nueva Contraseña",
+            "new_placeholder": "Introduce la nueva contraseña (mín. 8 caracteres)",
+            "confirm": "Confirmar Nueva Contraseña",
+            "confirm_placeholder": "Confirma la nueva contraseña",
+            "submit": "Cambiar Contraseña",
+            "changing": "Cambiando...",
+            "success": "¡Contraseña cambiada con éxito!",
+            "match_error": "Las nuevas contraseñas no coinciden.",
+            "length_error": "La contraseña debe tener al menos 8 caracteres.",
+            "failed": "Error al cambiar la contraseña."
+        },
+        "session": {
+            "title": "Gestión de Sesión",
+            "desc": "Cerrar la sesión finalizará tu sesión actual. Tendrás que volver a iniciar sesión para acceder a Mis Bingos.",
+            "logout_all": "Cerrar sesión en todos los dispositivos",
+            "modal": {
+                "title": "¿Cerrar sesión?",
+                "message": "¿Estás seguro de que quieres cerrar la sesión de tu cuenta? Tendrás que volver a iniciar sesión para acceder a tus bingos.",
+                "confirm": "Cerrar sesión"
+            }
+        },
+        "errors": {
+            "load_failed": "Error al cargar el perfil de usuario."
+        }
+    },
+    "common": {
+        "loading": "Cargando...",
+        "generating": "Generando...",
+        "error": "Algo salió mal",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "save": "Guardar",
+        "share": "Compartir",
+        "guest": "Invitado",
+        "no_articles": "No se encontraron artículos",
+        "check_back": "¡Vuelve pronto para ver contenido nuevo!"
+    }
+}

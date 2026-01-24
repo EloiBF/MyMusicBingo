@@ -14,12 +14,11 @@ const Layout = ({ children }) => {
             <Navbar />
             <main style={{
                 flex: 1,
-                paddingTop: 'clamp(6rem, 15vh, 10rem)', // Increased padding for better separation
+                paddingTop: 'clamp(7rem, 15vh, 10rem)',
                 display: 'flex',
                 flexDirection: 'column',
                 paddingLeft: '2rem',
-                paddingRight: '2rem',
-                paddingBottom: '4rem' // Space between content and footer
+                paddingRight: '2rem'
             }}>
                 {children}
             </main>

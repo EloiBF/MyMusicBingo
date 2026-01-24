@@ -3,12 +3,14 @@ import {
     PlusCircle, Music, Layers, Printer, BarChart3, ChevronRight, Layout, Play
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../api';
 import API_URLS from '../config/api';
 import PageLayout from '../components/PageLayout';
 import BingoCardPreview from '../components/BingoCardPreview';
 
 const Dashboard = () => {
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [stats, setStats] = useState({});
@@ -23,25 +25,26 @@ const Dashboard = () => {
                     api.get('/bingo/'),
                     api.get('/auth/me/')
                 ]);
-                setEvents(eventsRes.data);
+                const eventsList = Array.isArray(eventsRes.data) ? eventsRes.data : (eventsRes.data.results || []);
+                setEvents(eventsList);
                 setUser(userRes.data);
-                
+
                 // Fetch stats and first card for each event
-                const statsPromises = eventsRes.data.map(event => 
+                const statsPromises = eventsList.map(event =>
                     api.get(`/bingo/${event.id}/statistics/`).catch(() => null)
                 );
-                const cardsPromises = eventsRes.data.map(event => 
+                const cardsPromises = eventsList.map(event =>
                     api.get(`/bingo/${event.id}/get_cards/`).catch(() => null)
                 );
-                
+
                 const [statsResults, cardsResults] = await Promise.all([
                     Promise.all(statsPromises),
                     Promise.all(cardsPromises)
                 ]);
-                
+
                 const statsMap = {};
                 const cardsMap = {};
-                eventsRes.data.forEach((event, index) => {
+                eventsList.forEach((event, index) => {
                     if (statsResults[index]) {
                         statsMap[event.id] = statsResults[index].data;
                     }
@@ -60,7 +63,7 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    if (loading) return <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Loading your dashboard...</div>;
+    if (loading) return <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{t('dashboard.loading')}</div>;
 
     const headerActions = (
         <button
@@ -68,14 +71,14 @@ const Dashboard = () => {
             className="btn btn-primary"
             style={{ padding: '0.8rem 1.8rem', display: 'flex', alignItems: 'center', gap: '0.75rem', boxShadow: 'var(--shadow-lg)' }}
         >
-            <PlusCircle size={20} /> Create New Bingo
+            <PlusCircle size={20} /> {t('dashboard.new_bingo')}
         </button>
     );
 
     return (
         <PageLayout
-            title={`Welcome back${user?.username ? `, ${user.username}` : ''}`}
-            subtitle="Manage your music bingos and create new ones in a few clicks."
+            title={`${t('dashboard.welcome')}${user?.username ? `, ${user.username}` : ''}`}
+            subtitle={t('dashboard.subtitle')}
             actions={headerActions}
         >
             {/* Content Section */}
@@ -98,9 +101,9 @@ const Dashboard = () => {
                 }}>
                     <div style={{
                         width: '96px', height: '96px', borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--primary)20, var(--secondary)20)', 
+                        background: 'linear-gradient(135deg, var(--primary)20, var(--secondary)20)',
                         display: 'flex',
-                        alignItems: 'center', justifyContent: 'center', 
+                        alignItems: 'center', justifyContent: 'center',
                         color: 'var(--primary)',
                         border: '1px solid var(--primary)30',
                         backdropFilter: 'var(--glass-blur)',
@@ -110,33 +113,33 @@ const Dashboard = () => {
                         <Layout size={48} strokeWidth={1.5} />
                     </div>
                     <div>
-                        <h3 style={{ 
-                            fontSize: '1.75rem', 
-                            marginBottom: '1rem', 
+                        <h3 style={{
+                            fontSize: '1.75rem',
+                            marginBottom: '1rem',
                             fontWeight: '700',
                             color: 'var(--text)'
-                        }}>Crea tu primer bingo musical</h3>
-                        <p style={{ 
-                            color: 'var(--text-muted)', 
-                            maxWidth: '400px', 
+                        }}>{t('dashboard.empty.title')}</h3>
+                        <p style={{
+                            color: 'var(--text-muted)',
+                            maxWidth: '400px',
                             margin: '0 auto',
                             fontSize: '1rem',
                             lineHeight: '1.6'
                         }}>
-                            ¡Comienza ahora! Convierte cualquier playlist de Spotify en un juego de bingo profesional en segundos.
+                            {t('dashboard.empty.desc')}
                         </p>
                     </div>
-                    <button 
-                        onClick={() => navigate('/create')} 
-                        className="btn btn-primary" 
-                        style={{ 
+                    <button
+                        onClick={() => navigate('/create')}
+                        className="btn btn-primary"
+                        style={{
                             marginTop: '1rem',
                             padding: '1rem 2rem',
                             fontSize: '1rem',
                             boxShadow: 'var(--shadow-glow)'
                         }}
                     >
-                        Comenzar
+                        {t('dashboard.empty.cta')}
                     </button>
                 </div>
             ) : (
@@ -182,10 +185,10 @@ const Dashboard = () => {
                                     background: 'linear-gradient(90deg, ' + (event.primary_color || 'var(--primary)') + ', ' + (event.primary_color || 'var(--secondary)') + ')',
                                     boxShadow: '0 2px 8px ' + (event.primary_color || 'var(--primary)') + '30'
                                 }} />
-                                
-                                <h3 style={{ 
-                                    fontSize: '1.1rem', 
-                                    marginBottom: '0.3rem', 
+
+                                <h3 style={{
+                                    fontSize: '1.1rem',
+                                    marginBottom: '0.3rem',
                                     fontWeight: '700',
                                     lineHeight: '1.2',
                                     color: 'var(--text)',
@@ -196,7 +199,7 @@ const Dashboard = () => {
                                 }}>
                                     {event.event_title}
                                 </h3>
-                                
+
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -204,9 +207,9 @@ const Dashboard = () => {
                                     color: 'var(--text-muted)',
                                     fontSize: '0.7rem'
                                 }}>
-                                    <span style={{ 
-                                        color: 'var(--spotify-green)', 
-                                        display: 'inline-flex', 
+                                    <span style={{
+                                        color: 'var(--spotify-green)',
+                                        display: 'inline-flex',
                                         alignItems: 'center',
                                         width: '10px',
                                         height: '10px',
@@ -226,7 +229,7 @@ const Dashboard = () => {
                             </div>
 
                             {/* Date */}
-                            <div style={{ 
+                            <div style={{
                                 padding: '0.4rem 1.1rem 0.4rem',
                                 flexShrink: 0
                             }}>
@@ -244,16 +247,16 @@ const Dashboard = () => {
                                         <line x1="8" y1="2" x2="8" y2="6"></line>
                                         <line x1="3" y1="10" x2="21" y2="10"></line>
                                     </svg>
-                                    {new Date(event.created_at || Date.now()).toLocaleDateString('es-ES', { 
-                                        year: 'numeric', 
-                                        month: 'short', 
-                                        day: 'numeric' 
+                                    {new Date(event.created_at || Date.now()).toLocaleDateString(i18n.language === 'es' ? 'es-ES' : 'en-GB', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
                                     })}
                                 </div>
                             </div>
 
-                            <BingoCardPreview 
-                                event={event} 
+                            <BingoCardPreview
+                                event={event}
                                 cardData={cards[event.id]?.data || []}
                                 isMini={true}
                             />
@@ -265,13 +268,11 @@ const Dashboard = () => {
             {/* Global Styles for the Hover Effect */}
             <style>{`
                 .card-hover:hover {
-                    transform: translateY(-4px) scale(1.02);
                     box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--primary)30;
                     border-color: var(--primary)50 !important;
                     background: hsla(0, 0%, 100%, 0.08) !important;
                 }
                 .card-hover:active {
-                    transform: translateY(-2px) scale(1.01);
                     transition: all 0.1s ease;
                 }
                 .card-hover:hover div[style*="background: var(--glass)"] {

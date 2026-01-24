@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 
 const Footer = () => {
+    const { t } = useTranslation();
     return (
         <footer style={{
             background: 'var(--glass-bg)',
             borderTop: '1px solid var(--glass-border)',
-            padding: '2rem 0',
+            padding: '1rem 0',
             marginTop: 'auto',
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)'
@@ -14,50 +16,50 @@ const Footer = () => {
             <div style={{
                 maxWidth: 'clamp(800px, 90vw, 1400px)',
                 margin: '0 auto',
-                padding: '0 2rem',
+                padding: '0 1.5rem',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '2rem'
+                gap: '1.5rem'
             }}>
                 {/* Main Footer Content */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '2rem'
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '1.5rem'
                 }}>
                     {/* Brand Section */}
                     <div>
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.75rem',
-                            marginBottom: '1rem'
+                            gap: '0.5rem',
+                            marginBottom: '0.75rem'
                         }}>
-                            <img 
-                                src="/images/logo.png" 
+                            <img
+                                src="/images/logo.png"
                                 alt="BingoMusicMaker Logo"
                                 style={{
-                                    width: '32px',
-                                    height: '32px',
-                                    borderRadius: '0.5rem',
+                                    width: '24px',
+                                    height: '24px',
+                                    borderRadius: '0.4rem',
                                     objectFit: 'contain'
                                 }}
                             />
-                            <span style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                            <span style={{ fontSize: '1rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                                 BingoMusicMaker
                             </span>
                         </div>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                            Create and play music bingo games with your friends. Connect with Spotify for the ultimate music experience.
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.5', fontSize: '0.8rem' }}>
+                            {t('footer.description')}
                         </p>
                     </div>
 
                     {/* Links Section */}
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                            Quick Links
+                        <h3 style={{ fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.75rem', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {t('footer.links.title')}
                         </h3>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
                             <li>
                                 <Link
                                     to="/dashboard"
@@ -69,7 +71,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Dashboard
+                                    {t('footer.links.dashboard')}
                                 </Link>
                             </li>
                             <li>
@@ -83,7 +85,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Create Game
+                                    {t('footer.links.create')}
                                 </Link>
                             </li>
                             <li>
@@ -97,7 +99,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Settings
+                                    {t('footer.links.settings')}
                                 </Link>
                             </li>
                         </ul>
@@ -105,10 +107,10 @@ const Footer = () => {
 
                     {/* Legal Section */}
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                            Legal
+                        <h3 style={{ fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.75rem', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {t('footer.legal.title')}
                         </h3>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
                             <li>
                                 <Link
                                     to="/terms"
@@ -120,7 +122,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Terms of Service
+                                    {t('footer.legal.terms')}
                                 </Link>
                             </li>
                             <li>
@@ -134,7 +136,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Privacy Policy
+                                    {t('footer.legal.privacy')}
                                 </Link>
                             </li>
                         </ul>
@@ -142,10 +144,10 @@ const Footer = () => {
 
                     {/* Contact Section */}
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                            Support
+                        <h3 style={{ fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.75rem', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {t('footer.support.title')}
                         </h3>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
                             <li>
                                 <a
                                     href="mailto:support@BingoMusicMaker.com"
@@ -157,7 +159,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Contact Support
+                                    {t('footer.support.contact')}
                                 </a>
                             </li>
                             <li>
@@ -171,7 +173,7 @@ const Footer = () => {
                                     onMouseOver={(e) => e.target.style.color = 'var(--primary)'}
                                     onMouseOut={(e) => e.target.style.color = 'var(--text-secondary)'}
                                 >
-                                    Privacy Inquiries
+                                    {t('footer.support.privacy')}
                                 </a>
                             </li>
                         </ul>
@@ -181,19 +183,21 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div style={{
                     borderTop: '1px solid var(--glass-border)',
-                    paddingTop: '1.5rem',
+                    paddingTop: '1rem',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     gap: '1rem'
                 }}>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: 0 }}>
-                        © 2026 BingoMusicMaker. All rights reserved.
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', margin: 0 }}>
+                        {t('footer.bottom.rights')}
                     </p>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                            Made with ❤️ and 🎵
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>
+                            <Trans i18nKey="footer.bottom.madeWith" components={[<>❤️</>, <>🎵</>]}>
+                                Made with ❤️ and 🎵
+                            </Trans>
                         </span>
                     </div>
                 </div>

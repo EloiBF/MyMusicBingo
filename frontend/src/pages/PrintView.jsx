@@ -121,7 +121,6 @@ const PrintView = () => {
                         }}>
                             <ThemeRenderer
                                 themeId={event.theme}
-                                primaryColor={event.primary_color}
                                 rows={event.rows}
                                 columns={event.columns}
                                 orientation={event.orientation}

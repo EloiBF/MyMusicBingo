@@ -14,3 +14,4 @@ unicode
 django-widget-tweaks
 spotipy
 gunicorn
+dj-database-url

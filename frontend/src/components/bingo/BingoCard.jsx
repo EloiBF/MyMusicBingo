@@ -1,179 +1,439 @@
 import React from 'react';
 
 const BingoCard = ({
-    children,
+    cardData,
+    cardNumber,
     orientation = 'portrait',
-    primaryColor = '#8b5cf6',
+    accentColor = '#3b82f6',
+    title = 'MUSIC BINGO',
+    eventTitle = 'My Party',
     columns = 3,
     rows = 3,
-    cardNumber,
-    eventTitle = 'Bingo Musical',
     isMini = false,
-    cardData,
-    cellStyles = {},
-    songStyles = {},
-    artistStyles = {},
-    titleEmojis = { left: '', right: '' },
-    font = "'Montserrat', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
-    // NUEVA PROP: Permite renderizar elementos decorativos DENTRO de la celda (ej: cinta adhesiva, chincheta)
-    accentColor = '#f59e0b',
-    headerStyles = {},
-    titleStyles = {},
-    footerStyles = {},
-    themeStyles = {}, // Now properly destructured
-    subtitleStyles = {}, // New prop for subtitle customization
-    renderCellDecor = null,
-    renderCardNumber = null, // New prop for custom card number rendering
-    title // Fix: Deseructure title from props
+    transparentPage = false,
+    gridSize = 'medium', // 'large', 'medium', 'small'
+    themeConfig = {},
+    // Layout options (defaults handled inside component)
+    layoutConfig = {},
+    titleConfig = {},
+    gridConfig = {}
 }) => {
     const isLandscape = orientation === 'landscape';
 
-    // Extract theme elements from children
-    const themeElements = React.Children.toArray(children);
-    const decorativeElements = themeElements.filter(child =>
-        React.isValidElement(child) && child.props.style?.position === 'absolute'
-    );
+    // Grid size configurations with expanded multipliers
+    // Grid size configurations
+    const gridSizeConfig = {
+        // Large: Standard layout (Reference)
+        large: { multiplier: 1, gapMultiplier: 1, fontMultiplier: 1, paddingMultiplier: 1, shadowMultiplier: 1 },
+        // Medium: Recalibrated for balance (Smaller cells, more padding)
+        medium: { multiplier: 0.8, gapMultiplier: 0.8, fontMultiplier: 0.9, paddingMultiplier: 2.0, shadowMultiplier: 0.8 },
+        // Small: Very compact (Much smaller cells, significant padding)
+        small: { multiplier: 0.6, gapMultiplier: 0.6, fontMultiplier: 0.7, paddingMultiplier: 3.0, shadowMultiplier: 0.6 }
+    };
+
+    const sizeConfig = gridSizeConfig[gridSize] || gridSizeConfig.medium;
+
+    // Merge layout configurations (Prop overrides Theme, Theme overrides Component Default)
+    const effectiveLayout = {
+        showMargin: layoutConfig.showMargin ?? themeConfig.layout?.showMargin ?? (themeConfig.card?.offset !== undefined && themeConfig.card?.offset !== '0' && themeConfig.card?.offset !== '0mm' ? true : (themeConfig.card?.offset === undefined ? true : false)),
+        showBorder: layoutConfig.showBorder ?? themeConfig.layout?.showBorder ?? (!!themeConfig.card?.border),
+        borderWidth: layoutConfig.borderWidth || themeConfig.card?.border?.split(' ')[0] || themeConfig.layout?.borderWidth || '1px',
+        borderColor: layoutConfig.borderColor || themeConfig.card?.border?.split(' ').pop() || themeConfig.layout?.borderColor || themeConfig.defaultAccentColor || '#ddd'
+    };
+
+    const effectiveTitleConfig = {
+        alignment: titleConfig.alignment || themeConfig.title?.textAlign || 'center',
+        size: titleConfig.size || themeConfig.title?.size || 'medium',
+        space: titleConfig.space || themeConfig.defaultTitleSpace || 'medium'
+    };
+
+    const effectiveGridConfig = {
+        thickness: gridConfig.thickness || themeConfig.cell?.border?.split(' ')[0] || themeConfig.grid?.thickness || '1px',
+        color: gridConfig.color || themeConfig.cell?.border?.split(' ').pop() || themeConfig.grid?.color || themeConfig.defaultAccentColor || '#ddd'
+    };
+
+    // Title Space Mapping
+    // Controls the vertical proportion of the header vs grid in portrait mode.
+    const titleSpaceMap = {
+        small: { percent: '18%', baseSize: '54pt' },
+        medium: { percent: '25%', baseSize: '78pt' },
+        large: { percent: '33%', baseSize: '100pt' }
+    };
+    const activeTitleSpace = titleSpaceMap[effectiveTitleConfig.space] || titleSpaceMap.medium;
+
+    // Title scale factors (User preference multiplier)
+    const titleScaleMap = { small: 0.7, medium: 1, large: 1.3 };
+    const titleScale = titleScaleMap[effectiveTitleConfig.size] || 1;
+
+    // Helper to scale absolute values in strings (e.g. "10px", "12pt")
+    const scaleVal = (val, multiplier, defaultVal = '0px') => {
+        const str = val || defaultVal;
+        return str.replace(/(-?\d+\.?\d*)(px|pt|rem|em|mm|cm)?/g, (match, num, unit) => {
+            const scaled = parseFloat(num) * multiplier;
+            return unit ? `${scaled}${unit}` : scaled;
+        });
+    };
+
+    // Helper to scale complex CSS shadows
+    const scaleShadow = (shadow, multiplier) => {
+        if (!shadow || shadow === 'none') return shadow;
+        return shadow.replace(/(-?\d+\.?\d*)px/g, (match, num) => {
+            return `${parseFloat(num) * multiplier}px`;
+        });
+    };
+
+    // Base scaling helpers bound to current sizeConfig
+    const s = (v, defaultV) => scaleVal(v, sizeConfig.multiplier, defaultV);
+    const sg = (v, defaultV) => scaleVal(v, sizeConfig.gapMultiplier, defaultV);
+    const sp = (v, defaultV) => scaleVal(v, sizeConfig.paddingMultiplier, defaultV);
+    const sf = (v, defaultV) => scaleVal(v, sizeConfig.fontMultiplier, defaultV);
+    const ssh = (v) => scaleShadow(v, sizeConfig.shadowMultiplier);
+
+    // Element Size Defaults (Base values before scaling)
+    const elementSizes = {
+        title: { small: '60pt', medium: '70pt', large: '80pt' },
+        subtitle: { small: '20pt', medium: '25pt', large: '30pt' },
+        song: { small: '12pt', medium: '14pt', large: '16pt' },
+        artist: { small: '10pt', medium: '12pt', large: '14pt' },
+        cardNumber: { small: '12pt', medium: '14pt', large: '16pt' },
+        footer: { small: '10pt', medium: '12pt', large: '14pt' }
+    };
+
+    const resolveSize = (userSize, type) => {
+        const map = elementSizes[type];
+        // If userSize is 'small', 'medium', 'large', use map. Otherwise assume it's a direct value (e.g. '12pt') or null.
+        return map[userSize] || userSize || map.medium;
+    };
+
+    // Helper function for decoration styling
+    const getSvgDecorationStyle = (el) => {
+        const baseOpacity = el.content?.props?.style?.opacity || 0.12;
+        const decorationLevel = el.decorationLevel || 'subtle'; // 'subtle' or 'prominent'
+
+        const opacityMap = {
+            subtle: baseOpacity,
+            prominent: baseOpacity * 1.5 // More visible for prominent decorations
+        };
+
+        return {
+            opacity: opacityMap[decorationLevel],
+            filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))',
+            transition: 'opacity 0.3s ease'
+        };
+    };
+
+    const config = {
+        font: themeConfig.font || "'Montserrat', sans-serif",
+        background: {
+            color: themeConfig.background?.color || '#ffffff',
+            image: themeConfig.background?.image || null,
+            elements: themeConfig.background?.elements || []
+        },
+        title: {
+            content: themeConfig.title?.content || null,
+            font: themeConfig.title?.font || null,
+            size: scaleVal(resolveSize(themeConfig.title?.size, 'title') || activeTitleSpace.baseSize, titleScale),
+            weight: themeConfig.title?.weight || '800',
+            color: themeConfig.title?.color || '#1a1a1a',
+            shadow: ssh(themeConfig.title?.shadow || 'none'),
+            overline: themeConfig.title?.overline || 'none',
+            letterSpacing: s(themeConfig.title?.letterSpacing, '1pt'),
+            textAlign: effectiveTitleConfig.alignment,
+            textTransform: themeConfig.title?.textTransform || 'uppercase',
+            emojis: {
+                left: themeConfig.title?.emojis?.left || '',
+                right: themeConfig.title?.emojis?.right || ''
+            }
+        },
+        subtitle: {
+            font: themeConfig.subtitle?.font || null,
+            size: sf(resolveSize(themeConfig.subtitle?.size, 'subtitle')),
+            weight: themeConfig.subtitle?.weight || '500',
+            color: themeConfig.subtitle?.color || '#666',
+            shadow: ssh(themeConfig.subtitle?.shadow || 'none'),
+            overline: themeConfig.subtitle?.overline || 'none',
+            letterSpacing: s(themeConfig.subtitle?.letterSpacing, '1pt'),
+            textAlign: effectiveTitleConfig.alignment,
+            background: themeConfig.subtitle?.background || 'transparent',
+            padding: s(themeConfig.subtitle?.padding, '0'),
+            borderRadius: s(themeConfig.subtitle?.borderRadius, '0')
+        },
+        grid: {
+            gap: sg(themeConfig.grid?.gap, '16px'),
+            padding: sp(themeConfig.grid?.padding, '30px 15px'),
+            background: themeConfig.grid?.background || 'transparent'
+        },
+        cell: {
+            shape: s(themeConfig.cell?.shape, '0px'),
+            border: `${effectiveGridConfig.thickness} solid ${effectiveGridConfig.color}`,
+            thickness: effectiveGridConfig.thickness,
+            shadow: ssh(themeConfig.cell?.shadow || 'none'),
+            offset: s(themeConfig.cell?.offset, '0px'),
+            background: themeConfig.cell?.background || '#ffffff',
+            textAlign: themeConfig.cell?.textAlign || 'center'
+        },
+        card: {
+            border: effectiveLayout.showBorder ? `${effectiveLayout.borderWidth} solid ${effectiveLayout.borderColor}` : 'none',
+            shadow: ssh(themeConfig.card?.shadow || 'none'),
+            borderRadius: s(themeConfig.card?.borderRadius, '0px'),
+            background: themeConfig.card?.background || 'transparent',
+            offset: effectiveLayout.showMargin ? s(themeConfig.card?.offset, '10mm') : '0'
+        },
+        song: {
+            font: themeConfig.song?.font || null,
+            size: sf(resolveSize(themeConfig.song?.size, 'song')),
+            weight: themeConfig.song?.weight || '700',
+            color: themeConfig.song?.color || '#1a1a1a',
+            shadow: ssh(themeConfig.song?.shadow || 'none'),
+            background: themeConfig.song?.background || 'transparent',
+            padding: s(themeConfig.song?.padding, '0'),
+            borderRadius: s(themeConfig.song?.borderRadius, '0')
+        },
+        artist: {
+            font: themeConfig.artist?.font || null,
+            size: sf(resolveSize(themeConfig.artist?.size, 'artist')),
+            weight: themeConfig.artist?.weight || '600',
+            color: themeConfig.artist?.color || themeConfig.defaultAccentColor || '#3b82f6',
+            shadow: ssh(themeConfig.artist?.shadow || 'none'),
+            background: themeConfig.artist?.background || 'transparent',
+            padding: s(themeConfig.artist?.padding, '0'),
+            borderRadius: s(themeConfig.artist?.borderRadius, '0')
+        },
+        cardNumber: {
+            font: themeConfig.cardNumber?.font || null,
+            size: sf(resolveSize(themeConfig.cardNumber?.size, 'cardNumber')),
+            weight: themeConfig.cardNumber?.weight || '500',
+            color: themeConfig.cardNumber?.color || '#888',
+            textAlign: themeConfig.cardNumber?.textAlign || 'center',
+            background: themeConfig.cardNumber?.background || 'transparent',
+            padding: s(themeConfig.cardNumber?.padding, '5pt 0'),
+            borderRadius: s(themeConfig.cardNumber?.borderRadius, '0')
+        },
+        footer: {
+            text: themeConfig.footer?.text || 'BingoMusicMaker.com',
+            font: themeConfig.footer?.font || null,
+            size: sf(resolveSize(themeConfig.footer?.size, 'footer')),
+            weight: themeConfig.footer?.weight || '500',
+            color: themeConfig.footer?.color || '#999',
+            textAlign: themeConfig.footer?.textAlign || 'center',
+            letterSpacing: s(themeConfig.footer?.letterSpacing, '1pt'),
+            background: themeConfig.footer?.background || 'transparent',
+            padding: s(themeConfig.footer?.padding, '0'),
+            borderRadius: s(themeConfig.footer?.borderRadius, '0'),
+            margin: themeConfig.footer?.margin || 'auto 0 0 0'
+        }
+    };
+
+    const getHorizontalPadding = (paddingStr) => {
+        if (!paddingStr) return '15px';
+        const parts = paddingStr.split(' ');
+        return parts.length > 2 ? parts[3] : (parts.length > 1 ? parts[1] : parts[0]);
+    };
+    const hPadding = getHorizontalPadding(config.grid.padding);
 
     const styles = {
         page: {
             width: isLandscape ? '297mm' : '210mm',
             height: isLandscape ? '210mm' : '297mm',
-            background: 'white',
-            color: '#1a1a1a',
-            fontFamily: font,
+            backgroundColor: transparentPage ? 'transparent' : config.background.color,
+            backgroundImage: config.background.image ? `url(${config.background.image})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            fontFamily: config.font,
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
             position: 'relative',
-            overflow: 'hidden', // CRITICAL: Ensures content never spills out of the "page"
+            overflow: 'visible', // Changed from hidden to visible
             margin: '0 auto',
-            padding: isLandscape ? '10mm' : '12mm', // Safe margins for most home printers
             printColorAdjust: 'exact',
             WebkitPrintColorAdjust: 'exact',
-            ...(isMini && { width: '100%', height: '100%', padding: '5px' })
+            ...(isMini && { width: '100%', height: '100%' })
         },
         cardFrame: {
-            // The "Sandbox" for the theme. Themes should paint nicely within here.
-            width: 'auto', // Allow margins to shrink the box
-            flex: 1, // Fill available vertical space
+            width: effectiveLayout.showMargin ? `calc(100% - (${config.card.offset} * 2))` : '100%',
+            height: effectiveLayout.showMargin ? `calc(100% - (${config.card.offset} * 2))` : '100%',
+            background: config.card.background,
+            border: config.card.border,
+            borderRadius: config.card.borderRadius,
+            boxShadow: config.card.shadow,
             display: 'flex',
             flexDirection: 'column',
+            position: 'absolute',
+            top: config.card.offset,
+            left: config.card.offset,
+            maxWidth: effectiveLayout.showMargin ? `calc(100% - (${config.card.offset} * 2))` : '100%',
+            maxHeight: effectiveLayout.showMargin ? `calc(100% - (${config.card.offset} * 2))` : '100%',
             boxSizing: 'border-box',
-            position: 'relative',
-            zIndex: 1,
-            backgroundColor: 'white',
-            overflow: 'visible', // Allow decorative elements to "pop out" of the border (e.g. stickers), clamped by page overflow
-            ...themeStyles
+            overflow: 'visible' // Changed from hidden to visible
         },
         header: {
-            textAlign: 'center',
-            marginBottom: '15pt',
+            // Layout Split: In portrait, Header takes configured space, Grid takes the rest.
+            flex: isLandscape ? '0 0 auto' : `0 0 ${activeTitleSpace.percent}`,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center', // Vertically center the title in its 1/3 space
+
+            padding: `20pt ${hPadding}`, // Added top padding for more space above title
+            textAlign: config.title.textAlign,
+            marginBottom: isLandscape ? scaleVal('15pt', sizeConfig.multiplier) : 0,
             position: 'relative',
             zIndex: 2,
-            ...headerStyles
         },
         title: {
-            fontSize: '42pt',
-            fontWeight: 800,
-            color: '#1a1a1a',
-            margin: '0 0 8pt 0',
-            textTransform: 'uppercase',
-            letterSpacing: '2pt',
+            fontSize: config.title.size,
+            fontWeight: config.title.weight,
+            color: config.title.color,
+            margin: '0 0 4pt 0',
+            textTransform: config.title.textTransform,
+            letterSpacing: config.title.letterSpacing,
             lineHeight: 1,
-            fontFamily: font,
-            ...titleStyles
+            fontFamily: config.title.font || config.font,
+            textShadow: config.title.shadow,
+            textDecoration: config.title.overline === 'overline' ? 'overline' : 'none',
+            textAlign: config.title.textAlign,
+            width: '100%'
         },
         subtitle: {
-            fontSize: '14pt',
-            color: '#666',
-            margin: '0 0 5pt 0',
-            fontWeight: 500,
+            fontSize: config.subtitle.size,
+            color: config.subtitle.color,
+            margin: '0',
+            fontWeight: config.subtitle.weight,
             textTransform: 'uppercase',
-            letterSpacing: '1pt',
-            fontFamily: font || 'inherit',
-            ...subtitleStyles
+            letterSpacing: config.subtitle.letterSpacing,
+            fontFamily: config.subtitle.font || config.font,
+            textShadow: config.subtitle.shadow,
+            textDecoration: config.subtitle.overline === 'overline' ? 'overline' : 'none',
+            textAlign: config.subtitle.textAlign,
+            width: '100%',
+            background: config.subtitle.background,
+            padding: config.subtitle.padding,
+            borderRadius: config.subtitle.borderRadius,
+            display: config.subtitle.background !== 'transparent' ? 'inline-block' : 'block'
         },
         grid: {
             display: 'grid',
             gridTemplateColumns: `repeat(${columns}, 1fr)`,
             gridTemplateRows: `repeat(${rows}, 1fr)`,
-            gap: '16px',
+            gap: config.grid.gap,
             width: '100%',
             flexGrow: 1,
             zIndex: 2,
-            padding: '30px 15px',
+            padding: config.grid.padding,
+            background: config.grid.background,
+            boxSizing: 'border-box'
         },
         gridCell: {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            padding: '2px',
+            padding: config.cell.offset,
             boxSizing: 'border-box',
-            background: 'white',
+            background: config.cell.background,
             position: 'relative',
-            textAlign: 'center',
-            ...cellStyles
+            textAlign: config.cell.textAlign,
+            borderRadius: config.cell.shape,
+            border: config.cell.border,
+            boxShadow: config.cell.shadow,
         },
         song: {
-            fontSize: '9pt',
-            fontWeight: 700,
-            color: '#1a1a1a',
+            fontSize: config.song.size,
+            fontWeight: config.song.weight,
+            color: config.song.color,
             lineHeight: 1.1,
             marginBottom: '1pt',
             wordBreak: 'break-word',
             zIndex: 2,
             position: 'relative',
-            fontFamily: font || 'inherit',
-            ...songStyles
+            fontFamily: config.song.font || config.font,
+            textShadow: config.song.shadow,
+            background: config.song.background,
+            padding: config.song.padding,
+            borderRadius: config.song.borderRadius,
+            display: 'inline-block'
         },
         artist: {
-            fontSize: '7pt',
-            color: primaryColor,
+            fontSize: config.artist.size,
+            color: config.artist.color,
             marginTop: '1pt',
-            fontWeight: 600,
+            fontWeight: config.artist.weight,
             zIndex: 2,
             position: 'relative',
-            fontFamily: font || 'inherit',
-            ...artistStyles
-        },
-        cardNumberWrapper: {
-            textAlign: 'center',
-            margin: '5pt 0',
-            zIndex: 2,
+            fontFamily: config.artist.font || config.font,
+            textShadow: config.artist.shadow,
+            background: config.artist.background,
+            padding: config.artist.padding,
+            borderRadius: config.artist.borderRadius,
+            display: 'inline-block'
         },
         cardNumber: {
-            display: 'inline-block',
-            padding: '2pt 15pt',
-            fontSize: '1rem',
-            fontWeight: 700,
-            color: '#888',
-            border: '1px solid #ddd',
-            borderRadius: '20px',
-            background: '#f9f9f9',
-            fontFamily: font || 'inherit',
+            textAlign: config.cardNumber.textAlign,
+            padding: config.cardNumber.padding,
+            zIndex: 2,
+            fontSize: config.cardNumber.size,
+            fontWeight: config.cardNumber.weight,
+            color: config.cardNumber.color,
+            fontFamily: config.cardNumber.font || config.font,
+            background: config.cardNumber.background,
+            borderRadius: config.cardNumber.borderRadius,
+            display: config.cardNumber.background !== 'transparent' ? 'inline-block' : 'block',
+            margin: config.cardNumber.background !== 'transparent' ? '5pt auto' : '0'
         },
         footer: {
-            fontSize: '7pt',
-            color: '#999',
-            marginTop: 'auto',
-            textAlign: 'center',
+            fontSize: config.footer.size,
+            fontWeight: config.footer.weight,
+            color: config.footer.color,
+            margin: config.footer.margin,
+            textAlign: config.footer.textAlign,
             textTransform: 'uppercase',
-            letterSpacing: '1pt',
+            letterSpacing: config.footer.letterSpacing,
             zIndex: 1,
-            fontFamily: font || 'inherit',
-            ...footerStyles
+            fontFamily: config.footer.font || config.font,
+            background: config.footer.background,
+            padding: '0',
+            borderRadius: config.footer.borderRadius,
+            boxSizing: 'border-box',
+            width: '100%'
         },
     };
 
     return (
         <div style={styles.page}>
             <div style={styles.cardFrame}>
-                {decorativeElements}
+                {/* Decorative elements */}
+                {config.background.elements && config.background.elements.map((el, i) => {
+                    // Check if this is a decorative element (like badges) that should NOT have transparency applied
+                    const isDecorative = el.isDecorative === true;
+
+                    // Only apply opacity styling to background decorations (SVGs, icons)
+                    const decorationStyle = isDecorative ? {} : {
+                        opacity: el.content?.props?.style?.opacity || 0.12,
+                        filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))',
+                        transition: 'opacity 0.3s ease'
+                    };
+
+                    // Apply different opacity for elements with decorationLevel (only for background decorations)
+                    if (!isDecorative && el.decorationLevel === 'prominent') {
+                        decorationStyle.opacity = (el.content?.props?.style?.opacity || 0.12) * 1.5;
+                    }
+
+                    return (
+                        <div key={i} style={{
+                            position: 'absolute',
+                            ...el.style,
+                            ...decorationStyle
+                        }}>
+                            {typeof el.content === 'function' ? el.content(config.artist.color) : el.content}
+                        </div>
+                    );
+                })}
 
                 <div style={styles.header}>
                     <h1 style={styles.title}>
-                        {titleEmojis.left} {titleEmojis.left ? ' ' : ''}{title || 'BINGO'}{titleEmojis.right ? ' ' : ''} {titleEmojis.right}
+                        {config.title.emojis.left && <span style={{ marginRight: '10px' }}>{config.title.emojis.left}</span>}
+                        {config.title.content || title}
+                        {config.title.emojis.right && <span style={{ marginLeft: '10px' }}>{config.title.emojis.right}</span>}
                     </h1>
                     <h2 style={styles.subtitle}>{eventTitle}</h2>
                 </div>
@@ -181,22 +441,22 @@ const BingoCard = ({
                 <div style={styles.grid}>
                     {cardData && cardData.map((item, index) => (
                         <div key={index} style={styles.gridCell}>
-                            {renderCellDecor && renderCellDecor(index)}
                             <div style={styles.song}>{item.nom || item.name}</div>
                             <div style={styles.artist}>{item.artista || item.artist}</div>
                         </div>
                     ))}
                 </div>
 
-                {/* Custom Card Number / Footer Rendering */}
-                {renderCardNumber ? renderCardNumber(cardNumber) : (cardNumber && (
-                    <div style={styles.cardNumberWrapper}>
-                        <div style={styles.cardNumber}>Card #{cardNumber}</div>
+                {cardNumber && (
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={styles.cardNumber}>
+                            Card #{cardNumber}
+                        </div>
                     </div>
-                ))}
+                )}
 
                 <div style={styles.footer}>
-                    BingoMusicMaker.com
+                    {config.footer.text}
                 </div>
             </div>
         </div>
