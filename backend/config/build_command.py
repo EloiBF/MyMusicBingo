@@ -4,6 +4,11 @@ import sys
 import django
 from django.core.management import call_command
 
+# Add the project root (backend directory) to sys.path so 'config' can be found
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
+
 # Configura Django si executem el script directament
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
