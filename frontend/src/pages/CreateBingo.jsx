@@ -38,6 +38,14 @@ const CreateBingo = () => {
     const [paramLoading, setParamLoading] = useState(false);
     const [user, setUser] = useState(null);
 
+    // Validation state
+    const [validation, setValidation] = useState({
+        is_valid: true,
+        error_message: null,
+        loading: false,
+        track_count: 0
+    });
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -49,6 +57,39 @@ const CreateBingo = () => {
         };
         fetchUser();
     }, []);
+
+    // Real-time validation effect
+    useEffect(() => {
+        if (!config.playlistId || config.playlistId.length < 5) {
+            setValidation({ is_valid: true, error_message: null, loading: false, track_count: 0 });
+            return;
+        }
+
+        const validate = async () => {
+            setValidation(prev => ({ ...prev, loading: true }));
+            try {
+                const response = await api.post('/bingo/validate_playlist/', {
+                    playlist_id: config.playlistId,
+                    rows: config.rows,
+                    columns: config.columns,
+                    num_cards: config.numCards
+                });
+                setValidation({
+                    is_valid: response.data.is_valid,
+                    error_message: response.data.error_message,
+                    loading: false,
+                    track_count: response.data.track_count
+                });
+            } catch (err) {
+                console.error('Validation error:', err);
+                // Don't block on connection errors, but log it
+                setValidation(prev => ({ ...prev, loading: false }));
+            }
+        };
+
+        const timeoutId = setTimeout(validate, 800); // Debounce
+        return () => clearTimeout(timeoutId);
+    }, [config.playlistId, config.rows, config.columns, config.numCards]);
 
     useEffect(() => {
         if (isEditMode) {
@@ -79,7 +120,6 @@ const CreateBingo = () => {
         { label: '3x3 (9 songs)', rows: 3, cols: 3 },
         { label: '4x3 (12 songs)', rows: 4, cols: 3 },
         { label: '4x4 (16 songs)', rows: 4, cols: 4 },
-        { label: '5x5 (25 songs)', rows: 5, cols: 5 },
     ];
 
     const getColorValue = (color, theme = null) => {
@@ -284,34 +324,47 @@ const CreateBingo = () => {
                                                     style={{ paddingLeft: '2.5rem' }}
                                                 />
                                             </div>
-                                            <div className="text-sm text-gray-500" style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.4', marginTop: '2rem' }}>
-                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.5rem' }}>
-                                                    <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                                            <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>💻</span>
-                                                            <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.desktop.title')}</strong>
-                                                        </div>
-                                                        <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
-                                                            <li>{t('create.playlist.guide.desktop.step1')}</li>
-                                                            <li>{t('create.playlist.guide.desktop.step2')}</li>
-                                                            <li>{t('create.playlist.guide.desktop.step3')}</li>
-                                                            <li>{t('create.playlist.guide.desktop.step4')}</li>
-                                                            <li>{t('create.playlist.guide.desktop.step5')}</li>
-                                                        </ol>
+                                        </div>
+
+                                        {validation.loading && <div className="validation-msg loading"><div className="spin-mini" /> {t('create.validation.checking')}</div>}
+                                        {!validation.is_valid && !validation.loading && (
+                                            <div className="validation-msg error animate-fade-in">
+                                                <AlertCircle size={16} /> {validation.error_message}
+                                            </div>
+                                        )}
+                                        {validation.is_valid && validation.track_count > 0 && !validation.loading && (
+                                            <div className="validation-msg success animate-fade-in">
+                                                <Check size={16} /> {t('create.validation.found_songs', { count: validation.track_count })}
+                                            </div>
+                                        )}
+
+                                        <div className="text-sm text-gray-500" style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.4', marginTop: '2rem' }}>
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.5rem' }}>
+                                                <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                        <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>💻</span>
+                                                        <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.desktop.title')}</strong>
                                                     </div>
-                                                    <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                                            <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>📱</span>
-                                                            <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.mobile.title')}</strong>
-                                                        </div>
-                                                        <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
-                                                            <li>{t('create.playlist.guide.mobile.step1')}</li>
-                                                            <li>{t('create.playlist.guide.mobile.step2')}</li>
-                                                            <li>{t('create.playlist.guide.mobile.step3')}</li>
-                                                            <li>{t('create.playlist.guide.mobile.step4')}</li>
-                                                            <li>{t('create.playlist.guide.mobile.step5')}</li>
-                                                        </ol>
+                                                    <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
+                                                        <li>{t('create.playlist.guide.desktop.step1')}</li>
+                                                        <li>{t('create.playlist.guide.desktop.step2')}</li>
+                                                        <li>{t('create.playlist.guide.desktop.step3')}</li>
+                                                        <li>{t('create.playlist.guide.desktop.step4')}</li>
+                                                        <li>{t('create.playlist.guide.desktop.step5')}</li>
+                                                    </ol>
+                                                </div>
+                                                <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                                        <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>📱</span>
+                                                        <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.mobile.title')}</strong>
                                                     </div>
+                                                    <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
+                                                        <li>{t('create.playlist.guide.mobile.step1')}</li>
+                                                        <li>{t('create.playlist.guide.mobile.step2')}</li>
+                                                        <li>{t('create.playlist.guide.mobile.step3')}</li>
+                                                        <li>{t('create.playlist.guide.mobile.step4')}</li>
+                                                        <li>{t('create.playlist.guide.mobile.step5')}</li>
+                                                    </ol>
                                                 </div>
                                             </div>
                                         </div>
@@ -324,15 +377,15 @@ const CreateBingo = () => {
                                             <label className="label-bold-mini">{t('create.theme.label')}</label>
                                             <div className="scroll-box-mini" style={{ flex: 1, overflowY: 'auto' }}>
                                                 <div className="grid-mini">
-                                                    {allThemes.map(t => {
-                                                        const isSelected = config.theme === t.id;
+                                                    {allThemes.map(themeItem => {
+                                                        const isSelected = config.theme === themeItem.id;
                                                         return (
-                                                            <div key={t.id} onClick={() => setConfig({ ...config, theme: t.id })} className={`theme-box-mini ${isSelected ? 'selected' : ''}`}>
+                                                            <div key={themeItem.id} onClick={() => setConfig({ ...config, theme: themeItem.id })} className={`theme-box-mini ${isSelected ? 'selected' : ''}`}>
                                                                 <div className="box-preview">
                                                                     <div className="preview-mini-internal">
                                                                         <BingoCardPreview
                                                                             event={{
-                                                                                theme: t.id,
+                                                                                theme: themeItem.id,
                                                                                 rows: 3,
                                                                                 columns: 3,
                                                                                 orientation: 'portrait',
@@ -349,7 +402,7 @@ const CreateBingo = () => {
                                                                     </div>
                                                                 </div>
                                                                 <div className="box-info">
-                                                                    <span className="name-m">{t(`themes.labels.${t.id.toLowerCase()}`, { defaultValue: t.label })}</span>
+                                                                    <span className="name-m">{t(`themes.labels.${themeItem.id.toLowerCase()}`, { defaultValue: themeItem.label })}</span>
                                                                 </div>
                                                             </div>
                                                         );
@@ -408,6 +461,12 @@ const CreateBingo = () => {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        {!validation.is_valid && !validation.loading && (
+                                            <div className="validation-msg error animate-fade-in" style={{ marginTop: '1rem' }}>
+                                                <AlertCircle size={16} /> {validation.error_message}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -427,7 +486,11 @@ const CreateBingo = () => {
                                     <ArrowLeft size={16} /> {t('create.nav.back')}
                                 </button>
                             )}
-                            <button onClick={nextStep} className="btn btn-primary btn-nav-mini primary-nav" disabled={loading}>
+                            <button
+                                onClick={nextStep}
+                                className="btn btn-primary btn-nav-mini primary-nav"
+                                disabled={loading || validation.loading || !validation.is_valid}
+                            >
                                 {loading ? t('common.generating') : (currentStep === totalSteps ? t('create.nav.generate') : t('create.nav.next'))}
                                 <ArrowRight size={16} />
                             </button>
@@ -437,29 +500,31 @@ const CreateBingo = () => {
             </SplitLayout>
 
             {/* Playlist Modal */}
-            {showPlaylistModal && (
-                <div className="modal-ov">
-                    <div className="modal-c glass animate-fade-in">
-                        <div className="modal-h">
-                            <h3><ListMusic size={20} /> {t('create.playlist_modal.title')}</h3>
-                            <button onClick={() => setShowPlaylistModal(false)} className="close-b"><X size={20} /></button>
-                        </div>
-                        <div className="modal-b">
-                            {paramLoading ? <div className="load-s"><div className="spin-m" /></div> : (
-                                <div className="p-grid">
-                                    {playlists.map(p => (
-                                        <div key={p.id} onClick={() => selectPlaylist(p.id)} className="p-card glass-hover">
-                                            <div className="p-img">{p.image ? <img src={p.image} alt="" /> : <Music size={24} />}</div>
-                                            <div className="p-t">{p.name}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+            {
+                showPlaylistModal && (
+                    <div className="modal-ov">
+                        <div className="modal-c glass animate-fade-in">
+                            <div className="modal-h">
+                                <h3><ListMusic size={20} /> {t('create.playlist_modal.title')}</h3>
+                                <button onClick={() => setShowPlaylistModal(false)} className="close-b"><X size={20} /></button>
+                            </div>
+                            <div className="modal-b">
+                                {paramLoading ? <div className="load-s"><div className="spin-m" /></div> : (
+                                    <div className="p-grid">
+                                        {playlists.map(p => (
+                                            <div key={p.id} onClick={() => selectPlaylist(p.id)} className="p-card glass-hover">
+                                                <div className="p-img">{p.image ? <img src={p.image} alt="" /> : <Music size={24} />}</div>
+                                                <div className="p-t">{p.name}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </PageLayout>
+                )
+            }
+        </PageLayout >
     );
 };
 
@@ -629,6 +694,13 @@ styleSheet.innerHTML = `
     
     .spin-m { width: 24px; height: 24px; border: 3px solid var(--glass-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    .validation-msg { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 0.75rem; font-size: 0.85rem; font-weight: 600; }
+    .validation-msg.error { background: hsla(0, 84%, 60%, 0.1); color: var(--error); border: 1px solid hsla(0, 84%, 60%, 0.2); }
+    .validation-msg.success { background: hsla(142, 76%, 36%, 0.1); color: var(--success); border: 1px solid hsla(142, 76%, 36%, 0.2); }
+    .validation-msg.loading { color: var(--text-muted); }
+    
+    .spin-mini { width: 14px; height: 14px; border: 2px solid var(--glass-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
 
     /* Custom Scrollbars */
     .scroll-box-mini::-webkit-scrollbar, .wizard-form-inner-scroll::-webkit-scrollbar { width: 4px; }

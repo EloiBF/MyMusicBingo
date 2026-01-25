@@ -226,6 +226,91 @@ class BingoViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_update(self, serializer):
+        # Get old values to check for changes
+        instance = self.get_object()
+        old_rows = instance.rows
+        old_cols = instance.columns
+        old_num_cards = instance.num_cards
+        old_playlist_id = instance.playlist_id
+        
+        # Save updated instance
+        event = serializer.save()
+        
+        # Check if critical params changed
+        if (event.rows != old_rows or 
+            event.columns != old_cols or 
+            event.num_cards != old_num_cards or
+            event.playlist_id != old_playlist_id):
+            
+            # Re-generate cards if necessary
+            self._regenerate_cards(event)
+
+    def _regenerate_cards(self, event):
+        """Internal helper to regenerate cards for an event."""
+        # Delete existing cards first
+        event.cards.all().delete()
+        
+        # Use existing tracks associated with the event
+        tracks = list(event.tracks.values_list('name', 'artist'))
+        
+        if not tracks:
+            return  # Should not happen if event was created correctly
+
+        # Generate blocks
+        blocks = generate_bingo_blocks(tracks, event.num_cards, event.rows, event.columns)
+        
+        # Save new cards
+        for i, block in enumerate(blocks):
+            card_data = [{"nom": s, "artista": a} for s, a in block]
+            BingoCard.objects.create(
+                event=event,
+                card_index=i+1,
+                data=card_data
+            )
+
+    @action(detail=False, methods=['post'])
+    def validate_playlist(self, request):
+        """Validates a playlist and checks if requested dimensions are feasible."""
+        playlist_id = request.data.get('playlist_id')
+        rows = int(request.data.get('rows', 3))
+        columns = int(request.data.get('columns', 3))
+        num_cards = int(request.data.get('num_cards', 1))
+        
+        if not playlist_id:
+            return Response({"error": "playlist_id is required."}, status=400)
+            
+        try:
+            sp = get_spotify_client()
+            if not sp:
+                return Response({"error": "Failed to connect to Spotify."}, status=400)
+            
+            playlist = sp.playlist(playlist_id)
+            tracks = fetch_playlist_tracks(sp, playlist_id)
+            
+            num_songs = len(tracks)
+            songs_per_card = rows * columns
+            import math
+            max_possible_unique = math.comb(num_songs, songs_per_card) if num_songs >= songs_per_card else 0
+            
+            is_valid = num_songs >= songs_per_card and num_cards <= max_possible_unique
+            
+            return Response({
+                "playlist_name": playlist['name'],
+                "track_count": num_songs,
+                "songs_per_card": songs_per_card,
+                "max_possible_unique": max_possible_unique,
+                "is_valid": is_valid,
+                "error_message": None if is_valid else (
+                    f"Not enough songs in playlist. Need at least {songs_per_card} songs for a {rows}x{columns} grid."
+                    if num_songs < songs_per_card else
+                    f"Too many cards requested. With {num_songs} songs and a {rows}x{columns} grid, only {max_possible_unique} unique cards are mathematically possible."
+                )
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=False, methods=['post'])
     def generate_cards(self, request):
         event_title = request.data.get('event_title', 'Bingo Musical')
@@ -272,27 +357,18 @@ class BingoViewSet(viewsets.ModelViewSet):
                 for name, artist in tracks
             ])
             
-            # Generate blocks
-            blocks = generate_bingo_blocks(tracks, num_cards, rows, columns)
-            
-            # Save cards
-            cards = []
-            for i, block in enumerate(blocks):
-                card_data = [{"nom": s, "artista": a} for s, a in block]
-                card = BingoCard.objects.create(
-                    event=event,
-                    card_index=i+1,
-                    data=card_data
-                )
-                cards.append(card)
+            # Use the internal regeneration helper
+            self._regenerate_cards(event)
             
             return Response({
                 "event_id": event.id,
                 "event_title": event.event_title,
                 "playlist_name": event.playlist_name,
-                "cards_generated": len(cards)
+                "cards_generated": event.cards.count()
             }, status=status.HTTP_201_CREATED)
 
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             import traceback
             print(traceback.format_exc())

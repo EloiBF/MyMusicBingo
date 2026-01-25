@@ -23,7 +23,7 @@ export default {
                         filter: 'blur(40px)'
                     }} />
                 ),
-                style: { top: '-50px', right: '-50px' },
+                style: { top: '-80px', right: '-80px' },
                 decorationLevel: 'subtle'
             },
             {
@@ -36,7 +36,7 @@ export default {
                         filter: 'blur(35px)'
                     }} />
                 ),
-                style: { bottom: '-30px', left: '-30px' }
+                style: { bottom: '-60px', left: '-60px' }, decorationLevel: 'subtle'
             },
             {
                 content: (
@@ -48,25 +48,21 @@ export default {
                         filter: 'blur(30px)'
                     }} />
                 ),
-                style: { top: '40%', left: '50%', transform: 'translateX(-50%)' },
+                style: { top: '35%', left: '50%', transform: 'translateX(-50%)' },
                 decorationLevel: 'subtle'
             },
             // Fun music icons with vibrant colors
-            { content: <Music size={100} color="#ec4899" opacity={0.12} strokeWidth={2.5} />, style: { top: '5%', left: '5%', transform: 'rotate(-15deg)' }, decorationLevel: 'subtle' },
-            { content: <Radio size={90} color="#a855f7" opacity={0.12} strokeWidth={2.5} />, style: { top: '8%', right: '8%', transform: 'rotate(20deg)' }, decorationLevel: 'prominent' },
-            { content: <Disc3 size={110} color="#ec4899" opacity={0.12} strokeWidth={2.5} />, style: { bottom: '8%', left: '6%', transform: 'rotate(-25deg)' }, decorationLevel: 'subtle' },
-            { content: <Mic size={85} color="#fb923c" opacity={0.12} strokeWidth={2.5} />, style: { bottom: '5%', right: '5%', transform: 'rotate(12deg)' }, decorationLevel: 'subtle' },
+            { content: <Music size={100} color="#ec4899" strokeWidth={2.5} />, style: { top: '5%', left: '2%', transform: 'rotate(-15deg)' }, decorationLevel: 'subtle' },
+            { content: <Radio size={90} color="#a855f7" strokeWidth={2.5} />, style: { top: '5%', right: '2%', transform: 'rotate(20deg)' }, decorationLevel: 'prominent' },
+            { content: <Disc3 size={110} color="#ec4899" strokeWidth={2.5} />, style: { bottom: '5%', left: '2%', transform: 'rotate(-25deg)' }, decorationLevel: 'subtle' },
+            { content: <Mic size={85} color="#fb923c" strokeWidth={2.5} />, style: { bottom: '65%', right: '2%', transform: 'rotate(12deg)' }, decorationLevel: 'subtle' },
             // Sparkles and stars scattered
-            { content: <Sparkles size={50} color="#ec4899" opacity={0.12} fill="#ec4899" />, style: { top: '15%', left: '15%' }, decorationLevel: 'subtle' },
-            { content: <Sparkles size={45} color="#a855f7" opacity={0.12} fill="#a855f7" />, style: { top: '18%', right: '12%' }, decorationLevel: 'subtle' },
-            { content: <Star size={40} color="#fb923c" opacity={0.12} fill="#fb923c" />, style: { bottom: '20%', left: '10%' }, decorationLevel: 'subtle' },
-            { content: <Star size={35} color="#ec4899" opacity={0.12} fill="#ec4899" />, style: { bottom: '22%', right: '15%' }, decorationLevel: 'subtle' },
-            { content: <Zap size={55} color="#a855f7" opacity={0.12} />, style: { top: '35%', left: '8%', transform: 'rotate(-30deg)' }, decorationLevel: 'subtle' },
-            { content: <Zap size={50} color="#fb923c" opacity={0.12} />, style: { top: '38%', right: '10%', transform: 'rotate(25deg)' }, decorationLevel: 'subtle' },
+            { content: <Sparkles size={45} color="#a855f7" fill="#a855f7" />, style: { top: '14%', right: '4%' }, decorationLevel: 'subtle' },
+            { content: <Star size={40} color="#fb923c" fill="#fb923c" />, style: { bottom: '15%', left: '3%' }, decorationLevel: 'subtle' },
+            { content: <Star size={35} color="#ec4899" fill="#ec4899" />, style: { bottom: '16%', right: '3%' }, decorationLevel: 'subtle' },
             // Floating hearts
-            { content: <Heart size={35} color="#ec4899" opacity={0.12} fill="#ec4899" />, style: { top: '25%', left: '50%', transform: 'translateX(-50%) rotate(15deg)' }, decorationLevel: 'subtle' },
-            { content: <Heart size={28} color="#a855f7" opacity={0.12} fill="#a855f7" />, style: { top: '28%', left: '45%' }, decorationLevel: 'subtle' },
-            { content: <Heart size={28} color="#fb923c" opacity={0.12} fill="#fb923c" />, style: { top: '28%', left: '55%' }, decorationLevel: 'subtle' },
+            { content: <Heart size={35} color="#ec4899" fill="#ec4899" />, style: { top: '15%', left: '30%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            { content: <Heart size={28} color="#a855f7" fill="#a855f7" />, style: { top: '18%', right: '30%', transform: 'rotate(-10deg)' }, decorationLevel: 'subtle' },
             // Confetti-like dots
             {
                 content: (
@@ -78,46 +74,14 @@ export default {
                                     width: '8px',
                                     height: '8px',
                                     borderRadius: '50%',
-                                    background: ['#ec4899', '#a855f7', '#fb923c', '#fbbf24', '#f59e0b'][i % 5],
-                                    opacity: 0.12
+                                    background: ['#ec4899', '#a855f7', '#fb923c', '#fbbf24', '#f59e0b'][i % 5]
                                 }}
                             />
                         ))}
                     </div>
                 ),
-                style: { top: '20%', left: '10%' },
+                style: { top: '18%', left: '4%' },
                 decorationLevel: 'subtle'
-            },
-            // Wavy decorative lines
-            {
-                content: (
-                    <svg width="150" height="30" style={{ opacity: 0.2 }}>
-                        <path d="M 0 15 Q 25 5, 50 15 T 100 15 T 150 15" stroke="#ec4899" strokeWidth="3" fill="none" />
-                    </svg>
-                ),
-                style: { top: '22%', left: '50%', transform: 'translateX(-50%)' }
-            },
-            {
-                content: (
-                    <svg width="120" height="25" style={{ opacity: 0.15 }}>
-                        <path d="M 0 12 Q 20 5, 40 12 T 80 12 T 120 12" stroke="#a855f7" strokeWidth="2.5" fill="none" />
-                    </svg>
-                ),
-                style: { bottom: '3%', left: '50%', transform: 'translateX(-50%)' }
-            },
-            // Playful border elements
-            {
-                content: (
-                    <div style={{
-                        border: '3px solid transparent',
-                        borderImage: 'linear-gradient(135deg, #ec4899, #a855f7, #fb923c) 1',
-                        opacity: 0.15,
-                        width: '95%',
-                        height: '96%',
-                        borderRadius: '16px'
-                    }} />
-                ),
-                style: { top: '2%', left: '2.5%' }
             },
             // Corner accent shapes
             {
@@ -126,11 +90,10 @@ export default {
                         width: '60px',
                         height: '60px',
                         background: 'linear-gradient(135deg, #ec4899, #a855f7)',
-                        opacity: 0.08,
                         borderRadius: '0 0 100% 0'
                     }} />
                 ),
-                style: { top: 0, left: 0 }
+                style: { top: 0, left: 0 }, decorationLevel: 'subtle'
             },
             {
                 content: (
@@ -138,11 +101,10 @@ export default {
                         width: '60px',
                         height: '60px',
                         background: 'linear-gradient(225deg, #a855f7, #fb923c)',
-                        opacity: 0.08,
                         borderRadius: '0 0 0 100%'
                     }} />
                 ),
-                style: { top: 0, right: 0 }
+                style: { top: 0, right: 0 }, decorationLevel: 'subtle'
             }
         ]
     },

@@ -1,4 +1,5 @@
 import random
+import math
 from typing import List, Tuple, Set, Dict, Optional
 
 def generate_bingo_blocks(
@@ -19,9 +20,18 @@ def generate_bingo_blocks(
     Returns:
         A list of cards, where each card is a list of song/artist tuples.
     """
+    num_songs = len(songs)
     songs_per_card = rows * columns
-    if len(songs) < songs_per_card:
-        raise ValueError(f"Not enough songs in playlist. Need at least {songs_per_card} for a {rows}x{columns} grid.")
+    
+    if num_songs < songs_per_card:
+        raise ValueError(f"Not enough songs in playlist. Need at least {songs_per_card} for a {rows}x{columns} grid, but the playlist only has {num_songs}.")
+
+    # Mathematical limit for unique cards: Combinations of num_songs taken songs_per_card at a time.
+    # C(n, k) = n! / (k!(n-k)!)
+    max_possible_unique = math.comb(num_songs, songs_per_card)
+    
+    if num_participants > max_possible_unique:
+        raise ValueError(f"Impossible to generate {num_participants} unique cards with a {rows}x{columns} grid ({songs_per_card} songs) from a playlist of {num_songs} tracks. The mathematical maximum is {max_possible_unique} unique combinations.")
 
     blocks = []
     used_combinations: Set[Tuple[Tuple[str, str], ...]] = set()

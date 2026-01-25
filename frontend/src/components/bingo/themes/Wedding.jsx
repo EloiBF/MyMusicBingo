@@ -1,251 +1,191 @@
 import React from 'react';
-import { Heart, Music, Sparkles, Star } from 'lucide-react';
+import { Heart, Music, Sparkles, Star, Bird } from 'lucide-react';
 
 export default {
     id: 'wedding',
     label: 'Wedding Elegance',
     category: 'Celebrations',
-    font: "'Great Vibes', cursive",
+    font: "'Cormorant Garamond', serif",
     defaultAccentColor: '#6b7c59',
     defaultGridSize: 'medium',
     defaultTitleSpace: 'large',
     background: {
-        color: '#ffffff',
+        color: '#fdfdfc',
         elements: [
-            // Elegant corner flourishes (top-left)
+            // Elegant Corner Flourish - Top Left with Ring
             {
                 content: (
-                    <svg width="120" height="120" viewBox="0 0 120 120" style={{ opacity: 0.15 }}>
-                        <path d="M 0 0 Q 30 30 60 0 Q 30 30 60 60 Q 30 30 0 60 Z" fill="#6b7c59" />
-                        <circle cx="60" cy="60" r="3" fill="#d4af37" />
+                    <svg width="200" height="200" viewBox="0 0 100 100" style={{ filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.1))' }}>
+                        <path d="M5,5 Q20,8 30,25 Q12,20 5,5" fill="none" stroke="#d4af37" strokeWidth="0.8" opacity="0.6" />
+                        <path d="M8,30 Q25,32 40,20 Q32,25 8,30" fill="none" stroke="#6b7c59" strokeWidth="0.6" opacity="0.5" />
+                        <circle cx="5" cy="5" r="1" fill="#d4af37" opacity="0.7" />
+                        <circle cx="15" cy="18" r="0.8" fill="#d4af37" opacity="0.5" />
+                        <circle cx="25" cy="35" r="8" fill="none" stroke="#d4af37" strokeWidth="1.2" opacity="0.4" />
+                        <circle cx="25" cy="35" r="1" fill="#d4af37" opacity="0.6" />
                     </svg>
                 ),
-                style: { top: '10px', left: '10px' }
+                style: { top: '5mm', left: '5mm' },
+                isDecorative: true
             },
-            // Top-right corner
+            // Elegant Corner Flourish - Bottom Right with Ring
             {
                 content: (
-                    <svg width="120" height="120" viewBox="0 0 120 120" style={{ opacity: 0.15, transform: 'rotate(90deg)' }}>
-                        <path d="M 0 0 Q 30 30 60 0 Q 30 30 60 60 Q 30 30 0 60 Z" fill="#6b7c59" />
-                        <circle cx="60" cy="60" r="3" fill="#d4af37" />
+                    <svg width="200" height="200" viewBox="0 0 100 100" style={{ transform: 'rotate(180deg)', filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.1))' }}>
+                        <path d="M5,5 Q20,8 30,25 Q12,20 5,5" fill="none" stroke="#d4af37" strokeWidth="0.8" opacity="0.6" />
+                        <path d="M8,30 Q25,32 40,20 Q32,25 8,30" fill="none" stroke="#6b7c59" strokeWidth="0.6" opacity="0.5" />
+                        <circle cx="5" cy="5" r="1" fill="#d4af37" opacity="0.7" />
+                        <circle cx="15" cy="18" r="0.8" fill="#d4af37" opacity="0.5" />
+                        <circle cx="25" cy="35" r="8" fill="none" stroke="#d4af37" strokeWidth="1.2" opacity="0.4" />
+                        <circle cx="25" cy="35" r="1" fill="#d4af37" opacity="0.6" />
                     </svg>
                 ),
-                style: { top: '10px', right: '10px' }
+                style: { bottom: '5mm', right: '5mm' },
+                isDecorative: true
             },
-            // Bottom-left corner
+
+            // Soft Silk-like Gradient Top
             {
-                content: (
-                    <svg width="120" height="120" viewBox="0 0 120 120" style={{ opacity: 0.15, transform: 'rotate(-90deg)' }}>
-                        <path d="M 0 0 Q 30 30 60 0 Q 30 30 60 60 Q 30 30 0 60 Z" fill="#6b7c59" />
-                        <circle cx="60" cy="60" r="3" fill="#d4af37" />
-                    </svg>
-                ),
-                style: { bottom: '10px', left: '10px' }
+                content: <div style={{ width: '100%', height: '30%', background: 'linear-gradient(180deg, rgba(212, 175, 55, 0.02) 0%, transparent 100%)' }} />,
+                style: { top: 0, left: 0, width: '100%' },
+                isDecorative: true
             },
-            // Bottom-right corner
+
+            // Central Wedding Rings with Shadow
             {
                 content: (
-                    <svg width="120" height="120" viewBox="0 0 120 120" style={{ opacity: 0.15, transform: 'rotate(180deg)' }}>
-                        <path d="M 0 0 Q 30 30 60 0 Q 30 30 60 60 Q 30 30 0 60 Z" fill="#6b7c59" />
-                        <circle cx="60" cy="60" r="3" fill="#d4af37" />
+                    <svg width="140" height="140" viewBox="0 0 60 60" style={{ filter: 'drop-shadow(3px 3px 4px rgba(0,0,0,0.15))' }}>
+                        <circle cx="20" cy="30" r="12" fill="none" stroke="#d4af37" strokeWidth="2" opacity="0.6" />
+                        <circle cx="40" cy="30" r="12" fill="none" stroke="#d4af37" strokeWidth="2" opacity="0.6" />
+                        <path d="M20,18 Q30,15 40,18" fill="none" stroke="#d4af37" strokeWidth="1.5" opacity="0.5" />
+                        <circle cx="20" cy="30" r="2.5" fill="#d4af37" opacity="0.7" />
+                        <circle cx="40" cy="30" r="2.5" fill="#d4af37" opacity="0.7" />
+                        <path d="M15,25 Q20,22 25,25" fill="none" stroke="#d4af37" strokeWidth="0.8" opacity="0.4" />
+                        <path d="M35,25 Q40,22 45,25" fill="none" stroke="#d4af37" strokeWidth="0.8" opacity="0.4" />
                     </svg>
                 ),
-                style: { bottom: '10px', right: '10px' }
+                style: { top: '15%', left: '50%', transform: 'translateX(-50%)' },
+                decorationLevel: 'subtle'
             },
-            // Delicate olive branches
-            { content: <Music size={80} color="#6b7c59" opacity={0.06} />, style: { top: '15%', left: '3%', transform: 'rotate(-25deg)' } },
-            { content: <Music size={80} color="#6b7c59" opacity={0.06} />, style: { top: '15%', right: '3%', transform: 'rotate(25deg)' } },
-            // Wedding rings - shadow effects
+
+            // Subtle Floral Elements with Shadows
+            { content: <Heart size={32} color="#d4af37" strokeWidth={1} opacity={0.3} style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))' }} />, style: { top: '20%', left: '15%', transform: 'rotate(-15deg)' }, decorationLevel: 'subtle' },
+            { content: <Heart size={28} color="#d4af37" strokeWidth={1} opacity={0.25} style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))' }} />, style: { top: '25%', right: '20%', transform: 'rotate(10deg)' }, decorationLevel: 'subtle' },
+            { content: <Heart size={30} color="#d4af37" strokeWidth={1} opacity={0.28} style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))' }} />, style: { top: '30%', left: '25%', transform: 'rotate(5deg)' }, decorationLevel: 'subtle' },
+
+            // Elegant Doves with Shadows
+            { content: <Bird size={40} color="#6b7c59" strokeWidth={1} opacity={0.4} style={{ filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.12))' }} />, style: { top: '12%', right: '8%', transform: 'scaleX(-1) scale(0.8)' }, decorationLevel: 'subtle' },
+            { content: <Bird size={40} color="#6b7c59" strokeWidth={1} opacity={0.4} style={{ filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.12))' }} />, style: { top: '12%', left: '8%', transform: 'scale(0.8)' }, decorationLevel: 'subtle' },
+
+            // Small Ring Decorations with Shadows
             {
                 content: (
-                    <svg width="90" height="90" viewBox="0 0 90 90" style={{ opacity: 0.12 }}>
-                        <circle cx="30" cy="45" r="20" fill="none" stroke="#d4af37" strokeWidth="3"/>
-                        <circle cx="30" cy="45" r="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
-                        <circle cx="60" cy="45" r="20" fill="none" stroke="#d4af37" strokeWidth="3"/>
-                        <circle cx="60" cy="45" r="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+                    <svg width="60" height="60" viewBox="0 0 30 30" style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))' }}>
+                        <circle cx="15" cy="15" r="10" fill="none" stroke="#d4af37" strokeWidth="1.5" opacity="0.5" />
+                        <circle cx="15" cy="15" r="1.5" fill="#d4af37" opacity="0.6" />
                     </svg>
                 ),
-                style: { top: '25%', left: '8%', transform: 'rotate(-15deg)' },
+                style: { top: '35%', left: '8%', transform: 'rotate(-10deg)' },
                 decorationLevel: 'subtle'
             },
             {
                 content: (
-                    <svg width="90" height="90" viewBox="0 0 90 90" style={{ opacity: 0.12 }}>
-                        <circle cx="30" cy="45" r="20" fill="none" stroke="#d4af37" strokeWidth="3"/>
-                        <circle cx="30" cy="45" r="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
-                        <circle cx="60" cy="45" r="20" fill="none" stroke="#d4af37" strokeWidth="3"/>
-                        <circle cx="60" cy="45" r="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
+                    <svg width="60" height="60" viewBox="0 0 30 30" style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))' }}>
+                        <circle cx="15" cy="15" r="10" fill="none" stroke="#d4af37" strokeWidth="1.5" opacity="0.5" />
+                        <circle cx="15" cy="15" r="1.5" fill="#d4af37" opacity="0.6" />
                     </svg>
                 ),
-                style: { top: '25%', right: '8%', transform: 'rotate(15deg)' },
-                decorationLevel: 'prominent'
-            },
-            // Delicate flowers - shadow effects
-            {
-                content: (
-                    <svg width="80" height="80" viewBox="0 0 80 80" style={{ opacity: 0.12 }}>
-                        <circle cx="40" cy="40" r="25" fill="none" stroke="#6b7c59" strokeWidth="2"/>
-                        <circle cx="40" cy="25" r="8" fill="#6b7c59"/>
-                        <circle cx="25" cy="40" r="8" fill="#6b7c59"/>
-                        <circle cx="55" cy="40" r="8" fill="#6b7c59"/>
-                        <circle cx="40" cy="55" r="8" fill="#6b7c59"/>
-                        <circle cx="30" cy="30" r="5" fill="#6b7c59"/>
-                        <circle cx="50" cy="30" r="5" fill="#6b7c59"/>
-                        <circle cx="30" cy="50" r="5" fill="#6b7c59"/>
-                        <circle cx="50" cy="50" r="5" fill="#6b7c59"/>
-                    </svg>
-                ),
-                style: { top: '35%', left: '5%', transform: 'rotate(-10deg)' },
+                style: { top: '35%', right: '8%', transform: 'rotate(10deg)' },
                 decorationLevel: 'subtle'
             },
+
+            // Subtle Sparkles with Shadows
+            { content: <Sparkles size={28} color="#d4af37" opacity={0.3} style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.08))' }} />, style: { bottom: '25%', left: '5%' }, decorationLevel: 'subtle' },
+            { content: <Sparkles size={26} color="#d4af37" opacity={0.25} style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.08))' }} />, style: { bottom: '28%', right: '8%' }, decorationLevel: 'subtle' },
+            { content: <Sparkles size={24} color="#d4af37" opacity={0.2} style={{ filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.08))' }} />, style: { bottom: '22%', left: '12%' }, decorationLevel: 'subtle' },
+
+            // Elegant Divider Line with Shadow
             {
                 content: (
-                    <svg width="80" height="80" viewBox="0 0 80 80" style={{ opacity: 0.12 }}>
-                        <circle cx="40" cy="40" r="25" fill="none" stroke="#6b7c59" strokeWidth="2"/>
-                        <circle cx="40" cy="25" r="8" fill="#6b7c59"/>
-                        <circle cx="25" cy="40" r="8" fill="#6b7c59"/>
-                        <circle cx="55" cy="40" r="8" fill="#6b7c59"/>
-                        <circle cx="40" cy="55" r="8" fill="#6b7c59"/>
-                        <circle cx="30" cy="30" r="5" fill="#6b7c59"/>
-                        <circle cx="50" cy="30" r="5" fill="#6b7c59"/>
-                        <circle cx="30" cy="50" r="5" fill="#6b7c59"/>
-                        <circle cx="50" cy="50" r="5" fill="#6b7c59"/>
-                    </svg>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))' }}>
+                        <div style={{ width: '40px', height: '0.5px', background: 'linear-gradient(90deg, transparent, #d4af37, transparent)' }} />
+                        <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#d4af37' }} />
+                        <div style={{ width: '40px', height: '0.5px', background: 'linear-gradient(90deg, transparent, #d4af37, transparent)' }} />
+                    </div>
                 ),
-                style: { top: '35%', right: '5%', transform: 'rotate(10deg)' },
-                decorationLevel: 'prominent'
+                style: { top: '42%', left: '50%', transform: 'translateX(-50%)' },
+                isDecorative: true
             },
+
+            // Very Subtle Texture Overlay
             {
-                content: (
-                    <svg width="70" height="70" viewBox="0 0 70 70" style={{ opacity: 0.12 }}>
-                        <ellipse cx="35" cy="35" rx="20" ry="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
-                        <path d="M 35 20 Q 25 30 35 35 Q 45 30 35 20" fill="#d4af37"/>
-                        <path d="M 20 35 Q 30 25 35 35 Q 30 45 20 35" fill="#d4af37"/>
-                        <path d="M 50 35 Q 40 25 35 35 Q 40 45 50 35" fill="#d4af37"/>
-                        <path d="M 35 50 Q 25 40 35 35 Q 45 40 35 50" fill="#d4af37"/>
-                    </svg>
-                ),
-                style: { bottom: '25%', left: '7%', transform: 'rotate(5deg)' },
-                decorationLevel: 'subtle'
-            },
-            {
-                content: (
-                    <svg width="70" height="70" viewBox="0 0 70 70" style={{ opacity: 0.12 }}>
-                        <ellipse cx="35" cy="35" rx="20" ry="15" fill="none" stroke="#d4af37" strokeWidth="2"/>
-                        <path d="M 35 20 Q 25 30 35 35 Q 45 30 35 20" fill="#d4af37"/>
-                        <path d="M 20 35 Q 30 25 35 35 Q 30 45 20 35" fill="#d4af37"/>
-                        <path d="M 50 35 Q 40 25 35 35 Q 40 45 50 35" fill="#d4af37"/>
-                        <path d="M 35 50 Q 25 40 35 35 Q 45 40 35 50" fill="#d4af37"/>
-                    </svg>
-                ),
-                style: { bottom: '25%', right: '7%', transform: 'rotate(-5deg)' },
-                decorationLevel: 'prominent'
-            },
-            // Gold accent hearts
-            { content: <Heart size={40} color="#d4af37" opacity={0.12} fill="#d4af37" />, style: { top: '8%', left: '48%' } },
-            { content: <Heart size={30} color="#d4af37" opacity={0.08} fill="#d4af37" />, style: { top: '12%', left: '52%' } },
-            // Sparkle accents
-            { content: <Sparkles size={35} color="#d4af37" opacity={0.15} />, style: { top: '20%', right: '8%' } },
-            { content: <Sparkles size={35} color="#d4af37" opacity={0.15} />, style: { top: '20%', left: '8%' } },
-            { content: <Star size={25} color="#d4af37" opacity={0.1} />, style: { bottom: '15%', left: '5%' } },
-            { content: <Star size={25} color="#d4af37" opacity={0.1} />, style: { bottom: '15%', right: '5%' } },
-            // Elegant border frame
-            {
-                content: (
-                    <div style={{
-                        border: '2px solid #6b7c59',
-                        opacity: 0.2,
-                        width: '96%',
-                        height: '97%',
-                        borderRadius: '8px',
-                        boxShadow: 'inset 0 0 0 1px #d4af37'
-                    }} />
-                ),
-                style: { top: '1.5%', left: '2%' }
-            },
-            // Gold accent line at top
-            {
-                content: <div style={{ width: '200px', height: '2px', background: 'linear-gradient(90deg, transparent, #d4af37, transparent)', opacity: 0.4 }} />,
-                style: { top: '23%', left: '50%', transform: 'translateX(-50%)' }
-            },
-            // Subtle texture overlay
-            {
-                content: (
-                    <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%)',
-                        pointerEvents: 'none'
-                    }} />
-                ),
-                style: { top: 0, left: 0, width: '100%', height: '100%' }
+                content: <div style={{ width: '100%', height: '100%', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.01) 1px, transparent 1px)', backgroundSize: '25px 25px' }} />,
+                style: { top: 0, left: 0, width: '100%', height: '100%' },
+                isDecorative: true
             }
         ]
     },
     card: {
-        border: '3px solid #6b7c59',
+        border: '1px solid #d4af37',
         background: '#ffffff',
-        borderRadius: '8px',
-        offset: '12mm',
-        shadow: '0 8px 32px rgba(107, 124, 89, 0.15)'
+        borderRadius: '4px',
+        offset: '15mm',
+        shadow: '0 15px 40px rgba(107, 124, 89, 0.1)'
     },
     title: {
         content: 'Music Bingo',
         size: 'medium',
         weight: '400',
         color: '#6b7c59',
-        letterSpacing: '2pt',
+        letterSpacing: '3pt',
         textAlign: 'center',
-        textTransform: 'none',
-        font: "'Great Vibes', cursive"
+        textTransform: 'uppercase',
+        font: "'Cormorant Garamond', serif"
     },
     subtitle: {
-        size: 'medium',
-        weight: '400',
+        size: 'large',
+        weight: '300',
         color: '#d4af37',
         letterSpacing: '2pt',
         textAlign: 'center',
-        font: "'Great Vibes', cursive"
+        font: "'Great Vibes', cursive",
+        textTransform: 'none'
     },
     grid: {
-        gap: '14px',
-        padding: '20px'
+        gap: '16px',
+        padding: '24px 20px'
     },
     cell: {
-        shape: '6px',
-        border: '2px solid #6b7c59',
-        background: '#fefefe',
-        shadow: '0 2px 8px rgba(107, 124, 89, 0.08)',
-        offset: '10px'
+        shape: '0px',
+        border: '1.5px solid #d4af37',
+        background: '#ffffff',
+        shadow: 'inset 0 0 10px rgba(212, 175, 55, 0.02)',
+        offset: '12px'
     },
     song: {
         size: 'medium',
         weight: '600',
-        color: '#2d3a24',
-        font: "'Montserrat', sans-serif"
+        color: '#2d3a1d'
     },
     artist: {
         size: 'small',
         weight: '500',
         color: '#6b7c59',
-        font: "'Montserrat', sans-serif"
+        fontStyle: 'italic'
     },
     cardNumber: {
         size: 'small',
         weight: '600',
         color: '#6b7c59',
-        background: 'rgba(212, 175, 55, 0.15)',
-        padding: '6px 14px',
-        borderRadius: '20px'
+        background: 'rgba(107, 124, 89, 0.05)',
+        padding: '6px 16px',
+        borderRadius: '2px',
+        border: '0.5px solid rgba(107, 124, 89, 0.2)'
     },
     footer: {
         size: 'small',
         weight: '400',
-        color: '#a0a89a',
+        color: '#94a3b8',
         letterSpacing: '2pt',
-        font: "'Great Vibes', cursive"
+        font: "'Cormorant Garamond', serif"
     }
 };

@@ -18,6 +18,10 @@ const BingoCard = ({
     titleConfig = {},
     gridConfig = {}
 }) => {
+    console.log('--- BingoCard Render ---');
+    console.log('Props - rows:', rows, 'columns:', columns);
+    console.log('cardData length:', cardData?.length);
+
     const isLandscape = orientation === 'landscape';
 
     // Grid size configurations with expanded multipliers
@@ -336,6 +340,7 @@ const BingoCard = ({
             borderRadius: config.cell.shape,
             border: config.cell.border,
             boxShadow: config.cell.shadow,
+            overflow: 'hidden'
         },
         song: {
             fontSize: config.song.size,
@@ -343,7 +348,6 @@ const BingoCard = ({
             color: config.song.color,
             lineHeight: 1.1,
             marginBottom: '1pt',
-            wordBreak: 'break-word',
             zIndex: 2,
             position: 'relative',
             fontFamily: config.song.font || config.font,
@@ -351,7 +355,16 @@ const BingoCard = ({
             background: config.song.background,
             padding: config.song.padding,
             borderRadius: config.song.borderRadius,
-            display: 'inline-block'
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            width: '100%',
+            maxWidth: '100%',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            textAlign: 'center'
         },
         artist: {
             fontSize: config.artist.size,
@@ -365,7 +378,16 @@ const BingoCard = ({
             background: config.artist.background,
             padding: config.artist.padding,
             borderRadius: config.artist.borderRadius,
-            display: 'inline-block'
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            width: '100%',
+            maxWidth: '100%',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            textAlign: 'center'
         },
         cardNumber: {
             textAlign: config.cardNumber.textAlign,
@@ -403,28 +425,59 @@ const BingoCard = ({
             <div style={styles.cardFrame}>
                 {/* Decorative elements */}
                 {config.background.elements && config.background.elements.map((el, i) => {
-                    // Check if this is a decorative element (like badges) that should NOT have transparency applied
                     const isDecorative = el.isDecorative === true;
 
-                    // Only apply opacity styling to background decorations (SVGs, icons)
-                    const decorationStyle = isDecorative ? {} : {
-                        opacity: el.content?.props?.style?.opacity || 0.12,
-                        filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))',
-                        transition: 'opacity 0.3s ease'
+                    // Extract opacity from various possible locations
+                    const contentOpacity = el.content?.props?.style?.opacity ?? el.content?.props?.opacity;
+                    const styleOpacity = el.style?.opacity;
+
+                    // Priority: 
+                    // 1. If isDecorative, use 1 or whatever is in el.style or content
+                    // 2. If content or style has an explicit opacity, use that (no double-dipping)
+                    // 3. Otherwise use default 0.12 or adjusted for decorationLevel
+
+                    let finalOpacity = 1;
+                    if (!isDecorative) {
+                        const baseOpacity = contentOpacity ?? styleOpacity ?? 0.12;
+                        const decorationMultiplier = el.decorationLevel === 'prominent' ? 1.5 : 1;
+                        finalOpacity = baseOpacity * decorationMultiplier;
+                    }
+
+                    const containerStyle = {
+                        position: 'absolute',
+                        zIndex: 1, // Above background, below grid/header (which are zIndex: 2)
+                        pointerEvents: 'none', // Decorations shouldn't block clicks
+                        filter: isDecorative ? 'none' : 'drop-shadow(1px 1px 2px rgba(0,0,0,0.1))',
+                        transition: 'opacity 0.3s ease',
+                        ...el.style,
+                        opacity: finalOpacity
                     };
 
-                    // Apply different opacity for elements with decorationLevel (only for background decorations)
-                    if (!isDecorative && el.decorationLevel === 'prominent') {
-                        decorationStyle.opacity = (el.content?.props?.style?.opacity || 0.12) * 1.5;
+                    // If we applied opacity to the container, and the content ALREADY has the same opacity,
+                    // we might want to strip it from the content to avoid multiplication if it's a simple div/svg.
+                    // However, for Lucide icons it's harder to strip.
+                    // Better approach: if we found contentOpacity, we should probably set container opacity to 1 
+                    // and let the content handle it, OR set content to opacity 1 and let container handle it.
+
+                    // Strategy: If contentOpacity is present, we use it for the container and try to pass 
+                    // opacity 1 to the content if it's a cloneable element.
+                    let content = typeof el.content === 'function' ? el.content(config.artist.color) : el.content;
+
+                    if (contentOpacity !== undefined && React.isValidElement(content)) {
+                        // Ensure the inner element doesn't multiply the opacity if we already applied it to the container
+                        try {
+                            content = React.cloneElement(content, {
+                                style: { ...(content.props.style || {}), opacity: 1 },
+                                opacity: 1
+                            });
+                        } catch (e) {
+                            // If clone fails, just keep original
+                        }
                     }
 
                     return (
-                        <div key={i} style={{
-                            position: 'absolute',
-                            ...el.style,
-                            ...decorationStyle
-                        }}>
-                            {typeof el.content === 'function' ? el.content(config.artist.color) : el.content}
+                        <div key={i} style={containerStyle}>
+                            {content}
                         </div>
                     );
                 })}
@@ -438,7 +491,11 @@ const BingoCard = ({
                     <h2 style={styles.subtitle}>{eventTitle}</h2>
                 </div>
 
-                <div style={styles.grid}>
+                <div style={{
+                    ...styles.grid,
+                    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                    gridTemplateRows: `repeat(${rows}, 1fr)`
+                }}>
                     {cardData && cardData.map((item, index) => (
                         <div key={index} style={styles.gridCell}>
                             <div style={styles.song}>{item.nom || item.name}</div>

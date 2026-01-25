@@ -28,7 +28,7 @@ const BingoPreview = ({
     const isLandscape = orientation === 'landscape';
 
     // Mock data if cardData is empty (for live preview)
-    const displayData = cardData.length > 0 ? cardData : Array(rows * columns).fill({
+    const displayData = cardData && cardData.length > 0 ? cardData : Array(Number(rows) * Number(columns)).fill({
         nom: 'Song Title',
         artista: 'Artist Name'
     });

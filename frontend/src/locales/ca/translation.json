@@ -14,10 +14,10 @@
     },
     "landing": {
         "hero": {
-            "title": "Juga, canta i guanya <0 /> amb <1> ¡Bingo Musical!</1>",
+            "title": "Juga, canta i guanya <0 /> amb <1> Bingo Musical!</1>",
             "title1": "Bingo Musical",
             "title2": "des de les teves llistes de Spotify",
-            "subtitle": "Connecta les teves llistes de Spotify per crear cartons de bingo únics. <0 /> Ràpid, fàcil i gratuït.",
+            "subtitle": "Connecta una llista de Spotify per crear cartons de bingo únics. <0 /> Ràpid, fàcil i gratuït.",
             "cta": "Començar Gratis",
             "secondaryCta": "Com funciona"
         },
@@ -27,11 +27,11 @@
             "features": {
                 "custom": {
                     "title": "Cartons Personalitzables",
-                    "desc": "Totalment tematitzables. Des de bodes fins a aniversaris, inclús esdeveniments corporatius."
+                    "desc": "Totalment tematitzables. Des de casaments fins a aniversaris, també esdeveniments corporatius!"
                 },
                 "print": {
                     "title": "Llest per Imprimir",
-                    "desc": "Obtén cartons d'alta qualitat a l'instant o demana impressions premium per als teus esdeveniments."
+                    "desc": "Crea cartons d'alta qualitat a l'instant o demana impressions premium per als teus esdeveniments."
                 },
                 "ai": {
                     "title": "Reconeixement per IA",
@@ -45,15 +45,15 @@
             "steps": {
                 "1": {
                     "title": "Registre Ràpid",
-                    "desc": "Crea un compte gratuït per desar esdeveniments i accedir a eines premium."
+                    "desc": "Crea un compte gratuït per desar esdeveniments i accedir a dissenys premium."
                 },
                 "2": {
                     "title": "Connecta Spotify",
-                    "desc": "Enganxa qualsevol ID de llista pública (enllaç compartit de l'app de Spotify)."
+                    "desc": "Enganxa qualsevol ID de llista pública (enllaç de l'app de Spotify)."
                 },
                 "3": {
                     "title": "Personalitza",
-                    "desc": "Tria temes i colors que encaixin amb el teu estil."
+                    "desc": "Tria el disseny que encaixa amb el teu estil."
                 },
                 "4": {
                     "title": "Exporta i Imprimeix",
@@ -64,7 +64,7 @@
                     "desc": "Rastreja les cançons i verifica guanyadors automàticament."
                 }
             },
-            "cta": "Comença la teva primera partida"
+            "cta": "Crea el teu bingo musical"
         },
         "testimonials": {
             "title": "Casos d'Èxit",
