@@ -173,9 +173,9 @@ const Navbar = () => {
                                     }}>
                                         {user?.username?.[0]?.toUpperCase() || 'U'}
                                     </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                        <span style={{ fontSize: '0.9rem', fontWeight: 600, lineHeight: 1.2 }}>
-                                            {user?.username || t('common.guest')}
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 0, maxWidth: '150px' }}>
+                                        <span style={{ fontSize: '0.9rem', fontWeight: 600, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>
+                                            {user?.email || user?.username || t('common.guest')}
                                         </span>
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1 }}>
                                             {user?.is_spotify_linked ? t('nav.spotify_connected') : t('nav.free_account')}
@@ -227,8 +227,8 @@ const Navbar = () => {
                                 <BookOpen size={18} />
                                 <span>Blog</span>
                             </button>
-                            <button onClick={() => navigate('/auth')} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>{t('nav.login')}</button>
-                            <button onClick={() => navigate('/auth')} className="btn btn-primary join-button">{t('nav.signup')}</button>
+                            <button onClick={() => navigate('/auth', { state: { mode: 'login' } })} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>{t('nav.login')}</button>
+                            <button onClick={() => navigate('/auth', { state: { mode: 'register' } })} className="btn btn-primary join-button">{t('nav.signup')}</button>
                             <LanguageSwitcher />
                         </div>
                     )}
@@ -309,9 +309,9 @@ const Navbar = () => {
                                     }}>
                                         {user?.username?.[0]?.toUpperCase() || 'U'}
                                     </div>
-                                    <div>
-                                        <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.25rem' }}>
-                                            {user?.username || t('common.guest')}
+                                    <div style={{ minWidth: 0, flex: 1 }}>
+                                        <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.25rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            {user?.email || user?.username || t('common.guest')}
                                         </div>
                                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                                             {user?.is_spotify_linked ? t('nav.spotify_connected') : t('nav.free_account')}
@@ -419,7 +419,7 @@ const Navbar = () => {
                                         Blog
                                     </button>
                                     <button
-                                        onClick={() => navigate('/auth')}
+                                        onClick={() => navigate('/auth', { state: { mode: 'register' } })}
                                         className="btn btn-primary"
                                         style={{
                                             width: '100%',
@@ -430,7 +430,7 @@ const Navbar = () => {
                                         Join Now
                                     </button>
                                     <button
-                                        onClick={() => navigate('/auth')}
+                                        onClick={() => navigate('/auth', { state: { mode: 'login' } })}
                                         className="btn btn-secondary"
                                         style={{
                                             width: '100%',

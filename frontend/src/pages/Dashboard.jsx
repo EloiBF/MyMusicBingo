@@ -65,7 +65,7 @@ const Dashboard = () => {
 
     if (loading) return <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{t('dashboard.loading')}</div>;
 
-    const headerActions = (
+    const headerActions = events.length > 0 ? (
         <button
             onClick={() => navigate('/create')}
             className="btn btn-primary"
@@ -73,7 +73,7 @@ const Dashboard = () => {
         >
             <PlusCircle size={20} /> {t('dashboard.new_bingo')}
         </button>
-    );
+    ) : null;
 
     return (
         <PageLayout
@@ -83,64 +83,95 @@ const Dashboard = () => {
         >
             {/* Content Section */}
             {events.length === 0 ? (
-                <div className="glass" style={{
-                    padding: '6rem 3rem',
-                    textAlign: 'center',
+                <div style={{
+                    minHeight: '60vh',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '2rem',
-                    border: '1px dashed var(--glass-border)',
-                    background: 'var(--glass)',
-                    backdropFilter: 'var(--glass-blur)',
-                    WebkitBackdropFilter: 'var(--glass-blur)',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    gap: '2.5rem',
+                    padding: '2rem 1rem',
+                    position: 'relative',
+                    overflow: 'hidden',
                     borderRadius: 'var(--radius-xl)',
-                    boxShadow: 'var(--shadow-lg)',
-                    maxWidth: '600px',
-                    margin: '0 auto'
+                    background: 'var(--glass)',
+                    border: '1px solid var(--glass-border)',
                 }}>
+                    {/* Background Ambient Glow */}
+                    <div style={{ position: 'absolute', top: '-20%', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', background: 'radial-gradient(circle, var(--primary) 15%, transparent 70%)', opacity: 0.15, pointerEvents: 'none', filter: 'blur(80px)' }} />
+
                     <div style={{
-                        width: '96px', height: '96px', borderRadius: '50%',
-                        background: 'linear-gradient(135deg, var(--primary)20, var(--secondary)20)',
-                        display: 'flex',
-                        alignItems: 'center', justifyContent: 'center',
-                        color: 'var(--primary)',
-                        border: '1px solid var(--primary)30',
-                        backdropFilter: 'var(--glass-blur)',
-                        WebkitBackdropFilter: 'var(--glass-blur)',
-                        boxShadow: '0 8px 24px var(--primary)20'
+                        position: 'relative',
+                        width: '120px', height: '120px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        marginBottom: '1rem'
                     }}>
-                        <Layout size={48} strokeWidth={1.5} />
+                        <div style={{
+                            position: 'absolute', inset: 0,
+                            borderRadius: '30px',
+                            background: 'linear-gradient(135deg, var(--primary)20, var(--secondary)20)',
+                            transform: 'rotate(12deg)',
+                            border: '1px solid var(--glass-border)'
+                        }} />
+                        <div style={{
+                            position: 'absolute', inset: 0,
+                            borderRadius: '30px',
+                            background: 'linear-gradient(135deg, var(--card-bg) 0%, var(--glass) 100%)',
+                            backdropFilter: 'blur(20px)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            border: '1px solid var(--glass-border)',
+                            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)',
+                            transform: 'rotate(-6deg)'
+                        }}>
+                            <Layout size={56} style={{ color: 'var(--primary)', filter: 'drop-shadow(0 4px 12px var(--primary)40)' }} strokeWidth={1.5} />
+                        </div>
                     </div>
-                    <div>
-                        <h3 style={{
-                            fontSize: '1.75rem',
+
+                    <div style={{ maxWidth: '420px', position: 'relative', zIndex: 1 }}>
+                        <h2 style={{
+                            fontSize: 'clamp(1.8rem, 4vw, 2.2rem)',
+                            fontWeight: '800',
                             marginBottom: '1rem',
-                            fontWeight: '700',
-                            color: 'var(--text)'
-                        }}>{t('dashboard.empty.title')}</h3>
+                            lineHeight: 1.2
+                        }}>
+                            {t('dashboard.empty.title')}
+                        </h2>
                         <p style={{
+                            fontSize: '1.1rem',
+                            lineHeight: '1.6',
                             color: 'var(--text-muted)',
-                            maxWidth: '400px',
-                            margin: '0 auto',
-                            fontSize: '1rem',
-                            lineHeight: '1.6'
+                            marginBottom: '2.5rem'
                         }}>
                             {t('dashboard.empty.desc')}
                         </p>
+
+                        <button
+                            onClick={() => navigate('/create')}
+                            className="btn btn-primary"
+                            style={{
+                                padding: '1.1rem 2.8rem',
+                                fontSize: '1.1rem',
+                                borderRadius: '50px',
+                                boxShadow: '0 10px 30px -5px var(--primary)60',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.8rem',
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)'
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                                e.currentTarget.style.boxShadow = '0 20px 40px -10px var(--primary)80';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                e.currentTarget.style.boxShadow = '0 10px 30px -5px var(--primary)60';
+                            }}
+                        >
+                            <span>{t('dashboard.empty.cta')}</span>
+                        </button>
                     </div>
-                    <button
-                        onClick={() => navigate('/create')}
-                        className="btn btn-primary"
-                        style={{
-                            marginTop: '1rem',
-                            padding: '1rem 2rem',
-                            fontSize: '1rem',
-                            boxShadow: 'var(--shadow-glow)'
-                        }}
-                    >
-                        {t('dashboard.empty.cta')}
-                    </button>
                 </div>
             ) : (
                 <div style={{

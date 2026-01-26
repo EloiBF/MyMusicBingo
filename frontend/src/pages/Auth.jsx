@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { Music, ArrowRight, User, Mail, Lock, UserPlus, LogIn, Home } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import api from '../api';
 import Navbar from '../components/Navbar';
 
@@ -11,11 +11,11 @@ const Auth = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('login'); // 'login' or 'register'
+  const location = useLocation();
+  const [mode, setMode] = useState(location.state?.mode || 'register'); // 'login' or 'register'
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: ''
+    email: '',
+    password: ''
   });
 
   useEffect(() => {
@@ -42,7 +42,12 @@ const Auth = () => {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.error || err.response?.data?.detail || t('auth.errors.generic'));
+      const errorKey = err.response?.data?.error;
+      if (errorKey && errorKey.startsWith('auth.errors.')) {
+        setError(t(errorKey));
+      } else {
+        setError(err.response?.data?.error || err.response?.data?.detail || t('auth.errors.generic'));
+      }
     } finally {
       setLoading(false);
     }
@@ -95,42 +100,29 @@ const Auth = () => {
                   fontSize: '0.85rem',
                   marginBottom: '1.5rem'
                 }}>
-                  {error}
+                  {error && error.includes('<0 />') ? (
+                    <Trans i18nKey={error} components={[<br />]} />
+                  ) : (
+                    error
+                  )}
                 </div>
               )}
 
               <form onSubmit={handleSubmit} style={{ textAlign: 'left', marginBottom: '1.5rem' }}>
                 <div className="input-group" style={{ marginBottom: '1rem' }}>
-                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('auth.username')}</label>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('auth.email')}</label>
                   <div style={{ position: 'relative' }}>
-                    <User size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                    <Mail size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                     <input
-                      type="text"
+                      type="email"
                       style={{ paddingLeft: '2.5rem' }}
-                      placeholder={t('auth.username_placeholder')}
-                      value={formData.username}
-                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                      placeholder={t('auth.email_placeholder')}
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
                     />
                   </div>
                 </div>
-
-                {mode === 'register' && (
-                  <div className="input-group" style={{ marginBottom: '1rem' }}>
-                    <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('auth.email')}</label>
-                    <div style={{ position: 'relative' }}>
-                      <Mail size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                      <input
-                        type="email"
-                        style={{ paddingLeft: '2.5rem' }}
-                        placeholder={t('auth.email_placeholder')}
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                      />
-                    </div>
-                  </div>
-                )}
 
                 <div className="input-group" style={{ marginBottom: '2rem' }}>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('auth.password')}</label>
@@ -162,15 +154,18 @@ const Auth = () => {
                 </button>
               </form>
 
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                {mode === 'login' ? t('auth.no_account') : t('auth.have_account')}
+              <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--glass-border)' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+                  {mode === 'login' ? t('auth.no_account') : t('auth.have_account')}
+                </p>
                 <button
                   onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 'bold', marginLeft: '0.5rem', cursor: 'pointer' }}
+                  className="btn btn-secondary"
+                  style={{ width: '100%', justifyContent: 'center' }}
                 >
                   {mode === 'login' ? t('auth.create_one') : t('auth.sign_in_link')}
                 </button>
-              </p>
+              </div>
             </div>
           </div>
         </div>

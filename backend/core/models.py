@@ -6,7 +6,7 @@ class BingoUser(AbstractUser):
     email = models.EmailField(unique=True)
 
     def __str__(self):
-        return self.username
+        return self.email
 
 class BingoEvent(models.Model):
     """A session for generating bingo cards."""

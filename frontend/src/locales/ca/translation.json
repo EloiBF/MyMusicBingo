@@ -17,7 +17,7 @@
             "title": "Juga, canta i guanya <0 /> amb <1> Bingo Musical!</1>",
             "title1": "Bingo Musical",
             "title2": "des de les teves llistes de Spotify",
-            "subtitle": "Connecta una llista de Spotify per crear cartons de bingo únics. <0 /> Ràpid, fàcil i gratuït.",
+            "subtitle": "Connecta una llista de <1>Spotify</1> per crear cartons de bingo únics",
             "cta": "Començar Gratis",
             "secondaryCta": "Com funciona"
         },
@@ -34,8 +34,8 @@
                     "desc": "Crea cartons d'alta qualitat a l'instant o demana impressions premium per als teus esdeveniments."
                 },
                 "ai": {
-                    "title": "Reconeixement per IA",
-                    "desc": "Controla les cançons reproduïdes amb la nostra eina d'identificació per IA."
+                    "title": "Seguiment Fàcil de Cançons",
+                    "desc": "Rastreja les cançons reproduïdes fàcilment des de la nostra interfície web."
                 }
             }
         },
@@ -60,8 +60,8 @@
                     "desc": "Imprimeix tu mateix o demana còpies professionals."
                 },
                 "5": {
-                    "title": "Reconeixement per IA",
-                    "desc": "Rastreja les cançons i verifica guanyadors automàticament."
+                    "title": "Seguiment Fàcil de Cançons",
+                    "desc": "Durant el bingo, segueix les cançons i verifica guanyadors fàcilment des de la nostra web."
                 }
             },
             "cta": "Crea el teu bingo musical"
@@ -69,7 +69,7 @@
         "testimonials": {
             "title": "Casos d'Èxit",
             "items": {
-                "1": "El seguiment de cançons durant el bingo és súper fàcil, em vaig poder centrar en divertir-me.",
+                "1": "El seguiment de cançons durant el bingo des de la web és súper fàcil, em vaig poder centrar en divertir-me.",
                 "2": "Vam demanar un joc de bingo personalitzat, la qualitat i el disseny són realment bons. La festa va ser increïble!",
                 "3": "Fàcil de connectar amb Spotify i crear un joc de bingo complet amb les meves cançons, en menys d'un minut..."
             }
@@ -106,7 +106,7 @@
     "dashboard": {
         "loading": "Carregant el teu panell...",
         "new_bingo": "Crear Nou Bingo",
-        "welcome": "Benvingut de nou",
+        "welcome": "Benvingut!",
         "subtitle": "Gestiona els teus bingos musicals i crea'n de nous en pocs clics.",
         "empty": {
             "title": "Crea el teu primer bingo musical",
@@ -131,12 +131,15 @@
         "processing": "Processant...",
         "no_account": "No tens un compte?",
         "have_account": "Ja tens un compte?",
-        "create_one": "Crea'n un",
+        "create_one": "Crea un compte",
         "sign_in_link": "Inicia sessió",
         "errors": {
             "cancelled": "Has cancel·lat la connexió amb Spotify.",
             "failed": "L'inici de sessió ha fallat: {{error}}",
-            "generic": "Error d'autenticació. Si us plau, comprova les teves dades."
+            "generic": "Error d'autenticació. Si us plau, comprova les teves dades.",
+            "required_fields": "Si us plau, introdueix el teu correu i contrasenya.",
+            "user_not_found": "No trobem un compte associat amb aquest correu.",
+            "invalid_password": "Aquesta contrasenya no sembla correcta... <0 />Torna-ho a provar!"
         }
     },
     "detail": {
@@ -185,6 +188,7 @@
         "subtitle": "Genera cartons únics des de Spotify.",
         "edit_subtitle": "Actualitza la configuració de l'esdeveniment.",
         "default_title": "Nit de Disco",
+        "preview_title": "Vista Prèvia del Cartó",
         "steps": {
             "playlist": "Llista",
             "theme": "Tema",
@@ -220,7 +224,8 @@
         "layout": {
             "name_label": "Tria un nom per als teus cartons",
             "name_placeholder": "ej. Nit de Disco",
-            "num_cards_label": "Nombre de cartons a generar",
+            "num_cards_label": "Número de cartons",
+            "max_cards": "màxim",
             "grid_label": "Mida de la quadrícula",
             "orientation_label": "Orientació del cartó",
             "portrait": "Vertical",
@@ -267,7 +272,7 @@
         "session": {
             "title": "Gestió de Sessió",
             "desc": "Tancar la sessió finalitzarà la teva sessió actual. Hauràs de tornar a iniciar sessió per accedir a Mis Bingos.",
-            "logout_all": "Tancar sessió a tots els dispositius",
+            "logout_all": "Tancar sessió",
             "modal": {
                 "title": "Tancar sessió?",
                 "message": "Estàs segur que vols tancar la sessió del teu compte? Hauràs de tornar a iniciar sessió per accedir als teus bingos.",

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-    User, Mail, Settings as SettingsIcon, LogOut, CheckCircle2, AlertCircle, Lock, Eye, EyeOff
+    Mail, Settings as SettingsIcon, LogOut, CheckCircle2, AlertCircle, Lock, Eye, EyeOff
 } from 'lucide-react';
 import api from '../api';
 import PageLayout from '../components/PageLayout';
@@ -155,13 +155,6 @@ const Settings = () => {
                 <section className="glass" style={{ padding: '2rem' }}>
                     <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '0.75rem' }}>{t('settings.profile.title')}</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-                        <div>
-                            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.profile.username')}</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>
-                                <User size={16} color="var(--primary)" />
-                                <span>{user.username}</span>
-                            </div>
-                        </div>
                         <div>
                             <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: '500' }}>{t('settings.profile.email')}</label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'var(--surface-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }}>

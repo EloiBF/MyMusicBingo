@@ -12,7 +12,7 @@
         "professional",
         "presentació"
     ],
-    "featuredImage": "https://images.unsplash.com/photo-1511671782779-c97d3d37a8d?w=800&h=400&fit=crop",
+    "featuredImage": "/assets/images/blog/default-music.png",
     "template": "mixed",
     "content": {
         "sections": [

@@ -17,7 +17,7 @@
             "title": "Juega, canta y gana <0 /> con <1> ¡Bingo Musical!</1>",
             "title1": "Bingo Musical",
             "title2": "desde tus listas de Spotify",
-            "subtitle": "Conecta tus listas de Spotify para crear cartones de bingo únicos. <0 /> Rápido, fácil y gratuito.",
+            "subtitle": "Conecta tus listas de <1>Spotify</1> para crear cartones de bingo únicos",
             "cta": "Empezar Gratis",
             "secondaryCta": "Cómo funciona"
         },
@@ -34,8 +34,8 @@
                     "desc": "Obtén cartones de alta calidad al instante o pide impresiones premium para tus eventos."
                 },
                 "ai": {
-                    "title": "Reconocimiento por IA",
-                    "desc": "Controla las canciones reproducidas con nuestra herramienta de identificación por IA."
+                    "title": "Seguimiento Fácil de Canciones",
+                    "desc": "Rastrea las canciones reproducidas fácilmente desde nuestra interfaz web."
                 }
             }
         },
@@ -60,8 +60,8 @@
                     "desc": "Imprime tú mismo o pide copias profesionales."
                 },
                 "5": {
-                    "title": "Reconocimiento por IA",
-                    "desc": "Rastrea las canciones y verifica ganadores automáticamente."
+                    "title": "Seguimiento Fácil de Canciones",
+                    "desc": "Durante el Bingo, rastrea las canciones y verifica ganadores fácilmente usando nuestra web."
                 }
             },
             "cta": "Empieza tu primera partida"
@@ -69,7 +69,7 @@
         "testimonials": {
             "title": "Casos de Éxito",
             "items": {
-                "1": "El seguimiento de canciones durante el bingo es súper fácil, pude centrarme en divertirme.",
+                "1": "El seguimiento de canciones durante el bingo desde la web es súper fácil, pude centrarme en divertirme.",
                 "2": "Pedimos un juego de bingo personalizado, la calidad y el diseño son realmente buenos. ¡La fiesta fue increíble!",
                 "3": "Fácil de conectar con Spotify y crear un juego de bingo completo con mis canciones, en menos de un minuto..."
             }
@@ -106,7 +106,7 @@
     "dashboard": {
         "loading": "Cargando tu panel...",
         "new_bingo": "Crear Nuevo Bingo",
-        "welcome": "Bienvenido de nuevo",
+        "welcome": "Bienvenido",
         "subtitle": "Gestiona tus bingos musicales y crea otros nuevos en pocos clics.",
         "empty": {
             "title": "Crea tu primer bingo musical",
@@ -131,12 +131,15 @@
         "processing": "Procesando...",
         "no_account": "¿No tienes una cuenta?",
         "have_account": "¿Ya tienes una cuenta?",
-        "create_one": "Crea una",
+        "create_one": "Crea una cuenta",
         "sign_in_link": "Inicia sesión",
         "errors": {
             "cancelled": "Has cancelado la conexión con Spotify.",
             "failed": "El inicio de sesión falló: {{error}}",
-            "generic": "Error de autenticación. Por favor, comprueba tus datos."
+            "generic": "Error de autenticación. Por favor, comprueba tus datos.",
+            "required_fields": "Por favor, introduce tu correo y contraseña.",
+            "user_not_found": "No encontramos una cuenta con ese correo.",
+            "invalid_password": "Esa contraseña no parece correcta... <0 />¡Inténtalo de nuevo!"
         }
     },
     "detail": {
@@ -185,6 +188,7 @@
         "subtitle": "Genera cartones únicos desde Spotify.",
         "edit_subtitle": "Actualiza la configuración del evento.",
         "default_title": "Noche de Disco",
+        "preview_title": "Vista Previa del Cartón",
         "steps": {
             "playlist": "Lista",
             "theme": "Tema",
@@ -220,7 +224,8 @@
         "layout": {
             "name_label": "Elige un nombre para tus cartones",
             "name_placeholder": "ej. Noche de Disco",
-            "num_cards_label": "Número de cartones a generar",
+            "num_cards_label": "Número de cartones",
+            "max_cards": "máximo",
             "grid_label": "Tamaño de la cuadrícula",
             "orientation_label": "Orientación del cartón",
             "portrait": "Vertical",
@@ -267,7 +272,7 @@
         "session": {
             "title": "Gestión de Sesión",
             "desc": "Cerrar la sesión finalizará tu sesión actual. Tendrás que volver a iniciar sesión para acceder a Mis Bingos.",
-            "logout_all": "Cerrar sesión en todos los dispositivos",
+            "logout_all": "Cerrar sesión",
             "modal": {
                 "title": "¿Cerrar sesión?",
                 "message": "¿Estás seguro de que quieres cerrar la sesión de tu cuenta? Tendrás que volver a iniciar sesión para acceder a tus bingos.",

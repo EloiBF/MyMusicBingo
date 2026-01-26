@@ -11,6 +11,7 @@ import API_URLS from '../config/api';
 import PageLayout from '../components/PageLayout';
 import BingoCardPreview from '../components/BingoCardPreview';
 import SplitLayout from '../components/SplitLayout';
+import ErrorMessage from '../components/ErrorMessage';
 import { getAvailableThemes } from '../utils/themeLoader';
 
 const CreateBingo = () => {
@@ -37,13 +38,16 @@ const CreateBingo = () => {
     const [playlists, setPlaylists] = useState([]);
     const [paramLoading, setParamLoading] = useState(false);
     const [user, setUser] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     // Validation state
     const [validation, setValidation] = useState({
         is_valid: true,
         error_message: null,
+        success_message: null,
         loading: false,
-        track_count: 0
+        track_count: 0,
+        max_possible_unique: 0
     });
 
     useEffect(() => {
@@ -61,7 +65,14 @@ const CreateBingo = () => {
     // Real-time validation effect
     useEffect(() => {
         if (!config.playlistId || config.playlistId.length < 5) {
-            setValidation({ is_valid: true, error_message: null, loading: false, track_count: 0 });
+            setValidation({ 
+                is_valid: true, 
+                error_message: null, 
+                success_message: null, 
+                loading: false, 
+                track_count: 0,
+                max_possible_unique: 0 
+            });
             return;
         }
 
@@ -77,8 +88,10 @@ const CreateBingo = () => {
                 setValidation({
                     is_valid: response.data.is_valid,
                     error_message: response.data.error_message,
+                    success_message: response.data.success_message,
                     loading: false,
-                    track_count: response.data.track_count
+                    track_count: response.data.track_count,
+                    max_possible_unique: response.data.max_possible_unique
                 });
             } catch (err) {
                 console.error('Validation error:', err);
@@ -108,13 +121,13 @@ const CreateBingo = () => {
                     });
                 } catch (err) {
                     console.error('Error fetching event data:', err);
-                    alert(t('create.alerts.load_failed'));
+                    setErrorMessage(t('create.alerts.load_failed'));
                     navigate('/dashboard');
                 }
             };
             fetchEventData();
         }
-    }, [id, isEditMode, navigate]);
+    }, [id, isEditMode, navigate, t]);
 
     const gridOptions = [
         { label: '3x3 (9 songs)', rows: 3, cols: 3 },
@@ -137,7 +150,7 @@ const CreateBingo = () => {
             setPlaylists(response.data);
         } catch (err) {
             console.error(err);
-            alert(t('create.playlist.error'));
+            setErrorMessage(t('create.playlist.error'));
             setShowPlaylistModal(false);
         } finally {
             setParamLoading(false);
@@ -160,9 +173,16 @@ const CreateBingo = () => {
 
     const handleGenerate = async () => {
         if (!config.playlistId) {
-            alert(t('create.alerts.playlist_required'));
+            setErrorMessage(t('create.alerts.playlist_required'));
             return;
         }
+        
+        // Check validation before generating
+        if (!validation.is_valid) {
+            setErrorMessage(validation.error_message || t('create.alerts.validation_failed'));
+            return;
+        }
+        
         setLoading(true);
         try {
             let response;
@@ -184,7 +204,7 @@ const CreateBingo = () => {
             navigate(`/bingo/${eventId}`);
         } catch (err) {
             console.error(err);
-            alert(`${t('common.error')}: ` + (err.response?.data?.error || err.message));
+            setErrorMessage(`${t('common.error')}: ` + (err.response?.data?.error || err.message));
         } finally {
             setLoading(false);
         }
@@ -192,9 +212,16 @@ const CreateBingo = () => {
 
     const nextStep = () => {
         if (currentStep === 1 && !config.playlistId) {
-            alert(t('create.alerts.playlist_required'));
+            setErrorMessage(t('create.alerts.playlist_required'));
             return;
         }
+        
+        // Check validation before proceeding from step 1
+        if (currentStep === 1 && !validation.is_valid) {
+            setErrorMessage(validation.error_message || t('create.alerts.validation_failed'));
+            return;
+        }
+        
         if (currentStep < totalSteps) {
             setCurrentStep(currentStep + 1);
             const scrollBox = document.querySelector('.wizard-form-inner-scroll');
@@ -226,24 +253,37 @@ const CreateBingo = () => {
             hideScrollingBackground={true}
         >
             <SplitLayout
-                containerHeight="clamp(500px, 70vh, 850px)"
-                desktopColumns="minmax(0, 1fr) clamp(350px, 30vw, 450px)"
+                variant="bingo-standard"
                 sidebar={
                     <div style={{
                         background: 'var(--surface-blur)',
                         backdropFilter: 'blur(20px)',
-                        border: '1px solid var(--glass-border)',
                         borderRadius: 'var(--radius-xl)',
                         boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                         overflow: 'hidden',
                         padding: '2rem',
+
+                        // Default mobile styles
                         width: '100%',
-                        maxWidth: config.orientation === 'landscape' ? '100%' : '450px',
+                        maxWidth: '450px',
                         margin: '0 auto',
+
                         display: 'flex',
                         flexDirection: 'column',
-                        flex: 1
+                        flex: 1,
+                        height: '100%'
                     }}>
+                        <h3 style={{
+                            textAlign: 'center',
+                            marginBottom: '1rem',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em'
+                        }}>
+                            {t('create.preview_title', 'Bingo Card Preview')}
+                        </h3>
                         <BingoCardPreview
                             event={{
                                 theme: config.theme,
@@ -264,7 +304,7 @@ const CreateBingo = () => {
                     </div>
                 }
             >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, height: '100%' }}>
                     {/* Form Content */}
                     <div className="glass" style={{
                         borderRadius: 'var(--radius-xl)',
@@ -302,8 +342,7 @@ const CreateBingo = () => {
                         </div>
 
                         {/* Step Content */}
-                        <div style={{
-                            padding: '0 1.5rem 1.5rem',
+                        <div className="wizard-content-scroll" style={{
                             overflowY: 'auto',
                             display: 'flex',
                             flexDirection: 'column',
@@ -315,26 +354,33 @@ const CreateBingo = () => {
                                         <div className="input-group-mini">
                                             <label>{t('create.playlist.label')}</label>
                                             <div style={{ position: 'relative' }}>
-                                                <Search size={14} className="input-icon-left-mini" />
+                                                {validation.loading ? (
+                                                    <div className="spin-mini" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                                                ) : (validation.is_valid && validation.track_count > 0) ? (
+                                                    <Check size={16} color="var(--success)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                                                ) : (
+                                                    <Search size={14} className="input-icon-left-mini" />
+                                                )}
+
                                                 <input
                                                     type="text"
                                                     placeholder={t('create.playlist.placeholder')}
                                                     value={config.playlistId}
                                                     onChange={(e) => handlePlaylistChange(e.target.value)}
-                                                    style={{ paddingLeft: '2.5rem' }}
+                                                    style={{
+                                                        paddingLeft: '2.5rem',
+                                                        borderColor: (validation.is_valid && validation.track_count > 0 && !validation.loading) ? 'var(--success)' :
+                                                            (!validation.is_valid && !validation.loading) ? 'var(--error)' : 'var(--glass-border)',
+                                                        boxShadow: (validation.is_valid && validation.track_count > 0 && !validation.loading) ? '0 0 0 1px var(--success)' : 'none',
+                                                        transition: 'all 0.3s ease'
+                                                    }}
                                                 />
                                             </div>
                                         </div>
 
-                                        {validation.loading && <div className="validation-msg loading"><div className="spin-mini" /> {t('create.validation.checking')}</div>}
                                         {!validation.is_valid && !validation.loading && (
                                             <div className="validation-msg error animate-fade-in">
                                                 <AlertCircle size={16} /> {validation.error_message}
-                                            </div>
-                                        )}
-                                        {validation.is_valid && validation.track_count > 0 && !validation.loading && (
-                                            <div className="validation-msg success animate-fade-in">
-                                                <Check size={16} /> {t('create.validation.found_songs', { count: validation.track_count })}
                                             </div>
                                         )}
 
@@ -425,16 +471,19 @@ const CreateBingo = () => {
                                             />
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                            <div className="input-group-mini">
-                                                <label>{t('create.layout.num_cards_label')}</label>
+                                            <div className="input-group-mini" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <label style={{ flexGrow: 1 }}>
+                                                    {t('create.layout.num_cards_label')}
+                                                </label>
                                                 <input
                                                     type="number"
                                                     value={config.numCards}
                                                     onChange={(e) => setConfig({ ...config, numCards: parseInt(e.target.value) })}
+                                                    max={validation.max_possible_unique || undefined}
                                                 />
                                             </div>
-                                            <div className="input-group-mini">
-                                                <label>{t('create.layout.grid_label')}</label>
+                                            <div className="input-group-mini" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <label style={{ flexGrow: 1 }}>{t('create.layout.grid_label')}</label>
                                                 <select
                                                     value={`${config.rows}x${config.columns}`}
                                                     onChange={(e) => {
@@ -461,19 +510,13 @@ const CreateBingo = () => {
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {!validation.is_valid && !validation.loading && (
-                                            <div className="validation-msg error animate-fade-in" style={{ marginTop: '1rem' }}>
-                                                <AlertCircle size={16} /> {validation.error_message}
-                                            </div>
-                                        )}
                                     </div>
                                 )}
                             </div>
                         </div>
 
                         {/* Navigation Actions */}
-                        <div style={{
+                        <div className="wizard-footer-mini" style={{
                             borderTop: '1px solid var(--glass-border)',
                             padding: '1rem 1.5rem',
                             background: 'hsla(0,0%,100%,0.02)',
@@ -524,6 +567,14 @@ const CreateBingo = () => {
                     </div>
                 )
             }
+
+            {/* Custom Error Message */}
+            <ErrorMessage
+                message={errorMessage}
+                onClose={() => setErrorMessage(null)}
+                type="error"
+                autoClose={true}
+            />
         </PageLayout >
     );
 };
@@ -534,8 +585,10 @@ const styleSheet = document.createElement('style');
 styleSheet.innerHTML = `
     .wizard-layout-container { width: 100%; max-width: 1400px; margin: 0 auto; }
     .wizard-responsive-wrapper { display: flex; flex-direction: column; width: 100%; gap: 1.5rem; }
+    .wizard-content-scroll { padding: 0 1.5rem 6rem; }
 
     @media (min-width: 1024px) {
+        .wizard-content-scroll { padding: 0 1.5rem 1.5rem; }
         .wizard-layout-container { height: calc(100vh - 20rem); min-height: 480px; }
         .wizard-responsive-wrapper { flex-direction: row; height: 100%; gap: 1.5rem; }
         
@@ -674,8 +727,30 @@ styleSheet.innerHTML = `
     /* Mobile Adaptations */
     @media (max-width: 1023px) {
         .wizard-form-col { border-radius: 0; background: transparent; box-shadow: none; border: none; padding-bottom: 7rem; }
-        .wizard-footer-mini { position: fixed; bottom: 1.5rem; left: 1rem; right: 1rem; z-index: 1000; padding: 0.85rem; border-radius: 1.75rem; border: 1px solid var(--glass-border); background: var(--surface-blur); backdrop-filter: blur(20px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
-        .preview-wrap-mini { padding: 1.5rem; border-radius: 1.5rem; margin-top: 1rem; min-height: 300px; }
+        .wizard-footer-mini { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 1000; 
+            padding: 1rem 1.5rem; 
+            border-top: 1px solid var(--glass-border); 
+            background: var(--surface); 
+            backdrop-filter: blur(20px); 
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3); 
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+        }
+        .preview-wrap-mini { 
+            padding: 1rem; 
+            border-radius: 1.5rem; 
+            margin-bottom: 1rem; 
+            margin-top: 0;
+            min-height: auto; 
+            max-height: 50vh;
+            max-width: 280px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
     }
 
         .preview-scaler { 
@@ -708,5 +783,15 @@ styleSheet.innerHTML = `
     .scroll-box-mini:hover::-webkit-scrollbar-track, .wizard-form-inner-scroll:hover::-webkit-scrollbar-track { background: hsla(0,0%,100%,0.05); }
     .scroll-box-mini::-webkit-scrollbar-thumb, .wizard-form-inner-scroll::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; transition: 0.3s; }
     .scroll-box-mini::-webkit-scrollbar-thumb:hover, .wizard-form-inner-scroll::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* Desktop A4 Layout Enforcement */
+    @media (min-width: 1024px) {
+        .wizard-form-col {
+            /* This targets the sidebar if we add this class to it, or we can target via inline style logic if easier */
+            width: auto !important;
+            aspect-ratio: 210/297;
+            max-width: none !important;
+        }
+    }
 `;
 document.head.appendChild(styleSheet);

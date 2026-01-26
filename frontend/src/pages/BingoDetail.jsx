@@ -133,9 +133,9 @@ const BingoDetail = () => {
             />
 
             {/* Main Content Grid */}
+            {/* Main Content Grid */}
             <SplitLayout
-                containerHeight="clamp(500px, 70vh, 850px)"
-                desktopColumns="minmax(0, 1fr) clamp(350px, 30vw, 450px)"
+                variant="bingo-standard"
                 sidebar={
                     <div style={{
                         background: 'var(--surface-blur)',
@@ -145,14 +145,28 @@ const BingoDetail = () => {
                         boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                         overflow: 'hidden',
                         padding: '2rem',
+
+                        // Default mobile styles
                         width: '100%',
-                        maxWidth: event.orientation === 'landscape' ? '100%' : '450px',
+                        maxWidth: '450px',
                         margin: '0 auto',
+
                         display: 'flex',
                         flexDirection: 'column',
                         flex: 1,
                         height: '100%'
                     }}>
+                        <h3 style={{
+                            textAlign: 'center',
+                            marginBottom: '1rem',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em'
+                        }}>
+                            {t('create.preview_title', 'Bingo Card Preview')}
+                        </h3>
                         <BingoCardPreview
                             event={event}
                             cardData={card?.data || []}
@@ -168,15 +182,14 @@ const BingoDetail = () => {
             >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1, height: '100%' }}>
                     {/* Metrics Overview */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '1.25rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
                         <StatCard icon={<Users size={20} />} label={t('detail.stats.participants')} value={stats.num_participants} color="var(--primary)" />
                         <StatCard icon={<Music size={20} />} label={t('detail.stats.pool')} value={stats.total_songs_in_pool} color="var(--secondary)" />
                         <StatCard icon={<BarChart3 size={20} />} label={t('detail.stats.grid')} value={`${event.rows}x${event.columns}`} color="var(--accent)" />
                     </div>
 
                     {/* Insights Box */}
-                    <section className="glass" style={{
-                        padding: '2rem',
+                    <section className="glass insights-section" style={{
                         borderRadius: 'var(--radius-lg)',
                         display: 'flex',
                         flexDirection: 'column',
@@ -187,8 +200,8 @@ const BingoDetail = () => {
                         </h3>
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                            gap: '1rem',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                            gap: '0.75rem',
                             alignContent: 'start',
                             marginBottom: '2rem'
                         }}>
@@ -209,8 +222,8 @@ const BingoDetail = () => {
                         </h3>
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                            gap: '1rem',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                            gap: '0.75rem',
                             alignContent: 'start'
                         }}>
                             {stats.least_repeated?.slice(0, 6).map(([song, count], idx) => (
@@ -246,10 +259,10 @@ const StatCard = ({ icon, label, value, color }) => (
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '1rem',
+            padding: '0.75rem',
             background: `linear-gradient(135deg, ${color}15 0%, ${color}08 100%)`,
             borderRight: `1px solid ${color}20`,
-            minWidth: '50px'
+            minWidth: '3rem'
         }}>
             <div style={{
                 color: color,
@@ -262,7 +275,7 @@ const StatCard = ({ icon, label, value, color }) => (
 
         {/* Content Section */}
         <div style={{
-            padding: '0.9rem 1.2rem',
+            padding: '0.75rem 0.8rem',
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
@@ -273,8 +286,8 @@ const StatCard = ({ icon, label, value, color }) => (
                 color: 'var(--text-muted)',
                 fontWeight: 600,
                 textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                marginBottom: '3px',
+                letterSpacing: '0.02em',
+                marginBottom: '2px',
                 opacity: 0.8
             }}>
                 {label}
@@ -295,3 +308,27 @@ const StatCard = ({ icon, label, value, color }) => (
 );
 
 export default BingoDetail;
+
+const styleSheet = document.createElement('style');
+styleSheet.innerHTML = `
+    .insights-section { padding: 2rem; }
+    
+    @media (max-width: 1024px) {
+        .detail-preview-col {
+            max-width: 280px !important;
+            padding: 1rem !important;
+            margin-top: 2rem;
+        }
+        .insights-section { padding: 1.25rem; }
+    }
+
+    /* Desktop A4 Layout Enforcement */
+    @media (min-width: 1024px) {
+        .detail-preview-col {
+            width: auto !important;
+            aspect-ratio: 210/297;
+            max-width: none !important;
+        }
+    }
+`;
+document.head.appendChild(styleSheet);

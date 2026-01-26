@@ -12,13 +12,51 @@ import API_URLS from '../config/api';
 import BingoCardPreview from '../components/BingoCardPreview';
 import { loadBlogArticles } from '../data/blogLoader';
 
-const STACKED_STYLES = `
+const LANDING_STYLES = `
+    .hero-title {
+        font-size: clamp(2rem, 7vw, 4.2rem);
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            line-height: 1.3;
+            margin-bottom: 1.2rem;
+            font-size: clamp(1.8rem, 8vw, 3.2rem);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-title {
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 8.5vw, 2.6rem);
+            max-width: 98%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    .hero-subtitle {
+        flex-wrap: wrap;
+    }
+    
+    @media (min-width: 769px) {
+        .hero-subtitle {
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+    }
+
     .stacked-cards-wrapper {
         position: relative;
         width: 100%;
         aspect-ratio: 210 / 297; 
         max-width: 450px;
-        margin: 2rem auto;
+        margin: 0 auto;
         z-index: 10;
         perspective: 1200px;
         display: flex;
@@ -39,6 +77,7 @@ const STACKED_STYLES = `
     }
     @media (max-width: 480px) {
         .stacked-cards-wrapper { max-width: 280px; }
+        .hero-section { padding-top: 6rem !important; padding-bottom: 2rem !important; }
     }
 `;
 
@@ -57,20 +96,20 @@ const Landing = () => {
 
     return (
         <div style={{ background: 'var(--background)', color: 'var(--text)', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
-            <style>{STACKED_STYLES}</style>
+            <style>{LANDING_STYLES}</style>
 
             {/* Navigation */}
             <Navbar />
 
             <main style={{ flex: 1 }}>
                 {/* Hero Section */}
-                <section style={{
+                <section className="hero-section" style={{
                     position: 'relative',
-                    minHeight: 'clamp(500px, 80vh, 900px)',
+                    minHeight: 'clamp(400px, 70vh, 900px)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '8rem 1rem 4rem',
+                    padding: 'clamp(6rem, 14vw, 12rem) clamp(1rem, 4vw, 2rem)',
                     textAlign: 'center',
                     overflow: 'hidden'
                 }}>
@@ -86,9 +125,7 @@ const Landing = () => {
 
                     {/* Content */}
                     <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-                        <h1 className="animate-fade-in" style={{
-                            lineHeight: 1.1
-                        }}>
+                        <h1 className="animate-fade-in hero-title">
                             <Trans i18nKey="landing.hero.title" components={[<br />, <span style={{
                                 background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
                                 WebkitBackgroundClip: 'text',
@@ -98,16 +135,39 @@ const Landing = () => {
                                 Play, sing and win  with Music Bingo!
                             </Trans>
                         </h1>
-                        <p className="animate-fade-in" style={{
-                            fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
+                        <p className="animate-fade-in hero-subtitle" style={{
+                            fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
                             color: 'var(--text-muted)',
                             maxWidth: '700px',
-                            margin: '0 auto 3rem',
-                            animationDelay: '0.1s'
+                            margin: '0 auto 2.5rem',
+                            animationDelay: '0.1s',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.45rem',
+                            lineHeight: 1.4
                         }}>
-                            <Trans i18nKey="landing.hero.subtitle" components={[<br />]}>
-                                Connect Spotify playlists to create unique bingo cards.  Fast, easy and free to use.
-                            </Trans>
+                            {t('landing.hero.subtitle').split('<1>').map((part, i) => {
+                                if (i === 0) return <span key={i}>{part}</span>;
+                                const [spotifyPart, ...rest] = part.split('</1>');
+                                return (
+                                    <React.Fragment key={i}>
+                                        <span style={{
+                                            color: 'var(--spotify-green)',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '0.45rem',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                                            </svg>
+                                            {spotifyPart}
+                                        </span>
+                                        <span>{rest.join('</1>')}</span>
+                                    </React.Fragment>
+                                );
+                            })}
                         </p>
 
                         <div className="animate-fade-in" style={{
@@ -134,8 +194,13 @@ const Landing = () => {
                 </section>
 
                 {/* Why Section */}
-                <section id="why-section" style={{ padding: 'clamp(1.5rem, 2rem, 2.5rem) 0', background: 'var(--surface)' }}>
-                    <div className="container grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem' }}>
+                <section id="why-section" style={{ padding: 'clamp(3rem, 6vw, 6rem) 0', background: 'var(--surface)' }}>
+                    <div className="container grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(2rem, 4vw, 4rem)', alignItems: 'center' }}>
+                        {/* Stacked Cards - Optimized & Responsive */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                            <StackedBingoCards />
+                        </div>
+
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <h2 style={{ marginBottom: '4rem', lineHeight: 1.2 }}>
                                 {t('landing.why.title_from')}
@@ -151,11 +216,6 @@ const Landing = () => {
                                 <FeatureItem icon={<Download />} title={t('landing.why.features.print.title')} desc={t('landing.why.features.print.desc')} color="var(--secondary)" />
                                 <FeatureItem icon={<Smartphone />} title={t('landing.why.features.ai.title')} desc={t('landing.why.features.ai.desc')} color="var(--accent)" />
                             </div>
-                        </div>
-
-                        {/* Stacked Cards - Optimized & Responsive */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2rem' }}>
-                            <StackedBingoCards />
                         </div>
                     </div>
                 </section>

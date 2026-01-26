@@ -128,8 +128,26 @@ class AuthViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def login(self, request):
         from django.contrib.auth import authenticate
-        username = request.data.get('username')
+        # Aceptar tanto email como username para login
+        identifier = request.data.get('username') or request.data.get('email')
         password = request.data.get('password')
+        
+        if not identifier or not password:
+            return Response({'error': 'auth.errors.required_fields'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Intentar autenticar con email primero
+        try:
+            user_obj = BingoUser.objects.get(email=identifier)
+            username = user_obj.username
+        except BingoUser.DoesNotExist:
+            # Si no encuentra por email, usar el identifier como username
+            username = identifier
+        
+        # Check if user exists before attempting authentication
+        try:
+            user_obj = BingoUser.objects.get(username=username)
+        except BingoUser.DoesNotExist:
+            return Response({'error': 'auth.errors.user_not_found'}, status=status.HTTP_400_BAD_REQUEST)
         
         user = authenticate(username=username, password=password)
         if user:
@@ -159,7 +177,7 @@ class AuthViewSet(viewsets.GenericViewSet):
             )
             
             return response
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'auth.errors.invalid_password'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def register(self, request):
@@ -293,7 +311,22 @@ class BingoViewSet(viewsets.ModelViewSet):
             import math
             max_possible_unique = math.comb(num_songs, songs_per_card) if num_songs >= songs_per_card else 0
             
-            is_valid = num_songs >= songs_per_card and num_cards <= max_possible_unique
+            is_valid = num_songs >= 20 and num_songs >= songs_per_card and num_cards <= max_possible_unique
+            
+            # Generate user-friendly error messages
+            error_message = None
+            if not is_valid:
+                if num_songs < 20:
+                    error_message = f"❌ La lista debería tener al menos 20 canciones. Esta playlist tiene {num_songs} canciones."
+                elif num_songs < songs_per_card:
+                    error_message = f"❌ No hay suficientes canciones: Esta playlist tiene {num_songs} canciones, pero necesitas {songs_per_card} para un cartón {rows}×{columns}. Prueba una cuadrícula más pequeña o una lista más grande."
+                elif num_cards > max_possible_unique:
+                    if max_possible_unique == 1:
+                        error_message = f"❌ Demasiados cartones: Con {num_songs} canciones, solo 1 cartón {rows}×{columns} es posible. Por favor reduce el número de cartones a 1."
+                    elif max_possible_unique < 10:
+                        error_message = f"❌ Demasiados cartones: Con {num_songs} canciones, solo {max_possible_unique} cartones {rows}×{columns} únicos son matemáticamente posibles. Por favor reduce el número de cartones a {max_possible_unique} o menos."
+                    else:
+                        error_message = f"❌ Demasiados cartones: Con {num_songs} canciones, puedes crear hasta {max_possible_unique:,} cartones {rows}×{columns} únicos. Por favor reduce el número de cartones."
             
             return Response({
                 "playlist_name": playlist['name'],
@@ -301,11 +334,8 @@ class BingoViewSet(viewsets.ModelViewSet):
                 "songs_per_card": songs_per_card,
                 "max_possible_unique": max_possible_unique,
                 "is_valid": is_valid,
-                "error_message": None if is_valid else (
-                    f"Not enough songs in playlist. Need at least {songs_per_card} songs for a {rows}x{columns} grid."
-                    if num_songs < songs_per_card else
-                    f"Too many cards requested. With {num_songs} songs and a {rows}x{columns} grid, only {max_possible_unique} unique cards are mathematically possible."
-                )
+                "error_message": error_message,
+                "success_message": f"✅ Perfect! You can create {num_cards} unique {rows}×{columns} cards from {num_songs} songs (maximum possible: {max_possible_unique:,})" if is_valid else None
             })
 
         except Exception as e:
@@ -332,6 +362,26 @@ class BingoViewSet(viewsets.ModelViewSet):
             
             if not tracks:
                 return Response({"error": "No tracks found in playlist."}, status=400)
+            
+            # Server-side validation to ensure unique cards are possible
+            songs_per_card = rows * columns
+            num_songs = len(tracks)
+            
+            if num_songs < 20:
+                return Response({
+                    "error": f"La lista debería tener al menos 20 canciones. Esta playlist tiene {num_songs} canciones."
+                }, status=400)
+            
+            if num_songs < songs_per_card:
+                return Response({
+                    "error": f"No hay suficientes canciones: Esta playlist tiene {num_songs} canciones, pero necesitas {songs_per_card} para un cartón {rows}×{columns}."
+                }, status=400)
+            
+            max_possible_unique = math.comb(num_songs, songs_per_card)
+            if num_cards > max_possible_unique:
+                return Response({
+                    "error": f"Demasiados cartones: Con {num_songs} canciones, solo {max_possible_unique:,} cartones {rows}×{columns} únicos son matemáticamente posibles. Por favor reduce el número de cartones."
+                }, status=400)
             
             # Determine if premium
             is_premium = theme not in ['classic', 'modern'] and not theme.endswith('_basic')

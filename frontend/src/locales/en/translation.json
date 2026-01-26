@@ -17,7 +17,7 @@
             "title": "Play, sing and win <0 /> with <1> Music Bingo!</1>",
             "title1": "Musical Bingo",
             "title2": "from your Spotify Playlists",
-            "subtitle": "Connect Spotify playlists to create unique bingo cards. <0 /> Fast, easy and free to use.",
+            "subtitle": "Connect your <1>Spotify</1> playlists to create unique bingo cards",
             "cta": "Get Started Free",
             "secondaryCta": "How it works"
         },
@@ -34,8 +34,8 @@
                     "desc": "Get high quality bingo cards instantly or order custom premium prints for your special events."
                 },
                 "ai": {
-                    "title": "AI Song Recognition",
-                    "desc": "Control played songs with our AI song identification tool."
+                    "title": "Easy Song Tracking",
+                    "desc": "Track played songs easily from our web interface."
                 }
             }
         },
@@ -60,8 +60,8 @@
                     "desc": "Print yourself or order professional copies."
                 },
                 "5": {
-                    "title": "AI Song Recognition",
-                    "desc": "Track played songs and verify winners automatically."
+                    "title": "Easy Song Tracking",
+                    "desc": "During Bingo game, track played songs and verify winners easily from our web."
                 }
             },
             "cta": "Start Your First Game"
@@ -69,7 +69,7 @@
         "testimonials": {
             "title": "Success Stories",
             "items": {
-                "1": "Song tracking during the Bingo is super easy, I could focus on having fun.",
+                "1": "Easy song tracking during the Bingo from the web, I could focus on having fun.",
                 "2": "We ordered custom Bingo Game, the quality and design is really good. The party was amazing!!",
                 "3": "Easy to connect to Spotify and create full Bingo game with my songs, in less than a minute..."
             }
@@ -131,12 +131,15 @@
         "processing": "Processing...",
         "no_account": "Don't have an account?",
         "have_account": "Already have an account?",
-        "create_one": "Create one",
+        "create_one": "Create an account",
         "sign_in_link": "Sign in",
         "errors": {
             "cancelled": "You cancelled the connection to Spotify.",
             "failed": "Login failed: {{error}}",
-            "generic": "Authentication failed. Please check your data."
+            "generic": "Authentication failed. Please check your data.",
+            "required_fields": "Please enter your email and password.",
+            "user_not_found": "We couldn't find an account with that email.",
+            "invalid_password": "That password doesn't look right. <0 />Try again!"
         }
     },
     "detail": {
@@ -220,7 +223,7 @@
         "layout": {
             "name_label": "Choose a Name to appear in your bingo cards",
             "name_placeholder": "e.g. Disco Night",
-            "num_cards_label": "Number of bingo cards to generate",
+            "num_cards_label": "Number of bingo cards",
             "grid_label": "Grid layout",
             "orientation_label": "Choose card orientation",
             "portrait": "Portrait",
@@ -267,7 +270,7 @@
         "session": {
             "title": "Session Management",
             "desc": "Logging out will end your current session. You will need to sign in again to access My Bingos.",
-            "logout_all": "Sign Out of All Devices",
+            "logout_all": "Sign Out",
             "modal": {
                 "title": "Sign Out?",
                 "message": "Are you sure you want to sign out of your account? You will need to log in again to access your bingos.",
