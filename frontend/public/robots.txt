@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://bingo-music-maker.vercel.app/sitemap.xml
+
+# Permet indexació de tots els recursos importants
+Allow: /src/
+Allow: /public/
+Allow: /images/
+
+# Bloqueja accés a fitxers de desenvolupament
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /.git/
+Disallow: /.env*
+Disallow: /package*.json
+Disallow: /vite.config.js
+Disallow: /README.md
+Disallow: /build_log.txt
+
+# Crawl-delay per ser respectuós amb el servidor
+Crawl-delay: 1

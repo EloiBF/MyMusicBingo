@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Página principal -->
+  <url>
+    <loc>https://bingo-music-maker.vercel.app/</loc>
+    <lastmod>2025-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ca" href="https://bingo-music-maker.vercel.app/ca/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://bingo-music-maker.vercel.app/es/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bingo-music-maker.vercel.app/en/" />
+  </url>
+  
+  <!-- Versió catalana -->
+  <url>
+    <loc>https://bingo-music-maker.vercel.app/ca/</loc>
+    <lastmod>2025-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Versió espanyola -->
+  <url>
+    <loc>https://bingo-music-maker.vercel.app/es/</loc>
+    <lastmod>2025-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Versió anglesa -->
+  <url>
+    <loc>https://bingo-music-maker.vercel.app/en/</loc>
+    <lastmod>2025-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+</urlset>

@@ -14,16 +14,16 @@
     },
     "landing": {
         "hero": {
-            "title": "Play, sing and win <0 /> with <1> Music Bingo!</1>",
+            "title": "Create your own <0 /> <1>Music Bingo</1>",
             "title1": "Musical Bingo",
             "title2": "from your Spotify Playlists",
-            "subtitle": "Connect your <1>Spotify</1> playlists to create unique bingo cards",
+            "subtitle": "Connect your <1>Spotify</1> playlists and create your\npersonalized bingo with your favorite songs!",
             "cta": "Get Started Free",
             "secondaryCta": "How it works"
         },
         "why": {
             "title_from": "From Spotify ",
-            "title_to": "to BingoMusicMaker",
+            "title_to": "to Music Bingo",
             "features": {
                 "custom": {
                     "title": "Customizable Cards",
@@ -31,7 +31,7 @@
                 },
                 "print": {
                     "title": "Print Ready",
-                    "desc": "Get high quality bingo cards instantly or order custom premium prints for your special events."
+                    "desc": "Create high quality bingo cards instantly or order premium prints for your events."
                 },
                 "ai": {
                     "title": "Easy Song Tracking",
@@ -45,7 +45,7 @@
             "steps": {
                 "1": {
                     "title": "Quick Sign In",
-                    "desc": "Create a free account to save events and access premium tools."
+                    "desc": "Create a free account to save your bingos and access premium designs."
                 },
                 "2": {
                     "title": "Connect Spotify",
@@ -53,7 +53,7 @@
                 },
                 "3": {
                     "title": "Style Cards",
-                    "desc": "Choose themes and colors to match your vibe."
+                    "desc": "Choose the design that fits your style."
                 },
                 "4": {
                     "title": "Export & Print",
@@ -64,7 +64,7 @@
                     "desc": "During Bingo game, track played songs and verify winners easily from our web."
                 }
             },
-            "cta": "Start Your First Game"
+            "cta": "Create your music bingo"
         },
         "testimonials": {
             "title": "Success Stories",
@@ -81,7 +81,7 @@
         }
     },
     "footer": {
-        "description": "Create and play music bingo games with your friends. Connect with Spotify for the ultimate music experience.",
+        "description": "Create personalized music bingo cards from your Spotify playlists. Print the cards yourself or request professional printing for the most special events.",
         "links": {
             "title": "Quick Links",
             "dashboard": "My Bingos",
@@ -139,8 +139,13 @@
             "generic": "Authentication failed. Please check your data.",
             "required_fields": "Please enter your email and password.",
             "user_not_found": "We couldn't find an account with that email.",
-            "invalid_password": "That password doesn't look right. <0 />Try again!"
-        }
+            "invalid_password": "That password doesn't look right. <0 />Try again!",
+            "email_required": "Email is required.",
+            "email_invalid": "Email is not valid.",
+            "password_required": "Password is required.",
+            "password_min_length": "Password must be at least 5 characters long."
+        },
+        "password_min_length_hint": "Minimum 5 characters"
     },
     "detail": {
         "loading": "Loading event details...",
@@ -177,7 +182,7 @@
         },
         "labels": {
             "basic": "Basic",
-            "luxurynight": "Luxury Night",
+            "luxurynight": "Luxury",
             "pop": "Pop Hits",
             "wedding": "Wedding"
         }
@@ -291,6 +296,7 @@
         "share": "Share",
         "guest": "Guest",
         "no_articles": "No articles found",
-        "check_back": "Check back soon for new content!"
+        "check_back": "Check back soon for new content!",
+        "welcome_to_app": "Welcome to BingoMusicMaker"
     }
 }

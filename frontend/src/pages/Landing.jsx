@@ -396,7 +396,7 @@ const FEATURED_THEMES = [
     {
         id: 'luxury_night',
         color: '#3b82f6',
-        title: 'Luxury Night'
+        title: 'Vibes'
     }
 ];
 

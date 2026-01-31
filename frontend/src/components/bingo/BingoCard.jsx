@@ -200,7 +200,9 @@ const BingoCard = ({
             color: themeConfig.artist?.color || themeConfig.defaultAccentColor || '#3b82f6',
             shadow: ssh(themeConfig.artist?.shadow || 'none'),
             background: themeConfig.artist?.background || 'transparent',
-            padding: s(themeConfig.artist?.padding, '0'),
+            padding: isLandscape && themeConfig.artist?.background && themeConfig.artist?.background !== 'transparent' 
+                ? s('2px 6px', '0')  // Padding más estrecho para horizontal
+                : s(themeConfig.artist?.padding, '0'),
             borderRadius: s(themeConfig.artist?.borderRadius, '0')
         },
         cardNumber: {

@@ -60,7 +60,6 @@ const Navbar = () => {
     const navLinks = [
         { icon: <Home size={20} />, label: t('nav.dashboard'), path: '/dashboard' },
         { icon: <PlusCircle size={20} />, label: t('nav.create'), path: '/create' },
-        { icon: <BookOpen size={20} />, label: t('nav.blog'), path: '/blog', debug: true },
         { icon: <Settings size={20} />, label: t('nav.settings'), path: '/settings' }
     ];
 
@@ -208,25 +207,6 @@ const Navbar = () => {
                             gap: '1rem',
                             minHeight: '48px' // Match authenticated height
                         }}>
-                            <button
-                                onClick={() => {
-                                    console.log('Blog button clicked!');
-                                    navigate('/blog');
-                                }}
-                                className="btn btn-secondary"
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    cursor: 'pointer',
-                                    zIndex: 1001
-                                }}
-                            >
-                                <BookOpen size={18} />
-                                <span>Blog</span>
-                            </button>
                             <button onClick={() => navigate('/auth', { state: { mode: 'login' } })} className="btn btn-secondary" style={{ background: 'transparent', border: 'none' }}>{t('nav.login')}</button>
                             <button onClick={() => navigate('/auth', { state: { mode: 'register' } })} className="btn btn-primary join-button">{t('nav.signup')}</button>
                             <LanguageSwitcher />
@@ -398,26 +378,6 @@ const Navbar = () => {
                                 </p>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                    <button
-                                        onClick={() => {
-                                            console.log('Mobile blog button clicked!');
-                                            navigate('/blog');
-                                        }}
-                                        className="btn btn-secondary"
-                                        style={{
-                                            width: '100%',
-                                            justifyContent: 'center',
-                                            background: 'transparent',
-                                            border: '1px solid var(--glass-border)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.5rem',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        <BookOpen size={18} />
-                                        Blog
-                                    </button>
                                     <button
                                         onClick={() => navigate('/auth', { state: { mode: 'register' } })}
                                         className="btn btn-primary"

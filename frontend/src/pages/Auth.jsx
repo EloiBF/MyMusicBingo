@@ -17,6 +17,7 @@ const Auth = () => {
     email: '',
     password: ''
   });
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     const err = searchParams.get('error');
@@ -27,8 +28,32 @@ const Auth = () => {
   }, [searchParams, t]);
 
 
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.email) {
+      errors.email = t('auth.errors.email_required');
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = t('auth.errors.email_invalid');
+    }
+    
+    if (!formData.password) {
+      errors.password = t('auth.errors.password_required');
+    } else if (mode === 'register' && formData.password.length < 5) {
+      errors.password = t('auth.errors.password_min_length');
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setLoading(true);
     setError('');
 
@@ -118,10 +143,20 @@ const Auth = () => {
                       style={{ paddingLeft: '2.5rem' }}
                       placeholder={t('auth.email_placeholder')}
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        if (validationErrors.email) {
+                          setValidationErrors({ ...validationErrors, email: '' });
+                        }
+                      }}
                       required
                     />
                   </div>
+                  {validationErrors.email && (
+                    <div style={{ color: 'var(--error)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                      {validationErrors.email}
+                    </div>
+                  )}
                 </div>
 
                 <div className="input-group" style={{ marginBottom: '2rem' }}>
@@ -133,10 +168,26 @@ const Auth = () => {
                       style={{ paddingLeft: '2.5rem' }}
                       placeholder="••••••••"
                       value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, password: e.target.value });
+                        if (validationErrors.password) {
+                          setValidationErrors({ ...validationErrors, password: '' });
+                        }
+                      }}
                       required
+                      minLength={mode === 'register' ? 5 : undefined}
                     />
                   </div>
+                  {validationErrors.password && (
+                    <div style={{ color: 'var(--error)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
+                      {validationErrors.password}
+                    </div>
+                  )}
+                  {mode === 'register' && (
+                    <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                      {t('auth.password_min_length_hint')}
+                    </div>
+                  )}
                 </div>
 
                 <button

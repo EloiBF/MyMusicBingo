@@ -27,6 +27,10 @@ const ProtectedRoute = ({ children, withLayout = true }) => {
   return withLayout ? <Layout>{children}</Layout> : children;
 };
 
+const PublicRouteWithLayout = ({ children }) => {
+  return <Layout>{children}</Layout>;
+};
+
 function App() {
   return (
     <Router>
@@ -90,8 +94,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<PublicRouteWithLayout><Terms /></PublicRouteWithLayout>} />
+        <Route path="/privacy" element={<PublicRouteWithLayout><PrivacyPolicy /></PublicRouteWithLayout>} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/create-article" element={<ArticleCreator />} />
