@@ -3,6 +3,7 @@
         "dashboard": "Mis bingos",
         "create": "Crear Bingo",
         "settings": "Ajustes",
+        "premium": "Premium",
         "blog": "Blog",
         "login": "Iniciar sesión",
         "signup": "Registrarse",
@@ -99,8 +100,8 @@
             "privacy": "Consultas de Privacidad"
         },
         "bottom": {
-            "rights": "© 2026 BingoMusicMaker. Todos los derechos reservados.",
-            "madeWith": "Hecho con <0 /> y <1 />"
+            "rights": " 2026 BingoMusicMaker. Todos los derechos reservados.",
+            "madeWith": "Hecho con  y "
         }
     },
     "dashboard": {
@@ -139,7 +140,7 @@
             "generic": "Error de autenticación. Por favor, comprueba tus datos.",
             "required_fields": "Por favor, introduce tu correo y contraseña.",
             "user_not_found": "No encontramos una cuenta con ese correo.",
-            "invalid_password": "Esa contraseña no parece correcta... <0 />¡Inténtalo de nuevo!",
+            "invalid_password": "Esa contraseña no parece correcta... ¡Inténtalo de nuevo!",
             "email_required": "El correo electrónico es obligatorio.",
             "email_invalid": "El correo electrónico no es válido.",
             "password_required": "La contraseña es obligatoria.",
@@ -224,7 +225,23 @@
             }
         },
         "theme": {
-            "label": "Elige un tema"
+            "label": "Elige un tema",
+            "mode_label": "Tipo de tema",
+            "mode_presets": "Predefinidos",
+            "mode_custom": "Personalizados",
+            "customize_title": "Personalización Premium",
+            "customize_locked_title": "Bloqueado",
+            "customize_locked_desc": "Mejora a Premium para personalizar colores, fuentes, bordes e imágenes de fondo.",
+            "upgrade_link": "Upgrade",
+            "base_theme": "Tema base",
+            "bg_color": "Fondo",
+            "title_color": "Título",
+            "cell_border_color": "Borde de celda",
+            "cell_rounding": "Redondeo",
+            "font": "Fuente",
+            "card_border": "Borde de tarjeta",
+            "bg_image": "Imagen de fondo",
+            "reset": "Restablecer"
         },
         "layout": {
             "name_label": "Elige un nombre para tus cartones",
@@ -292,6 +309,7 @@
         "loading": "Cargando...",
         "generating": "Generando...",
         "error": "Algo salió mal",
+        "back": "Volver",
         "cancel": "Cancelar",
         "confirm": "Confirmar",
         "save": "Guardar",
@@ -300,5 +318,12 @@
         "no_articles": "No se encontraron artículos",
         "check_back": "¡Vuelve pronto para ver contenido nuevo!",
         "welcome_to_app": "Bienvenido/a a BingoMusicMaker"
+    },
+    "premium": {
+        "title": "Premium",
+        "active": "Tu cuenta es Premium.",
+        "free": "Tu cuenta es gratuita. Activa Premium para desbloquear la personalización.",
+        "activating": "Activando...",
+        "activate_free": "Activar Premium (gratis)"
     }
 }

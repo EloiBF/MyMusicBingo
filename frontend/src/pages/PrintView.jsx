@@ -84,6 +84,8 @@ const PrintView = () => {
                         <div className="print-page-inner">
                             <ThemeRenderer
                                 themeId={event.theme}
+                                themeOverrides={event.theme_overrides || null}
+                                backgroundUrl={event.background_url || null}
                                 rows={event.rows}
                                 columns={event.columns}
                                 orientation={event.orientation}

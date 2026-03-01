@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 class BingoUser(AbstractUser):
     """Custom user model for BingoMusicMaker."""
     email = models.EmailField(unique=True)
+    is_premium = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email
@@ -23,6 +24,8 @@ class BingoEvent(models.Model):
     orientation = models.CharField(max_length=10, default='portrait')
     is_premium = models.BooleanField(default=False)
     primary_color = models.CharField(max_length=7, default='#3f51b5') # Hex color
+    theme_overrides = models.JSONField(default=dict, blank=True)
+    background_file = models.FileField(upload_to='backgrounds/', null=True, blank=True)
     songs_per_card = models.PositiveIntegerField() # rows * columns
     
     created_at = models.DateTimeField(auto_now_add=True)

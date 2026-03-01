@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Music, Menu, X, Home, PlusCircle, Settings, LogOut, User, BookOpen
+    Music, Menu, X, Home, PlusCircle, Settings, LogOut, User, BookOpen, Crown
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -60,6 +60,7 @@ const Navbar = () => {
     const navLinks = [
         { icon: <Home size={20} />, label: t('nav.dashboard'), path: '/dashboard' },
         { icon: <PlusCircle size={20} />, label: t('nav.create'), path: '/create' },
+        { icon: <Crown size={20} />, label: t('nav.premium', 'Premium'), path: '/premium' },
         { icon: <Settings size={20} />, label: t('nav.settings'), path: '/settings' }
     ];
 
@@ -177,7 +178,7 @@ const Navbar = () => {
                                             {user?.email || user?.username || t('common.guest')}
                                         </span>
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1 }}>
-                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : t('nav.free_account')}
+                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : user?.is_premium ? t('nav.premium_account') : t('nav.free_account')}
                                         </span>
                                     </div>
                                 </div>
@@ -294,7 +295,7 @@ const Navbar = () => {
                                             {user?.email || user?.username || t('common.guest')}
                                         </div>
                                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : t('nav.free_account')}
+                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : user?.is_premium ? t('nav.premium_account') : t('nav.free_account')}
                                         </div>
                                     </div>
                                 </div>

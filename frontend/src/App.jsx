@@ -10,6 +10,7 @@ import SongTrackingPage from './pages/SongTrackingPage';
 import Settings from './pages/Settings';
 import Terms from './pages/Terms';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Premium from './pages/Premium';
 import Blog from './pages/Blog';
 import BlogArticle from './pages/BlogArticle';
 import ArticleCreator from './components/ArticleCreator';
@@ -91,6 +92,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/premium"
+          element={
+            <ProtectedRoute>
+              <Premium />
             </ProtectedRoute>
           }
         />

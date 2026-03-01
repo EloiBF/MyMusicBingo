@@ -111,9 +111,18 @@ const Auth = () => {
               />
 
               <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '1rem', cursor: 'pointer', lineHeight: 1.1 }} onClick={() => navigate('/')}>BingoMusic<br />Maker</h1>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+              
+              <div className={mode === 'register' ? 'glass' : ''} style={{
+                color: mode === 'register' ? 'var(--text)' : 'var(--text-muted)',
+                padding: mode === 'register' ? '1rem 1.5rem' : '0',
+                marginBottom: '1rem',
+                fontSize: mode === 'register' ? '1rem' : '0.9rem',
+                fontWeight: mode === 'register' ? '500' : 'normal',
+                textAlign: 'center',
+                transition: 'all 0.2s ease'
+              }}>
                 {mode === 'login' ? t('auth.login.welcome') : t('auth.register.welcome')}
-              </p>
+              </div>
 
               {error && (
                 <div style={{

@@ -33,6 +33,11 @@ const CreateBingo = () => {
         orientation: 'portrait'
     });
 
+    const [themeOverrides, setThemeOverrides] = useState({});
+    const [backgroundFile, setBackgroundFile] = useState(null);
+    const [backgroundPreviewUrl, setBackgroundPreviewUrl] = useState(null);
+    const [themeMode, setThemeMode] = useState('presets');
+
     const [loading, setLoading] = useState(false);
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
     const [playlists, setPlaylists] = useState([]);
@@ -49,6 +54,8 @@ const CreateBingo = () => {
         track_count: 0,
         max_possible_unique: 0
     });
+
+    const isPremiumCustomMode = themeMode === 'custom' && !!user?.is_premium;
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -119,6 +126,18 @@ const CreateBingo = () => {
                         theme: event.theme,
                         orientation: event.orientation || 'portrait'
                     });
+
+                    if (event.theme_overrides && typeof event.theme_overrides === 'object') {
+                        setThemeOverrides(event.theme_overrides);
+                        if (Object.keys(event.theme_overrides || {}).length > 0) {
+                            setThemeMode('custom');
+                        }
+                    }
+
+                    if (event.background_url) {
+                        setBackgroundPreviewUrl(event.background_url);
+                        setThemeMode('custom');
+                    }
                 } catch (err) {
                     console.error('Error fetching event data:', err);
                     setErrorMessage(t('create.alerts.load_failed'));
@@ -128,6 +147,33 @@ const CreateBingo = () => {
             fetchEventData();
         }
     }, [id, isEditMode, navigate, t]);
+
+    useEffect(() => {
+        if (!backgroundFile) return;
+        const url = URL.createObjectURL(backgroundFile);
+        setBackgroundPreviewUrl(url);
+        return () => {
+            try {
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                // ignore
+            }
+        };
+    }, [backgroundFile]);
+
+    const updateOverride = (path, value) => {
+        setThemeOverrides(prev => {
+            const next = { ...(prev || {}) };
+            let obj = next;
+            for (let i = 0; i < path.length - 1; i++) {
+                const key = path[i];
+                obj[key] = (obj[key] && typeof obj[key] === 'object') ? { ...obj[key] } : {};
+                obj = obj[key];
+            }
+            obj[path[path.length - 1]] = value;
+            return next;
+        });
+    };
 
     const gridOptions = [
         { label: '3x3 (9 songs)', rows: 3, cols: 3 },
@@ -193,7 +239,8 @@ const CreateBingo = () => {
                 rows: config.rows,
                 columns: config.columns,
                 theme: config.theme,
-                orientation: config.orientation
+                orientation: config.orientation,
+                theme_overrides: (themeMode === 'custom' && user?.is_premium && themeOverrides && typeof themeOverrides === 'object') ? themeOverrides : undefined
             };
             if (isEditMode) {
                 response = await api.put(`/bingo/${id}/`, payload);
@@ -201,6 +248,18 @@ const CreateBingo = () => {
                 response = await api.post('/bingo/generate_cards/', payload);
             }
             const eventId = isEditMode ? id : response.data.event_id;
+
+            if (themeMode === 'custom' && user?.is_premium && backgroundFile) {
+                const formData = new FormData();
+                formData.append('background', backgroundFile);
+                try {
+                    await api.post(`/bingo/${eventId}/background/`, formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                } catch (uploadErr) {
+                    console.error('Background upload failed:', uploadErr);
+                }
+            }
             navigate(`/bingo/${eventId}`);
         } catch (err) {
             console.error(err);
@@ -287,6 +346,8 @@ const CreateBingo = () => {
                         <BingoCardPreview
                             event={{
                                 theme: config.theme,
+                                theme_overrides: isPremiumCustomMode ? themeOverrides : null,
+                                background_url: isPremiumCustomMode ? backgroundPreviewUrl : null,
                                 rows: config.rows,
                                 columns: config.columns,
                                 orientation: config.orientation,
@@ -419,43 +480,199 @@ const CreateBingo = () => {
 
                                 {currentStep === 2 && (
                                     <div className="animate-fade-in section-compact-mini" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                        <div className="theme-compact-gallery" style={{ marginTop: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                            <label className="label-bold-mini">{t('create.theme.label')}</label>
-                                            <div className="scroll-box-mini" style={{ flex: 1, overflowY: 'auto' }}>
-                                                <div className="grid-mini">
-                                                    {allThemes.map(themeItem => {
-                                                        const isSelected = config.theme === themeItem.id;
-                                                        return (
-                                                            <div key={themeItem.id} onClick={() => setConfig({ ...config, theme: themeItem.id })} className={`theme-box-mini ${isSelected ? 'selected' : ''}`}>
-                                                                <div className="box-preview">
-                                                                    <div className="preview-mini-internal">
-                                                                        <BingoCardPreview
-                                                                            event={{
-                                                                                theme: themeItem.id,
-                                                                                rows: 3,
-                                                                                columns: 3,
-                                                                                orientation: 'portrait',
-                                                                                event_title: t('common.guest')
-                                                                            }}
-                                                                            cardData={[]}
-                                                                            isMini={true}
-                                                                            containerStyle={{
-                                                                                height: '100px',
-                                                                                borderRadius: 'var(--radius-md)',
-                                                                                margin: '0 auto'
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                                <div className="box-info">
-                                                                    <span className="name-m">{t(`themes.labels.${themeItem.id.toLowerCase()}`, { defaultValue: themeItem.label })}</span>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
+                                        <div style={{ marginBottom: '1rem' }}>
+                                            <label className="label-bold-mini">{t('create.theme.mode_label', 'Theme type')}</label>
+                                            <div className="toggle-group-mini glass" style={{ marginTop: '0.4rem' }}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setThemeMode('presets')}
+                                                    className={`toggle-btn-mini ${themeMode === 'presets' ? 'active' : ''}`}
+                                                >
+                                                    {t('create.theme.mode_presets', 'Predefined')}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setThemeMode('custom')}
+                                                    className={`toggle-btn-mini ${themeMode === 'custom' ? 'active' : ''}`}
+                                                >
+                                                    {t('create.theme.mode_custom', 'Customized')}
+                                                </button>
                                             </div>
                                         </div>
+
+                                        {themeMode === 'custom' && (
+                                            <div style={{ marginBottom: '1rem' }}>
+                                                <label className="label-bold-mini" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                    <Crown size={14} /> {t('create.theme.customize_title', 'Premium Personalization')}
+                                                </label>
+
+                                                {!user?.is_premium ? (
+                                                    <div className="glass" style={{ padding: '0.9rem', borderRadius: '12px', border: '1px solid var(--glass-border)', opacity: 0.85 }}>
+                                                        <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{t('create.theme.customize_locked_title', 'Locked')}</div>
+                                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                                            {t('create.theme.customize_locked_desc', 'Upgrade to Premium to customize colors, fonts, borders and background images.')} <span
+                                                                onClick={() => navigate('/premium')}
+                                                                style={{
+                                                                    color: 'var(--primary)',
+                                                                    textDecoration: 'underline',
+                                                                    cursor: 'pointer',
+                                                                    fontWeight: 500
+                                                                }}
+                                                            >{t('create.theme.upgrade_link', 'Upgrade')}</span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="glass" style={{ padding: '0.9rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                                                        <div className="input-group-mini" style={{ margin: 0, marginBottom: '0.75rem' }}>
+                                                            <label>{t('create.theme.base_theme', 'Base theme')}</label>
+                                                            <select
+                                                                value={config.theme}
+                                                                onChange={(e) => setConfig({ ...config, theme: e.target.value })}
+                                                            >
+                                                                {allThemes.map(themeItem => (
+                                                                    <option key={themeItem.id} value={themeItem.id}>
+                                                                        {t(`themes.labels.${themeItem.id.toLowerCase()}`, { defaultValue: themeItem.label })}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+
+                                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                                                            <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                <label>{t('create.theme.bg_color', 'Background')}</label>
+                                                                <input
+                                                                    type="color"
+                                                                    value={themeOverrides?.background?.color || '#ffffff'}
+                                                                    onChange={(e) => updateOverride(['background', 'color'], e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                <label>{t('create.theme.title_color', 'Title')}</label>
+                                                                <input
+                                                                    type="color"
+                                                                    value={themeOverrides?.title?.color || '#1a1a1a'}
+                                                                    onChange={(e) => updateOverride(['title', 'color'], e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                <label>{t('create.theme.cell_border_color', 'Cell border')}</label>
+                                                                <input
+                                                                    type="color"
+                                                                    value={themeOverrides?.grid?.color || '#3b82f6'}
+                                                                    onChange={(e) => updateOverride(['grid', 'color'], e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                <label>{t('create.theme.cell_rounding', 'Cell rounding')}</label>
+                                                                <select
+                                                                    value={themeOverrides?.cell?.shape || '0px'}
+                                                                    onChange={(e) => updateOverride(['cell', 'shape'], e.target.value)}
+                                                                >
+                                                                    <option value="0px">Square</option>
+                                                                    <option value="6px">Soft</option>
+                                                                    <option value="12px">Round</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                <label>{t('create.theme.font', 'Font')}</label>
+                                                                <select
+                                                                    value={themeOverrides?.font || "'Montserrat', sans-serif"}
+                                                                    onChange={(e) => updateOverride(['font'], e.target.value)}
+                                                                >
+                                                                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                                                                    <option value="'Inter', sans-serif">Inter</option>
+                                                                    <option value="'Poppins', sans-serif">Poppins</option>
+                                                                    <option value="'Roboto', sans-serif">Roboto</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="input-group-mini" style={{ margin: 0, display: 'flex', flexDirection: 'column' }}>
+                                                                <label>{t('create.theme.card_border', 'Card border')}</label>
+                                                                <div className="toggle-group-mini glass" style={{ padding: '4px' }}>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => updateOverride(['layout', 'showBorder'], true)}
+                                                                        className={`toggle-btn-mini ${themeOverrides?.layout?.showBorder !== false ? 'active' : ''}`}
+                                                                    >
+                                                                        On
+                                                                    </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => updateOverride(['layout', 'showBorder'], false)}
+                                                                        className={`toggle-btn-mini ${themeOverrides?.layout?.showBorder === false ? 'active' : ''}`}
+                                                                    >
+                                                                        Off
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="input-group-mini" style={{ marginTop: '0.75rem' }}>
+                                                            <label>{t('create.theme.bg_image', 'Background image')}</label>
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                onChange={(e) => setBackgroundFile(e.target.files?.[0] || null)}
+                                                            />
+                                                        </div>
+
+                                                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.75rem' }}>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-secondary"
+                                                                style={{ padding: '0.5rem 0.75rem' }}
+                                                                onClick={() => {
+                                                                    setThemeOverrides({});
+                                                                    setBackgroundFile(null);
+                                                                    setBackgroundPreviewUrl(null);
+                                                                }}
+                                                            >
+                                                                {t('create.theme.reset', 'Reset customization')}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {themeMode === 'presets' && (
+                                            <div className="theme-compact-gallery" style={{ marginTop: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                                <label className="label-bold-mini">{t('create.theme.label')}</label>
+                                                <div className="scroll-box-mini" style={{ flex: 1, overflowY: 'auto' }}>
+                                                    <div className="grid-mini">
+                                                        {allThemes.map(themeItem => {
+                                                            const isSelected = config.theme === themeItem.id;
+                                                            return (
+                                                                <div key={themeItem.id} onClick={() => setConfig({ ...config, theme: themeItem.id })} className={`theme-box-mini ${isSelected ? 'selected' : ''}`}>
+                                                                    <div className="box-preview">
+                                                                        <div className="preview-mini-internal">
+                                                                            <BingoCardPreview
+                                                                                event={{
+                                                                                    theme: themeItem.id,
+                                                                                    rows: 3,
+                                                                                    columns: 3,
+                                                                                    orientation: 'portrait',
+                                                                                    event_title: t('common.guest')
+                                                                                }}
+                                                                                cardData={[]}
+                                                                                isMini={true}
+                                                                                containerStyle={{
+                                                                                    height: '100px',
+                                                                                    borderRadius: 'var(--radius-md)',
+                                                                                    margin: '0 auto'
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="box-info">
+                                                                        <span className="name-m">{t(`themes.labels.${themeItem.id.toLowerCase()}`, { defaultValue: themeItem.label })}</span>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -575,7 +792,7 @@ const CreateBingo = () => {
                 type="error"
                 autoClose={true}
             />
-        </PageLayout >
+        </PageLayout>
     );
 };
 

@@ -3,6 +3,7 @@
         "dashboard": "Els meus bingos",
         "create": "Crear Bingo",
         "settings": "Configuració",
+        "premium": "Premium",
         "blog": "Blog",
         "login": "Iniciar sessió",
         "signup": "Registrar-se",
@@ -10,7 +11,8 @@
         "logout_confirm_title": "Tancar sessió",
         "logout_confirm_message": "Estàs segur que vols tancar la sessió? Hauràs de tornar a iniciar sessió per accedir al teu compte.",
         "spotify_connected": "Spotify Connectat",
-        "free_account": "Compte Gratuït"
+        "free_account": "Compte Gratuït",
+        "premium_account": "Premium"
     },
     "landing": {
         "hero": {
@@ -31,7 +33,7 @@
                 },
                 "print": {
                     "title": "Llest per Imprimir",
-                    "desc": "Crea cartons d'alta qualitat a l'instant o demana impressions premium per als teus esdeveniments."
+                    "desc": "Crea cartons d'alta qualitat a l'instant o demana impressions premium per als esdeveniments més especials."
                 },
                 "ai": {
                     "title": "Seguiment Fàcil de Cançons",
@@ -99,7 +101,7 @@
             "privacy": "Consultes de Privadesa"
         },
         "bottom": {
-            "rights": "© 2026 BingoMusicMaker. Tots els drets reservats.",
+            "rights": " 2026 BingoMusicMaker. Tots els drets reservats.",
             "madeWith": "Fet amb <0 /> i <1 />"
         }
     },
@@ -119,7 +121,8 @@
             "welcome": "Benvingut/da de nou! Inicia sessió per continuar."
         },
         "register": {
-            "welcome": "Crea un compte per començar a construir els teus bingos."
+            "welcome": "Crea un compte per començar a construir els teus bingos.",
+            "badge": "NOU REGISTRE"
         },
         "username": "Nom d'usuari",
         "username_placeholder": "Tria un nom d'usuari",
@@ -139,7 +142,7 @@
             "generic": "Error d'autenticació. Si us plau, comprova les teves dades.",
             "required_fields": "Si us plau, introdueix el teu correu i contrasenya.",
             "user_not_found": "No trobem un compte associat amb aquest correu.",
-            "invalid_password": "Aquesta contrasenya no sembla correcta... <0 />Torna-ho a provar!",
+            "invalid_password": "Aquesta contrasenya no sembla correcta... Torna-ho a provar!",
             "email_required": "El correu electrònic és obligatori.",
             "email_invalid": "El correu electrònic no és vàlid.",
             "password_required": "La contrasenya és obligatòria.",
@@ -224,7 +227,23 @@
             }
         },
         "theme": {
-            "label": "Tria un tema"
+            "label": "Tria un tema",
+            "mode_label": "Tipus de tema",
+            "mode_presets": "Predefinits",
+            "mode_custom": "Personalitzats",
+            "customize_title": "Personalització Premium",
+            "customize_locked_title": "Bloquejat",
+            "customize_locked_desc": "Fes-te Premium per personalitzar colors, tipografies, vores i imatges de fons.",
+            "upgrade_link": "Upgrade",
+            "base_theme": "Tema base",
+            "bg_color": "Fons",
+            "title_color": "Títol",
+            "cell_border_color": "Vora de cel·la",
+            "cell_rounding": "Arrodoniment",
+            "font": "Tipografia",
+            "card_border": "Vora del cartó",
+            "bg_image": "Imatge de fons",
+            "reset": "Restablir"
         },
         "layout": {
             "name_label": "Tria un nom per als teus cartons",
@@ -298,6 +317,7 @@
         "loading": "Carregant...",
         "generating": "Generant...",
         "error": "Alguna cosa ha anat malament",
+        "back": "Tornar",
         "cancel": "Cancel·lar",
         "confirm": "Confirmar",
         "save": "Desar",
@@ -306,5 +326,12 @@
         "no_articles": "No s'han trobat articles",
         "check_back": "¡Torna aviat per veure contingut nou!",
         "welcome_to_app": "Benvingut/da a BingoMusicMaker"
+    },
+    "premium": {
+        "title": "Premium",
+        "active": "El teu compte és Premium.",
+        "free": "El teu compte és gratuït. Activa Premium per desbloquejar la personalització.",
+        "activating": "Activant...",
+        "activate_free": "Activar Premium (gratis)"
     }
 }

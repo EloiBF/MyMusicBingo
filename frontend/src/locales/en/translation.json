@@ -3,6 +3,7 @@
         "dashboard": "My Bingos",
         "create": "Create Bingo",
         "settings": "Settings",
+        "premium": "Premium",
         "blog": "Blog",
         "login": "Log In",
         "signup": "Sign Up",
@@ -10,7 +11,8 @@
         "logout_confirm_title": "Logout",
         "logout_confirm_message": "Are you sure you want to logout? You'll need to login again to access your account.",
         "spotify_connected": "Spotify Connected",
-        "free_account": "Free Account"
+        "free_account": "Free Account",
+        "premium_account": "Premium"
     },
     "landing": {
         "hero": {
@@ -99,7 +101,7 @@
             "privacy": "Privacy Inquiries"
         },
         "bottom": {
-            "rights": "© 2026 BingoMusicMaker. All rights reserved.",
+            "rights": " 2026 BingoMusicMaker. All rights reserved.",
             "madeWith": "Made with <0 /> and <1 />"
         }
     },
@@ -119,7 +121,8 @@
             "welcome": "Welcome back! Sign in to continue."
         },
         "register": {
-            "welcome": "Create an account to start building bingos."
+            "welcome": "Create an account to start building bingos.",
+            "badge": "NEW SIGN UP"
         },
         "username": "Username",
         "username_placeholder": "Choose a username",
@@ -223,7 +226,23 @@
             }
         },
         "theme": {
-            "label": "Select a theme"
+            "label": "Select a theme",
+            "mode_label": "Theme type",
+            "mode_presets": "Predefined",
+            "mode_custom": "Customized",
+            "customize_title": "Premium Personalization",
+            "customize_locked_title": "Locked",
+            "customize_locked_desc": "Upgrade to Premium to customize colors, fonts, borders and background images.",
+            "upgrade_link": "Upgrade",
+            "base_theme": "Base theme",
+            "bg_color": "Background",
+            "title_color": "Title",
+            "cell_border_color": "Cell border",
+            "cell_rounding": "Cell rounding",
+            "font": "Font",
+            "card_border": "Card border",
+            "bg_image": "Background image",
+            "reset": "Reset customization"
         },
         "layout": {
             "name_label": "Choose a Name to appear in your bingo cards",
@@ -290,6 +309,7 @@
         "loading": "Loading...",
         "generating": "Generating...",
         "error": "Something went wrong",
+        "back": "Back",
         "cancel": "Cancel",
         "confirm": "Confirm",
         "save": "Save",
@@ -298,5 +318,12 @@
         "no_articles": "No articles found",
         "check_back": "Check back soon for new content!",
         "welcome_to_app": "Welcome to BingoMusicMaker"
+    },
+    "premium": {
+        "title": "Premium",
+        "active": "Your account is Premium.",
+        "free": "Your account is Free. Activate Premium to unlock personalization features.",
+        "activating": "Activating...",
+        "activate_free": "Activate Premium (free)"
     }
 }

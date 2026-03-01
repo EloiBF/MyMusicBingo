@@ -48,6 +48,8 @@
   --background: hsl(240, 6%, 12%);
   --surface: var(--gray-900);
   --surface-light: var(--gray-800);
+  --surface-lighter: var(--gray-700);
+  --surface-blur: hsla(0, 0%, 100%, 0.03);
   --card-bg: hsla(0, 0%, 100%, 0.05);
 
   /* Typography */

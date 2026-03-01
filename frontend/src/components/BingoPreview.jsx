@@ -5,6 +5,8 @@ import useA4Scale from '../hooks/useA4Scale';
 
 const BingoPreview = ({
     theme = 'classic',
+    themeOverrides = null,
+    backgroundUrl = null,
     rows = 3,
     columns = 3,
     orientation = 'portrait',
@@ -108,6 +110,8 @@ const BingoPreview = ({
                 }}>
                     <ThemeRenderer
                         themeId={theme}
+                        themeOverrides={themeOverrides}
+                        backgroundUrl={backgroundUrl}
                         rows={rows}
                         columns={columns}
                         orientation={orientation}

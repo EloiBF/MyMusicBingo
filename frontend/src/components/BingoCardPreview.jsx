@@ -66,6 +66,8 @@ const BingoCardPreview = ({
             }}>
                 <BingoPreview
                     theme={event.theme || 'basic'}
+                    themeOverrides={event.theme_overrides || null}
+                    backgroundUrl={event.background_url || null}
                     rows={event.rows}
                     columns={event.columns}
                     orientation={event.orientation || 'portrait'}

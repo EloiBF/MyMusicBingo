@@ -3,9 +3,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.template.loader import render_to_string
 from django.utils import timezone
 from datetime import timedelta
+import math
 from .models import BingoUser, BingoEvent, BingoCard, PlaylistTrack
 from .serializers import BingoUserSerializer, BingoEventSerializer, BingoCardSerializer
 from .spotify import get_spotify_client, fetch_playlist_tracks
@@ -121,6 +123,15 @@ class AuthViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['get'])
     def me(self, request):
         serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def activate_premium(self, request):
+        user = request.user
+        if not getattr(user, 'is_premium', False):
+            user.is_premium = True
+            user.save(update_fields=['is_premium'])
+        serializer = self.get_serializer(user)
         return Response(serializer.data)
 
 
@@ -251,9 +262,23 @@ class BingoViewSet(viewsets.ModelViewSet):
         old_cols = instance.columns
         old_num_cards = instance.num_cards
         old_playlist_id = instance.playlist_id
+        old_theme_overrides = instance.theme_overrides
+        old_background_file = instance.background_file
         
         # Save updated instance
         event = serializer.save()
+
+        # Prevent non-premium users from changing customization fields through generic update
+        if not getattr(self.request.user, 'is_premium', False):
+            needs_revert = False
+            if event.theme_overrides != old_theme_overrides:
+                event.theme_overrides = old_theme_overrides
+                needs_revert = True
+            if event.background_file != old_background_file:
+                event.background_file = old_background_file
+                needs_revert = True
+            if needs_revert:
+                event.save(update_fields=['theme_overrides', 'background_file'])
         
         # Check if critical params changed
         if (event.rows != old_rows or 
@@ -351,6 +376,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         theme = request.data.get('theme', 'classic')
         orientation = request.data.get('orientation', 'portrait')
         primary_color = request.data.get('primary_color', '#3f51b5')
+        theme_overrides = request.data.get('theme_overrides')
         
         try:
             sp = get_spotify_client()
@@ -398,7 +424,8 @@ class BingoViewSet(viewsets.ModelViewSet):
                 theme=theme,
                 orientation=orientation,
                 is_premium=is_premium,
-                primary_color=primary_color
+                primary_color=primary_color,
+                theme_overrides=theme_overrides if getattr(request.user, 'is_premium', False) and isinstance(theme_overrides, dict) else {}
             )
             
             # Save tracks to DB
@@ -463,13 +490,54 @@ class BingoViewSet(viewsets.ModelViewSet):
         event = self.get_object()
         cards = event.cards.all().order_by('card_index')
         
-        serializer = BingoEventSerializer(event)
+        serializer = BingoEventSerializer(event, context={'request': request})
         cards_serializer = BingoCardSerializer(cards, many=True)
         
         return Response({
             "event": serializer.data,
             "cards": cards_serializer.data
         })
+
+    @action(detail=True, methods=['post'])
+    def theme_overrides(self, request, pk=None):
+        """Save theme override JSON for an event (premium only)."""
+        event = self.get_object()
+
+        if not getattr(request.user, 'is_premium', False):
+            return Response({'error': 'premium_required'}, status=status.HTTP_403_FORBIDDEN)
+
+        overrides = request.data.get('theme_overrides')
+        if overrides is None:
+            return Response({'error': 'theme_overrides_required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(overrides, dict):
+            return Response({'error': 'theme_overrides_must_be_object'}, status=status.HTTP_400_BAD_REQUEST)
+
+        event.theme_overrides = overrides
+        event.is_premium = True
+        event.save(update_fields=['theme_overrides', 'is_premium'])
+
+        serializer = BingoEventSerializer(event, context={'request': request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def background(self, request, pk=None):
+        """Upload a background image for an event (premium only)."""
+        event = self.get_object()
+
+        if not getattr(request.user, 'is_premium', False):
+            return Response({'error': 'premium_required'}, status=status.HTTP_403_FORBIDDEN)
+
+        file_obj = request.FILES.get('background')
+        if not file_obj:
+            return Response({'error': 'background_file_required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        event.background_file = file_obj
+        event.is_premium = True
+        event.save(update_fields=['background_file', 'is_premium'])
+
+        serializer = BingoEventSerializer(event, context={'request': request})
+        return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def printable_html(self, request, pk=None):
