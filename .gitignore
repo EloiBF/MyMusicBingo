@@ -11,6 +11,9 @@ RAILWAY_DB_MIGRATIONS.md
 # C extensions
 *.so
 
+.agent/
+.*/
+.env
 # Distribution / packaging
 .Python
 build/

@@ -273,7 +273,7 @@ const CreateBingo = () => {
                 theme_overrides: (themeMode === 'custom' && isPremium && themeOverrides && typeof themeOverrides === 'object') ? themeOverrides : undefined
             };
             if (isEditMode) {
-                response = await api.put(`/bingo/${id}/`, payload);
+                response = await api.patch(`/bingo/${id}/`, payload);
             } else {
                 response = await api.post('/bingo/generate_cards/', payload);
             }

@@ -139,16 +139,26 @@ const Auth = () => {
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
               <div style={{
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                width: '56px',
-                height: '56px',
+                background: 'var(--surface-light)',
+                width: '64px',
+                height: '64px',
                 borderRadius: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 8px 16px rgba(29, 185, 84, 0.3)'
+                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                border: '1px solid var(--glass-border)'
               }}>
-                <Music size={28} color="white" />
+                <img 
+                  src="/images/logo.png" 
+                  alt="BingoMusicMaker Logo" 
+                  style={{ 
+                    width: '40px', 
+                    height: '40px', 
+                    objectFit: 'contain',
+                    borderRadius: '0.4rem'
+                  }} 
+                />
               </div>
             </div>
 

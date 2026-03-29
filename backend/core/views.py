@@ -391,8 +391,40 @@ class BingoViewSet(viewsets.ModelViewSet):
             event.num_cards != old_num_cards or
             event.playlist_id != old_playlist_id):
             
+            if event.playlist_id != old_playlist_id:
+                try:
+                    if event.platform == 'youtube' or is_youtube_url(event.playlist_id):
+                        playlist_name, tracks = fetch_youtube_playlist_tracks(event.playlist_id)
+                    else:
+                        sp = get_spotify_client()
+                        if not sp:
+                            raise ValueError("Failed to connect to Spotify.")
+                        playlist = sp.playlist(event.playlist_id)
+                        tracks = fetch_playlist_tracks(sp, event.playlist_id)
+                        playlist_name = playlist['name']
+                    
+                    if not tracks:
+                        raise ValueError("No tracks found in the new playlist.")
+                    
+                    # Update tracks in DB
+                    event.tracks.all().delete()
+                    PlaylistTrack.objects.bulk_create([
+                        PlaylistTrack(event=event, name=name, artist=artist)
+                        for name, artist in tracks
+                    ])
+                    # Update local event.playlist_name if needed
+                    event.playlist_name = playlist_name
+                    event.save(update_fields=['playlist_name'])
+                except Exception as e:
+                    from rest_framework.exceptions import ValidationError
+                    raise ValidationError({"error": f"Error updating playlist: {str(e)}"})
+
             # Re-generate cards if necessary
-            self._regenerate_cards(event)
+            try:
+                self._regenerate_cards(event)
+            except Exception as e:
+                from rest_framework.exceptions import ValidationError
+                raise ValidationError({"error": f"Error generating cards: {str(e)}"})
 
     def _regenerate_cards(self, event):
         """Internal helper to regenerate cards for an event."""
