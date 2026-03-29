@@ -125,7 +125,7 @@ export default {
         ]
     },
     card: {
-        border: '1px solid #d4af37',
+        border: '2px solid #d4af37',
         background: '#ffffff',
         borderRadius: '4px',
         offset: '15mm',
@@ -156,7 +156,7 @@ export default {
     },
     cell: {
         shape: '0px',
-        border: '1.5px solid #d4af37',
+        border: '2.5px solid #d4af37',
         background: '#ffffff',
         shadow: 'inset 0 0 10px rgba(212, 175, 55, 0.02)',
         offset: '12px'

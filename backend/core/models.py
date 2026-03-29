@@ -1,13 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+from datetime import timedelta
+
+TRIAL_DURATION_DAYS = 90
 
 class BingoUser(AbstractUser):
     """Custom user model for BingoMusicMaker."""
     email = models.EmailField(unique=True)
     is_premium = models.BooleanField(default=False)
+    premium_trial_start = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.email
+
+    def is_trial_active(self):
+        """Returns True if the user is within the 3-month trial window."""
+        if self.premium_trial_start is None:
+            return False
+        return timezone.now() < self.premium_trial_start + timedelta(days=TRIAL_DURATION_DAYS)
+
+    def effective_is_premium(self):
+        """Returns True if user has permanent premium OR an active trial."""
+        return self.is_premium or self.is_trial_active()
+
+class ContactRequest(models.Model):
+    """A contact request from a user interested in permanent premium."""
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} <{self.email}> — {self.created_at.strftime('%Y-%m-%d')}"
 
 class BingoEvent(models.Model):
     """A session for generating bingo cards."""
@@ -15,6 +43,7 @@ class BingoEvent(models.Model):
     event_title = models.CharField(max_length=255, default="Bingo Musical")
     playlist_id = models.CharField(max_length=255)
     playlist_name = models.CharField(max_length=255)
+    platform = models.CharField(max_length=20, default='spotify')  # 'spotify' | 'youtube'
     
     # Configuration
     num_cards = models.PositiveIntegerField(default=1)

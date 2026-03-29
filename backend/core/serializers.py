@@ -1,16 +1,33 @@
 from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from .models import BingoUser, BingoEvent, BingoCard
+from django.utils import timezone
+from datetime import timedelta
+from .models import BingoUser, BingoEvent, BingoCard, ContactRequest, TRIAL_DURATION_DAYS
 
 class BingoUserSerializer(serializers.ModelSerializer):
+    trial_expires_at = serializers.SerializerMethodField()
+
     class Meta:
         model = BingoUser
-        fields = ('id', 'email', 'password', 'is_premium')
+        fields = ('id', 'email', 'password', 'is_premium', 'premium_trial_start', 'trial_expires_at')
         extra_kwargs = {
             'password': {'write_only': True, 'required': True},
-            'email': {'required': True}
+            'email': {'required': True},
+            'premium_trial_start': {'read_only': True},
         }
+
+    def get_trial_expires_at(self, obj):
+        if obj.premium_trial_start is None:
+            return None
+        return (obj.premium_trial_start + timedelta(days=TRIAL_DURATION_DAYS)).isoformat()
+
+
+class ContactRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactRequest
+        fields = ('id', 'name', 'email', 'message', 'created_at')
+        read_only_fields = ('id', 'created_at')
 
     def validate_email(self, value):
         try:
@@ -25,8 +42,8 @@ class BingoUserSerializer(serializers.ModelSerializer):
         return value
 
     def validate_password(self, value):
-        if len(value) < 6:
-            raise serializers.ValidationError("Password must be at least 6 characters long.")
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
         return value
 
     def create(self, validated_data):
@@ -60,6 +77,7 @@ class BingoEventSerializer(serializers.ModelSerializer):
             'event_title',
             'playlist_id',
             'playlist_name',
+            'platform',
             'num_cards',
             'rows',
             'columns',

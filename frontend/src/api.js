@@ -28,7 +28,12 @@ api.interceptors.response.use(
             
             // Try to refresh token
             try {
-                const response = await api.post('/auth/refresh/');
+                let response;
+                try {
+                    response = await api.post('/auth/refresh/refresh/');
+                } catch (e) {
+                    response = await api.post('/auth/refresh/');
+                }
                 const newToken = response.data.token;
                 localStorage.setItem('token', newToken);
                 

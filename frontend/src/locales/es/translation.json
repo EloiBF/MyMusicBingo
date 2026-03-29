@@ -11,19 +11,21 @@
         "logout_confirm_title": "Cerrar sesión",
         "logout_confirm_message": "¿Estás seguro de que quieres cerrar sesión? Tendrás que iniciar sesión de nuevo para acceder a tu cuenta.",
         "spotify_connected": "Spotify Conectado",
-        "free_account": "Cuenta Gratuita"
+        "free_account": "Cuenta Gratuita",
+        "premium_account": "Premium",
+        "trial_account": "Premium de prueba"
     },
     "landing": {
         "hero": {
             "title": "Crea tu propio <0 /> <1>Bingo Musical</1>",
             "title1": "Bingo Musical",
-            "title2": "desde tus listas de Spotify",
-            "subtitle": "Conecta tus listas de <1>Spotify</1> y crea tu bingo\npersonalizado con tus canciones favoridas!",
+            "title2": "desde tus listas de Spotify o YouTube",
+            "subtitle": "Conecta tus listas de <1>Spotify</1> o <2>YouTube</2> y crea tu bingo\npersonalizado con tus canciones favoridas!",
             "cta": "Empezar Gratis",
             "secondaryCta": "Cómo funciona"
         },
         "why": {
-            "title_from": "De Spotify ",
+            "title_from": "Crea fácilmente un ",
             "title_to": "a Bingo Musical",
             "features": {
                 "custom": {
@@ -49,8 +51,8 @@
                     "desc": "Crea una cuenta gratuita para guardar tus bingos y acceder a diseños premium."
                 },
                 "2": {
-                    "title": "Conecta Spotify",
-                    "desc": "Pega cualquier ID de lista pública (enlace compartido de la app de Spotify)."
+                    "title": "Conecta Spotify o YouTube",
+                    "desc": "Pega cualquier enlace público de Spotify o YouTube."
                 },
                 "3": {
                     "title": "Personaliza",
@@ -82,7 +84,7 @@
         }
     },
     "footer": {
-        "description": "Crea cartones de bingo musical personalizados a partir de tus listas de Spotify. Imprime los cartones tú mismo o solicita una impresión profesional para los eventos más especiales.",
+        "description": "Crea cartones de bingo musical personalizados a partir de tus listas de Spotify o YouTube. Imprime los cartones tú mismo o solicita una impresión profesional para los eventos más especiales.",
         "links": {
             "title": "Enlaces Rápidos",
             "dashboard": "Mis bingos",
@@ -111,7 +113,7 @@
         "subtitle": "Gestiona tus bingos musicales y crea otros nuevos en pocos clics.",
         "empty": {
             "title": "Crea tu primer bingo musical",
-            "desc": "¡Comienza ahora! Convierte cualquier playlist de Spotify en un juego de bingo profesional en segundos.",
+            "desc": "¡Comienza ahora! Convierte cualquier playlist de Spotify o YouTube en un juego de bingo profesional en segundos.",
             "cta": "Comenzar"
         }
     },
@@ -144,9 +146,9 @@
             "email_required": "El correo electrónico es obligatorio.",
             "email_invalid": "El correo electrónico no es válido.",
             "password_required": "La contraseña es obligatoria.",
-            "password_min_length": "La contraseña debe tener al menos 5 caracteres."
+            "password_min_length": "La contraseña debe tener al menos 8 caracteres."
         },
-        "password_min_length_hint": "Mínimo 5 caracteres"
+        "password_min_length_hint": "Mínimo 8 caracteres"
     },
     "detail": {
         "loading": "Cargando detalles del evento...",
@@ -191,36 +193,67 @@
     "create": {
         "title": "Crear Bingo",
         "edit_title": "Editar Bingo",
-        "subtitle": "Genera cartones únicos desde Spotify.",
+        "subtitle": "Genera cartones únicos desde Spotify o YouTube.",
         "edit_subtitle": "Actualiza la configuración del evento.",
         "default_title": "Noche de Disco",
         "preview_title": "Vista Previa del Cartón",
         "steps": {
+            "source": "Fuente",
             "playlist": "Lista",
             "theme": "Tema",
             "layout": "Diseño"
         },
+        "source": {
+            "title": "Elige tu fuente",
+            "subtitle": "¿De dónde quieres obtener tus canciones?"
+        },
         "playlist": {
-            "label": "Pega el enlace de la lista de Spotify",
-            "placeholder": "Pega el enlace...",
+            "label_spotify": "Pega el enlace de la lista de Spotify",
+            "label_youtube": "Pega el enlace de la lista de YouTube",
+            "placeholder_spotify": "Enlace de Spotify...",
+            "placeholder_youtube": "Enlace de YouTube...",
             "loading": "Cargando listas...",
             "error": "Error al cargar las listas.",
-            "guide": {
+            "hint_title": "Inicio rápido",
+            "hint_text_spotify": "Haz clic en el ícono de música para explorar listas populares, o pega un enlace de Spotify directamente.",
+            "hint_text_youtube": "Pega un enlace de una lista de YouTube directamente para importar sus canciones.",
+            "verifying": "Verificando lista...",
+            "detected_status": "Lista detectada: {{count}} canciones.",
+            "max_unique_status": "Máximo de cartones únicos: {{count}}",
+            "guide_spotify": {
                 "desktop": {
                     "title": "Windows/Mac",
                     "step1": "Abre Spotify Desktop",
                     "step2": "Busca tu playlist",
-                    "step3": "Haz clic derecho en la lista",
+                    "step3": "Abre las opciones de la lista",
                     "step4": "Selecciona 'Compartir'",
-                    "step5": "Haz clic en 'Copiar enlace de la playlist'"
+                    "step5": "Copia el enlace de la lista"
                 },
                 "mobile": {
                     "title": "iOS/Android",
                     "step1": "Abre Spotify",
                     "step2": "Busca tu playlist",
                     "step3": "Toca los tres puntos (...)",
-                    "step4": "Desliza y selecciona 'Compartir'",
+                    "step4": "Selecciona 'Compartir'",
                     "step5": "Toca 'Copiar enlace'"
+                }
+            },
+            "guide_youtube": {
+                "desktop": {
+                    "title": "Windows/Mac",
+                    "step1": "Abre YouTube en tu navegador",
+                    "step2": "Ve a tu Biblioteca o busca una playlist",
+                    "step3": "Abre la playlist completa",
+                    "step4": "Haz clic en el botón de 'Compartir'",
+                    "step5": "Copia el enlace de la playlist"
+                },
+                "mobile": {
+                    "title": "iOS/Android",
+                    "step1": "Abre la app de YouTube",
+                    "step2": "Ve a 'Tú' y selecciona tu playlist",
+                    "step3": "Abre la playlist completa",
+                    "step4": "Toca el icono de 'Compartir'",
+                    "step5": "Selecciona 'Copiar enlace'"
                 }
             }
         },
@@ -262,7 +295,7 @@
             "title": "Tus Listas"
         },
         "alerts": {
-            "provide_info": "Por favor, indica un título y una lista de Spotify.",
+            "provide_info": "Por favor, indica un título y una lista de Spotify o YouTube.",
             "load_failed": "Error al cargar los datos del evento.",
             "playlist_required": "Por favor, introduce un ID o enlace de lista."
         }
@@ -324,6 +357,20 @@
         "active": "Tu cuenta es Premium.",
         "free": "Tu cuenta es gratuita. Activa Premium para desbloquear la personalización.",
         "activating": "Activando...",
-        "activate_free": "Activar Premium (gratis)"
+        "activate_free": "Activar Premium (3 meses gratis)",
+        "trial_active": "Prueba activa",
+        "days_left": "faltan {{count}} días",
+        "trial_expired": "Prueba caducada",
+        "activate_trial": "Activar prueba gratuita de 3 meses",
+        "permanent_title": "Premium Permanente",
+        "contact_title": "¿Te interesa mantener el Premium?",
+        "contact_desc": "Tu prueba ha caducado. Rellena este formulario si quieres seguir usando las funciones premium.",
+        "contact_name": "Nombre",
+        "contact_email": "Correo electrónico",
+        "contact_message": "¿Cómo vas a usar el bingo? (Eventos, familia, etc.)",
+        "contact_submit": "Enviar solicitud",
+        "contact_success": "¡Gracias! Hemos recibido tu solicitud.",
+        "contact_error": "Error al enviar la solicitud. Inténtalo de nuevo.",
+        "permanent_active": "Acceso Premium Completo"
     }
 }

@@ -13,6 +13,19 @@ import BingoCardPreview from '../components/BingoCardPreview';
 import SplitLayout from '../components/SplitLayout';
 import ErrorMessage from '../components/ErrorMessage';
 import { getAvailableThemes } from '../utils/themeLoader';
+import PlatformIcon from '../components/PlatformIcon';
+
+const SpotifyIcon = ({ size = 32, color = "white" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.659.301 1.02zm1.44-3.3c-.301.42-.84.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.6.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.239.54-.959.72-1.56.3z"/>
+    </svg>
+);
+
+const YoutubeIcon = ({ size = 32, color = "white" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+);
 
 const CreateBingo = () => {
     const { t } = useTranslation();
@@ -20,12 +33,13 @@ const CreateBingo = () => {
     const { id } = useParams();
     const isEditMode = !!id;
 
-    const [currentStep, setCurrentStep] = useState(isEditMode ? 3 : 1);
-    const totalSteps = 3;
+    const [currentStep, setCurrentStep] = useState(isEditMode ? 4 : 1);
+    const totalSteps = 4;
 
     const [config, setConfig] = useState({
         eventTitle: '',
         playlistId: '',
+        platform: 'spotify',
         numCards: 20,
         rows: 3,
         columns: 3,
@@ -44,6 +58,7 @@ const CreateBingo = () => {
     const [paramLoading, setParamLoading] = useState(false);
     const [user, setUser] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [playlistTouched, setPlaylistTouched] = useState(false);
 
     // Validation state
     const [validation, setValidation] = useState({
@@ -52,10 +67,12 @@ const CreateBingo = () => {
         success_message: null,
         loading: false,
         track_count: 0,
-        max_possible_unique: 0
+        max_possible_unique: 0,
+        playlist_name: null
     });
 
-    const isPremiumCustomMode = themeMode === 'custom' && !!user?.is_premium;
+    const isPremium = user?.is_premium || (user?.trial_expires_at && new Date(user.trial_expires_at) > new Date());
+    const isPremiumCustomMode = themeMode === 'custom' && isPremium;
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -88,6 +105,7 @@ const CreateBingo = () => {
             try {
                 const response = await api.post('/bingo/validate_playlist/', {
                     playlist_id: config.playlistId,
+                    platform: config.platform,
                     rows: config.rows,
                     columns: config.columns,
                     num_cards: config.numCards
@@ -98,7 +116,8 @@ const CreateBingo = () => {
                     success_message: response.data.success_message,
                     loading: false,
                     track_count: response.data.track_count,
-                    max_possible_unique: response.data.max_possible_unique
+                    max_possible_unique: response.data.max_possible_unique,
+                    playlist_name: response.data.playlist_name || null
                 });
             } catch (err) {
                 console.error('Validation error:', err);
@@ -120,6 +139,7 @@ const CreateBingo = () => {
                     setConfig({
                         eventTitle: event.event_title,
                         playlistId: event.playlist_id,
+                        platform: event.platform || 'spotify',
                         numCards: event.num_cards,
                         rows: event.rows,
                         columns: event.columns,
@@ -190,14 +210,13 @@ const CreateBingo = () => {
 
     const fetchUserPlaylists = async () => {
         setParamLoading(true);
-        setShowPlaylistModal(true);
         try {
             const response = await api.get('/bingo/user_playlists/');
             setPlaylists(response.data);
-        } catch (err) {
-            console.error(err);
-            setErrorMessage(t('create.playlist.error'));
-            setShowPlaylistModal(false);
+            setShowPlaylistModal(true); // Now this will show the content inline
+        } catch (error) {
+            console.error('Error fetching playlists:', error);
+            setPlaylists([]);
         } finally {
             setParamLoading(false);
         }
@@ -208,13 +227,23 @@ const CreateBingo = () => {
         setShowPlaylistModal(false);
     };
 
+    const clearPlaylist = () => {
+        setConfig(prev => ({ ...prev, playlistId: '' }));
+        setPlaylistTouched(false);
+    };
+
     const handlePlaylistChange = (value) => {
         let id = value;
+        let platform = config.platform; // Preserve current platform selected in Step 1
         if (value.includes('spotify.com/playlist/')) {
+            platform = 'spotify';
             const parts = value.split('playlist/');
             if (parts.length > 1) id = parts[1].split('?')[0];
+        } else if (value.includes('youtube.com') || value.includes('youtu.be')) {
+            platform = 'youtube';
+            id = value;
         }
-        setConfig({ ...config, playlistId: id });
+        setConfig({ ...config, playlistId: id, platform });
     };
 
     const handleGenerate = async () => {
@@ -235,12 +264,13 @@ const CreateBingo = () => {
             const payload = {
                 event_title: config.eventTitle,
                 playlist_id: config.playlistId,
+                platform: config.platform,
                 num_cards: config.numCards,
                 rows: config.rows,
                 columns: config.columns,
                 theme: config.theme,
                 orientation: config.orientation,
-                theme_overrides: (themeMode === 'custom' && user?.is_premium && themeOverrides && typeof themeOverrides === 'object') ? themeOverrides : undefined
+                theme_overrides: (themeMode === 'custom' && isPremium && themeOverrides && typeof themeOverrides === 'object') ? themeOverrides : undefined
             };
             if (isEditMode) {
                 response = await api.put(`/bingo/${id}/`, payload);
@@ -249,7 +279,7 @@ const CreateBingo = () => {
             }
             const eventId = isEditMode ? id : response.data.event_id;
 
-            if (themeMode === 'custom' && user?.is_premium && backgroundFile) {
+            if (themeMode === 'custom' && isPremium && backgroundFile) {
                 const formData = new FormData();
                 formData.append('background', backgroundFile);
                 try {
@@ -270,13 +300,14 @@ const CreateBingo = () => {
     };
 
     const nextStep = () => {
-        if (currentStep === 1 && !config.playlistId) {
+        if (currentStep === 2 && !config.playlistId) {
+            setPlaylistTouched(true);
             setErrorMessage(t('create.alerts.playlist_required'));
             return;
         }
         
-        // Check validation before proceeding from step 1
-        if (currentStep === 1 && !validation.is_valid) {
+        // Check validation before proceeding from step 2
+        if (currentStep === 2 && !validation.is_valid) {
             setErrorMessage(validation.error_message || t('create.alerts.validation_failed'));
             return;
         }
@@ -299,10 +330,16 @@ const CreateBingo = () => {
     };
 
     const steps = [
-        { id: 1, name: t('create.steps.playlist'), icon: <Search size={14} /> },
-        { id: 2, name: t('create.steps.theme'), icon: <Palette size={14} /> },
-        { id: 3, name: t('create.steps.layout'), icon: <Layers size={14} /> }
+        { id: 1, name: t('create.steps.source', 'Source'), icon: <Search size={14} /> },
+        { id: 2, name: t('create.steps.playlist'), icon: <ListMusic size={14} /> },
+        { id: 3, name: t('create.steps.theme'), icon: <Palette size={14} /> },
+        { id: 4, name: t('create.steps.layout'), icon: <Layers size={14} /> }
     ];
+
+    const canProceed = !loading
+        && !validation.loading
+        && validation.is_valid
+        && !(currentStep === 2 && !config.playlistId);
 
     return (
         <PageLayout
@@ -334,7 +371,7 @@ const CreateBingo = () => {
                     }}>
                         <h3 style={{
                             textAlign: 'center',
-                            marginBottom: '1rem',
+                            marginBottom: validation.playlist_name ? '0.25rem' : '1rem',
                             color: 'var(--text-muted)',
                             fontSize: '0.8rem',
                             fontWeight: 800,
@@ -343,6 +380,27 @@ const CreateBingo = () => {
                         }}>
                             {t('create.preview_title', 'Bingo Card Preview')}
                         </h3>
+                        {validation.playlist_name && (
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.4rem',
+                                justifyContent: 'center',
+                                marginBottom: '1rem',
+                                fontSize: '0.75rem',
+                                color: 'var(--text-muted)',
+                                overflow: 'hidden'
+                            }}>
+                                <PlatformIcon platform={config.platform} size={11} />
+                                <span style={{
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    maxWidth: '200px',
+                                    fontWeight: 500
+                                }}>{validation.playlist_name}</span>
+                            </div>
+                        )}
                         <BingoCardPreview
                             event={{
                                 theme: config.theme,
@@ -386,6 +444,14 @@ const CreateBingo = () => {
                                         <React.Fragment key={s.id}>
                                             <div
                                                 onClick={() => currentStep > s.id && setCurrentStep(s.id)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                        if (currentStep > s.id) setCurrentStep(s.id);
+                                                    }
+                                                }}
+                                                role="button"
+                                                tabIndex={currentStep > s.id ? 0 : -1}
+                                                aria-disabled={!(currentStep > s.id)}
                                                 className={`step-item-mini ${currentStep === s.id ? 'active' : ''} ${currentStep > s.id ? 'completed' : ''}`}
                                             >
                                                 <div className="step-circle-mini">
@@ -411,66 +477,204 @@ const CreateBingo = () => {
                         }}>
                             <div className="step-content-box-mini" style={{ flex: 1 }}>
                                 {currentStep === 1 && (
+                                    <div className="animate-fade-in section-compact-mini" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '2rem' }}>
+                                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                                            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.25rem', color: 'var(--text)' }}>
+                                                {t('create.source.title', 'Choose your source')}
+                                            </h2>
+                                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                                                {t('create.source.subtitle', 'Where do you want to get your songs from?')}
+                                            </p>
+                                        </div>
+
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}>
+                                            <button 
+                                                className={`glass-hover ${config.platform === 'spotify' ? 'active' : ''}`}
+                                                style={{ 
+                                                    padding: '1.5rem', 
+                                                    display: 'flex', 
+                                                    flexDirection: 'column', 
+                                                    alignItems: 'center', 
+                                                    gap: '1rem', 
+                                                    borderRadius: 'var(--radius-lg)', 
+                                                    background: 'rgba(255, 255, 255, 0.03)',
+                                                    border: '1px solid var(--glass-border)',
+                                                    boxShadow: 'none',
+                                                    transition: 'all 0.3s ease',
+                                                    cursor: 'pointer' 
+                                                }}
+                                                onClick={() => { setConfig({...config, platform: 'spotify'}); setShowPlaylistModal(false); nextStep(); }}
+                                            >
+                                                <div style={{ background: '#1DB954', width: '56px', height: '56px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 15px rgba(29, 185, 84, 0.25)' }}>
+                                                    <SpotifyIcon size={28} color="white" />
+                                                </div>
+                                                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)' }}>Spotify</h3>
+                                            </button>
+
+                                            <button 
+                                                className={`glass-hover ${config.platform === 'youtube' ? 'active' : ''}`}
+                                                style={{ 
+                                                    padding: '1.5rem', 
+                                                    display: 'flex', 
+                                                    flexDirection: 'column', 
+                                                    alignItems: 'center', 
+                                                    gap: '1rem', 
+                                                    borderRadius: 'var(--radius-lg)', 
+                                                    background: 'rgba(255, 255, 255, 0.03)',
+                                                    border: '1px solid var(--glass-border)',
+                                                    boxShadow: 'none',
+                                                    transition: 'all 0.3s ease',
+                                                    cursor: 'pointer' 
+                                                }}
+                                                onClick={() => { setConfig({...config, platform: 'youtube'}); setShowPlaylistModal(false); nextStep(); }}
+                                            >
+                                                <div style={{ background: '#FF0000', width: '56px', height: '56px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 15px rgba(255, 0, 0, 0.25)' }}>
+                                                    <YoutubeIcon size={28} color="white" />
+                                                </div>
+                                                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)' }}>YouTube</h3>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {currentStep === 2 && (
                                     <div className="animate-fade-in section-compact-mini">
                                         <div className="input-group-mini">
-                                            <label>{t('create.playlist.label')}</label>
-                                            <div style={{ position: 'relative' }}>
-                                                {validation.loading ? (
-                                                    <div className="spin-mini" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
-                                                ) : (validation.is_valid && validation.track_count > 0) ? (
-                                                    <Check size={16} color="var(--success)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
-                                                ) : (
-                                                    <Search size={14} className="input-icon-left-mini" />
-                                                )}
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                                {t(`create.playlist.label_${config.platform}`)}
+                                                {config.platform === 'spotify' ? <SpotifyIcon size={18} color="#1DB954" /> : <YoutubeIcon size={18} color="#FF0000" />}
+                                            </label>
+                                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                                <div style={{ position: 'relative', flex: 1 }}>
+                                                    {validation.is_valid && validation.track_count > 0 && (
+                                                        <Check size={16} color="var(--success)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
+                                                    )}
+                                                    {!validation.loading && !validation.is_valid && (
+                                                        <Search size={14} className="input-icon-left-mini" />
+                                                    )}
 
-                                                <input
-                                                    type="text"
-                                                    placeholder={t('create.playlist.placeholder')}
-                                                    value={config.playlistId}
-                                                    onChange={(e) => handlePlaylistChange(e.target.value)}
-                                                    style={{
-                                                        paddingLeft: '2.5rem',
-                                                        borderColor: (validation.is_valid && validation.track_count > 0 && !validation.loading) ? 'var(--success)' :
-                                                            (!validation.is_valid && !validation.loading) ? 'var(--error)' : 'var(--glass-border)',
-                                                        boxShadow: (validation.is_valid && validation.track_count > 0 && !validation.loading) ? '0 0 0 1px var(--success)' : 'none',
-                                                        transition: 'all 0.3s ease'
-                                                    }}
-                                                />
+                                                    <input
+                                                        type="text"
+                                                        placeholder={t(`create.playlist.placeholder_${config.platform}`)}
+                                                        value={config.playlistId}
+                                                        onChange={(e) => handlePlaylistChange(e.target.value)}
+                                                        onBlur={() => setPlaylistTouched(true)}
+                                                        aria-invalid={(playlistTouched && !config.playlistId) || (!validation.is_valid && !validation.loading)}
+                                                        style={{
+                                                            paddingLeft: '2.5rem',
+                                                            paddingRight: config.playlistId ? '2.5rem' : undefined,
+                                                            borderColor: (validation.is_valid && validation.track_count > 0 && !validation.loading) ? 'var(--success)' :
+                                                                (!validation.is_valid && !validation.loading) ? 'var(--error)' : 'var(--glass-border)',
+                                                            boxShadow: (validation.is_valid && validation.track_count > 0 && !validation.loading) ? '0 0 0 1px var(--success)' : 'none',
+                                                            transition: 'all 0.3s ease'
+                                                        }}
+                                                    />
+
+                                                    {config.playlistId && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={clearPlaylist}
+                                                            className="btn btn-secondary btn-square-mini"
+                                                            aria-label={t('create.playlist.clear', 'Clear playlist')}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                right: '0.5rem',
+                                                                top: '50%',
+                                                                transform: 'translateY(-50%)',
+                                                                width: '2rem',
+                                                                height: '2rem',
+                                                                borderRadius: '0.75rem',
+                                                                padding: 0
+                                                            }}
+                                                        >
+                                                            <X size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                {/* {config.platform === 'spotify' && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={fetchUserPlaylists}
+                                                        disabled={paramLoading}
+                                                        className="btn btn-secondary"
+                                                        aria-label={t('create.playlist_modal.open', 'Sample Playlists')}
+                                                        style={{
+                                                            padding: '0.75rem 1rem',
+                                                            height: '3rem',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '0.5rem',
+                                                            fontSize: '0.9rem',
+                                                            fontWeight: 600,
+                                                            flexShrink: 0
+                                                        }}
+                                                    >
+                                                        {paramLoading ? <div className="spin-mini" /> : <ListMusic size={16} />}
+                                                        Sample Playlists
+                                                    </button>
+                                                )} */}
                                             </div>
                                         </div>
 
-                                        {!validation.is_valid && !validation.loading && (
+                                        {playlistTouched && !config.playlistId && (
                                             <div className="validation-msg error animate-fade-in">
-                                                <AlertCircle size={16} /> {validation.error_message}
+                                                <AlertCircle size={16} /> {t('create.alerts.playlist_required')}
+                                            </div>
+                                        )}
+
+                                        {validation.loading && (
+                                            <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#1DB954', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 600 }}>
+                                                <div className="spin-mini" style={{ borderTopColor: '#1DB954', width: '1.1rem', height: '1.1rem' }} />
+                                                {t('create.playlist.verifying')}
+                                            </div>
+                                        )}
+
+                                        {!validation.is_valid && !validation.loading && config.playlistId && (
+                                            <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--error)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                                                <AlertCircle size={16} /> {validation.error_message || t('create.alerts.playlist_invalid')}
+                                            </div>
+                                        )}
+
+                                        {validation.is_valid && !validation.loading && validation.track_count > 0 && (
+                                            <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#1DB954', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 600 }}>
+                                                <Check size={18} />
+                                                <span>
+                                                    {t('create.playlist.detected_status', { count: validation.track_count })}
+                                                    {" "}
+                                                    {t('create.playlist.max_unique_status', { 
+                                                        count: (validation.max_possible_unique || validation.max_combinations) > 1000 ? '+1000' : (validation.max_possible_unique || validation.max_combinations || validation.track_count)
+                                                    })}
+                                                </span>
                                             </div>
                                         )}
 
                                         <div className="text-sm text-gray-500" style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.4', marginTop: '2rem' }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '0.5rem' }}>
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '0.5rem' }}>
                                                 <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                                                         <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>💻</span>
-                                                        <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.desktop.title')}</strong>
+                                                        <strong style={{ color: '#e5e7eb' }}>{t(`create.playlist.guide_${config.platform}.desktop.title`)}</strong>
                                                     </div>
                                                     <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
-                                                        <li>{t('create.playlist.guide.desktop.step1')}</li>
-                                                        <li>{t('create.playlist.guide.desktop.step2')}</li>
-                                                        <li>{t('create.playlist.guide.desktop.step3')}</li>
-                                                        <li>{t('create.playlist.guide.desktop.step4')}</li>
-                                                        <li>{t('create.playlist.guide.desktop.step5')}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.desktop.step1`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.desktop.step2`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.desktop.step3`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.desktop.step4`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.desktop.step5`)}</li>
                                                     </ol>
                                                 </div>
                                                 <div className="glass" style={{ padding: '0.75rem', borderRadius: '8px' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                                                         <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>📱</span>
-                                                        <strong style={{ color: '#e5e7eb' }}>{t('create.playlist.guide.mobile.title')}</strong>
+                                                        <strong style={{ color: '#e5e7eb' }}>{t(`create.playlist.guide_${config.platform}.mobile.title`)}</strong>
                                                     </div>
                                                     <ol style={{ margin: '0', paddingLeft: '1.2rem', fontSize: '0.8rem', color: '#9ca3af' }}>
-                                                        <li>{t('create.playlist.guide.mobile.step1')}</li>
-                                                        <li>{t('create.playlist.guide.mobile.step2')}</li>
-                                                        <li>{t('create.playlist.guide.mobile.step3')}</li>
-                                                        <li>{t('create.playlist.guide.mobile.step4')}</li>
-                                                        <li>{t('create.playlist.guide.mobile.step5')}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.mobile.step1`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.mobile.step2`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.mobile.step3`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.mobile.step4`)}</li>
+                                                        <li>{t(`create.playlist.guide_${config.platform}.mobile.step5`)}</li>
                                                     </ol>
                                                 </div>
                                             </div>
@@ -478,10 +682,10 @@ const CreateBingo = () => {
                                     </div>
                                 )}
 
-                                {currentStep === 2 && (
+                                {currentStep === 3 && (
                                     <div className="animate-fade-in section-compact-mini" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                        <div style={{ marginBottom: '1rem' }}>
-                                            <label className="label-bold-mini">{t('create.theme.mode_label', 'Theme type')}</label>
+                                        <div style={{ marginBottom: '0.75rem' }}>
+                                            <label className="label-bold-mini">{t('create.theme.label', 'Tria un tema')}</label>
                                             <div className="toggle-group-mini glass" style={{ marginTop: '0.4rem' }}>
                                                 <button
                                                     type="button"
@@ -492,10 +696,26 @@ const CreateBingo = () => {
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    onClick={() => setThemeMode('custom')}
-                                                    className={`toggle-btn-mini ${themeMode === 'custom' ? 'active' : ''}`}
+                                                    disabled
+                                                    className="toggle-btn-mini"
+                                                    style={{ 
+                                                        opacity: 0.5, 
+                                                        cursor: 'not-allowed', 
+                                                        display: 'flex', 
+                                                        alignItems: 'center', 
+                                                        justifyContent: 'center', 
+                                                        gap: '0.5rem' 
+                                                    }}
                                                 >
                                                     {t('create.theme.mode_custom', 'Customized')}
+                                                    <span style={{ 
+                                                        fontSize: '0.6rem', 
+                                                        background: 'rgba(255,255,255,0.1)', 
+                                                        padding: '2px 6px', 
+                                                        borderRadius: '4px',
+                                                        letterSpacing: '0.05em',
+                                                        fontWeight: 900
+                                                    }}>COMING SOON</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -506,7 +726,7 @@ const CreateBingo = () => {
                                                     <Crown size={14} /> {t('create.theme.customize_title', 'Premium Personalization')}
                                                 </label>
 
-                                                {!user?.is_premium ? (
+                                                {!isPremium ? (
                                                     <div className="glass" style={{ padding: '0.9rem', borderRadius: '12px', border: '1px solid var(--glass-border)', opacity: 0.85 }}>
                                                         <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{t('create.theme.customize_locked_title', 'Locked')}</div>
                                                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
@@ -537,82 +757,93 @@ const CreateBingo = () => {
                                                             </select>
                                                         </div>
 
-                                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                                                            <div className="input-group-mini" style={{ margin: 0 }}>
-                                                                <label>{t('create.theme.bg_color', 'Background')}</label>
-                                                                <input
-                                                                    type="color"
-                                                                    value={themeOverrides?.background?.color || '#ffffff'}
-                                                                    onChange={(e) => updateOverride(['background', 'color'], e.target.value)}
-                                                                />
-                                                            </div>
-                                                            <div className="input-group-mini" style={{ margin: 0 }}>
-                                                                <label>{t('create.theme.title_color', 'Title')}</label>
-                                                                <input
-                                                                    type="color"
-                                                                    value={themeOverrides?.title?.color || '#1a1a1a'}
-                                                                    onChange={(e) => updateOverride(['title', 'color'], e.target.value)}
-                                                                />
-                                                            </div>
-                                                            <div className="input-group-mini" style={{ margin: 0 }}>
-                                                                <label>{t('create.theme.cell_border_color', 'Cell border')}</label>
-                                                                <input
-                                                                    type="color"
-                                                                    value={themeOverrides?.grid?.color || '#3b82f6'}
-                                                                    onChange={(e) => updateOverride(['grid', 'color'], e.target.value)}
-                                                                />
-                                                            </div>
-                                                            <div className="input-group-mini" style={{ margin: 0 }}>
-                                                                <label>{t('create.theme.cell_rounding', 'Cell rounding')}</label>
-                                                                <select
-                                                                    value={themeOverrides?.cell?.shape || '0px'}
-                                                                    onChange={(e) => updateOverride(['cell', 'shape'], e.target.value)}
-                                                                >
-                                                                    <option value="0px">Square</option>
-                                                                    <option value="6px">Soft</option>
-                                                                    <option value="12px">Round</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="input-group-mini" style={{ margin: 0 }}>
-                                                                <label>{t('create.theme.font', 'Font')}</label>
-                                                                <select
-                                                                    value={themeOverrides?.font || "'Montserrat', sans-serif"}
-                                                                    onChange={(e) => updateOverride(['font'], e.target.value)}
-                                                                >
-                                                                    <option value="'Montserrat', sans-serif">Montserrat</option>
-                                                                    <option value="'Inter', sans-serif">Inter</option>
-                                                                    <option value="'Poppins', sans-serif">Poppins</option>
-                                                                    <option value="'Roboto', sans-serif">Roboto</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="input-group-mini" style={{ margin: 0, display: 'flex', flexDirection: 'column' }}>
-                                                                <label>{t('create.theme.card_border', 'Card border')}</label>
-                                                                <div className="toggle-group-mini glass" style={{ padding: '4px' }}>
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => updateOverride(['layout', 'showBorder'], true)}
-                                                                        className={`toggle-btn-mini ${themeOverrides?.layout?.showBorder !== false ? 'active' : ''}`}
-                                                                    >
-                                                                        On
-                                                                    </button>
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => updateOverride(['layout', 'showBorder'], false)}
-                                                                        className={`toggle-btn-mini ${themeOverrides?.layout?.showBorder === false ? 'active' : ''}`}
-                                                                    >
-                                                                        Off
-                                                                    </button>
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                            {/* Colors Section */}
+                                                            <div>
+                                                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                                                    {t('create.theme.colors_section', 'Colors')}
+                                                                </div>
+                                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                                                                    <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                        <label style={{ fontSize: '0.75rem' }}>{t('create.theme.bg_color', 'Background')}</label>
+                                                                        <input
+                                                                            type="color"
+                                                                            value={themeOverrides?.background?.color || '#ffffff'}
+                                                                            onChange={(e) => updateOverride(['background', 'color'], e.target.value)}
+                                                                            style={{ padding: '0.2rem', height: '2.5rem', cursor: 'pointer' }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                        <label style={{ fontSize: '0.75rem' }}>{t('create.theme.title_color', 'Title')}</label>
+                                                                        <input
+                                                                            type="color"
+                                                                            value={themeOverrides?.title?.color || '#1a1a1a'}
+                                                                            onChange={(e) => updateOverride(['title', 'color'], e.target.value)}
+                                                                            style={{ padding: '0.2rem', height: '2.5rem', cursor: 'pointer' }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                        <label style={{ fontSize: '0.75rem' }}>{t('create.theme.cell_border_color', 'Cell border')}</label>
+                                                                        <input
+                                                                            type="color"
+                                                                            value={themeOverrides?.grid?.color || '#3b82f6'}
+                                                                            onChange={(e) => updateOverride(['grid', 'color'], e.target.value)}
+                                                                            style={{ padding: '0.2rem', height: '2.5rem', cursor: 'pointer' }}
+                                                                        />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
-                                                        <div className="input-group-mini" style={{ marginTop: '0.75rem' }}>
-                                                            <label>{t('create.theme.bg_image', 'Background image')}</label>
-                                                            <input
-                                                                type="file"
-                                                                accept="image/*"
-                                                                onChange={(e) => setBackgroundFile(e.target.files?.[0] || null)}
-                                                            />
+                                                            {/* Styling Section */}
+                                                            <div>
+                                                                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                                                    {t('create.theme.styling_section', 'Styling')}
+                                                                </div>
+                                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                                                                    <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                        <label>{t('create.theme.cell_rounding', 'Cell rounding')}</label>
+                                                                        <select
+                                                                            value={themeOverrides?.cell?.shape || '0px'}
+                                                                            onChange={(e) => updateOverride(['cell', 'shape'], e.target.value)}
+                                                                        >
+                                                                            <option value="0px">{t('create.theme.shape_square', 'Square')}</option>
+                                                                            <option value="6px">{t('create.theme.shape_soft', 'Soft')}</option>
+                                                                            <option value="12px">{t('create.theme.shape_round', 'Round')}</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="input-group-mini" style={{ margin: 0 }}>
+                                                                        <label>{t('create.theme.font', 'Font')}</label>
+                                                                        <select
+                                                                            value={themeOverrides?.font || "'Montserrat', sans-serif"}
+                                                                            onChange={(e) => updateOverride(['font'], e.target.value)}
+                                                                        >
+                                                                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                                                                            <option value="'Inter', sans-serif">Inter</option>
+                                                                            <option value="'Poppins', sans-serif">Poppins</option>
+                                                                            <option value="'Roboto', sans-serif">Roboto</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Background Image Upload */}
+                                                            <div className="input-group-mini" style={{ 
+                                                                margin: 0, 
+                                                                padding: '0.75rem', 
+                                                                background: 'rgba(255,255,255,0.02)', 
+                                                                borderRadius: 'var(--radius-md)', 
+                                                                border: '1px dashed var(--glass-border)' 
+                                                            }}>
+                                                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                                                    <Palette size={14} /> {t('create.theme.bg_image', 'Background Image')}
+                                                                </label>
+                                                                <input
+                                                                    type="file"
+                                                                    accept="image/*"
+                                                                    onChange={(e) => setBackgroundFile(e.target.files?.[0] || null)}
+                                                                    style={{ padding: '0.5rem', background: 'rgba(0,0,0,0.2)', border: 'none', fontSize: '0.8rem', cursor: 'pointer' }}
+                                                                />
+                                                            </div>
                                                         </div>
 
                                                         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.75rem' }}>
@@ -635,8 +866,7 @@ const CreateBingo = () => {
                                         )}
 
                                         {themeMode === 'presets' && (
-                                            <div className="theme-compact-gallery" style={{ marginTop: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                                <label className="label-bold-mini">{t('create.theme.label')}</label>
+                                            <div className="theme-compact-gallery" style={{ marginTop: '0.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                                                 <div className="scroll-box-mini" style={{ flex: 1, overflowY: 'auto' }}>
                                                     <div className="grid-mini">
                                                         {allThemes.map(themeItem => {
@@ -676,7 +906,7 @@ const CreateBingo = () => {
                                     </div>
                                 )}
 
-                                {currentStep === 3 && (
+                                {currentStep === 4 && (
                                     <div className="animate-fade-in section-compact-mini">
                                         <div className="input-group-mini">
                                             <label>{t('create.layout.name_label')}</label>
@@ -695,7 +925,15 @@ const CreateBingo = () => {
                                                 <input
                                                     type="number"
                                                     value={config.numCards}
-                                                    onChange={(e) => setConfig({ ...config, numCards: parseInt(e.target.value) })}
+                                                    min={1}
+                                                    onChange={(e) => {
+                                                        const raw = e.target.value;
+                                                        const parsed = Number.parseInt(raw, 10);
+                                                        const nextValue = Number.isFinite(parsed) ? parsed : 1;
+                                                        const max = validation.max_possible_unique || undefined;
+                                                        const clamped = max ? Math.min(Math.max(nextValue, 1), max) : Math.max(nextValue, 1);
+                                                        setConfig({ ...config, numCards: clamped });
+                                                    }}
                                                     max={validation.max_possible_unique || undefined}
                                                 />
                                             </div>
@@ -749,41 +987,26 @@ const CreateBingo = () => {
                             <button
                                 onClick={nextStep}
                                 className="btn btn-primary btn-nav-mini primary-nav"
-                                disabled={loading || validation.loading || !validation.is_valid}
+                                disabled={!canProceed}
                             >
-                                {loading ? t('common.generating') : (currentStep === totalSteps ? t('create.nav.generate') : t('create.nav.next'))}
-                                <ArrowRight size={16} />
+                                {loading ? (
+                                    <>
+                                        <div className="spin-mini" style={{ borderTopColor: '#fff', width: '1.2rem', height: '1.2rem' }} />
+                                        {t('common.generating')}
+                                    </>
+                                ) : (
+                                    <>
+                                        {currentStep === totalSteps ? t('create.nav.generate') : t('create.nav.next')}
+                                        <ArrowRight size={16} />
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
                 </div>
             </SplitLayout>
 
-            {/* Playlist Modal */}
-            {
-                showPlaylistModal && (
-                    <div className="modal-ov">
-                        <div className="modal-c glass animate-fade-in">
-                            <div className="modal-h">
-                                <h3><ListMusic size={20} /> {t('create.playlist_modal.title')}</h3>
-                                <button onClick={() => setShowPlaylistModal(false)} className="close-b"><X size={20} /></button>
-                            </div>
-                            <div className="modal-b">
-                                {paramLoading ? <div className="load-s"><div className="spin-m" /></div> : (
-                                    <div className="p-grid">
-                                        {playlists.map(p => (
-                                            <div key={p.id} onClick={() => selectPlaylist(p.id)} className="p-card glass-hover">
-                                                <div className="p-img">{p.image ? <img src={p.image} alt="" /> : <Music size={24} />}</div>
-                                                <div className="p-t">{p.name}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )
-            }
+            {/* Playlist Modal - Now integrated into the form above */}
 
             {/* Custom Error Message */}
             <ErrorMessage

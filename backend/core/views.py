@@ -8,9 +8,10 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from datetime import timedelta
 import math
-from .models import BingoUser, BingoEvent, BingoCard, PlaylistTrack
-from .serializers import BingoUserSerializer, BingoEventSerializer, BingoCardSerializer
+from .models import BingoUser, BingoEvent, BingoCard, PlaylistTrack, ContactRequest
+from .serializers import BingoUserSerializer, BingoEventSerializer, BingoCardSerializer, ContactRequestSerializer
 from .spotify import get_spotify_client, fetch_playlist_tracks
+from .youtube import fetch_youtube_playlist_tracks, is_youtube_url
 from .bingo_engine import generate_bingo_blocks
 from django.http import HttpResponse
 
@@ -128,11 +129,24 @@ class AuthViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def activate_premium(self, request):
         user = request.user
-        if not getattr(user, 'is_premium', False):
-            user.is_premium = True
-            user.save(update_fields=['is_premium'])
+        changed_fields = []
+        if not user.premium_trial_start:
+            user.premium_trial_start = timezone.now()
+            changed_fields.append('premium_trial_start')
+        # is_premium remains False (trial only) unless permanently activated
+        if changed_fields:
+            user.save(update_fields=changed_fields)
         serializer = self.get_serializer(user)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def contact_premium(self, request):
+        """Save a contact request from a user interested in permanent premium."""
+        serializer = ContactRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'ok'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -269,7 +283,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         event = serializer.save()
 
         # Prevent non-premium users from changing customization fields through generic update
-        if not getattr(self.request.user, 'is_premium', False):
+        if not self.request.user.effective_is_premium():
             needs_revert = False
             if event.theme_overrides != old_theme_overrides:
                 event.theme_overrides = old_theme_overrides
@@ -319,17 +333,22 @@ class BingoViewSet(viewsets.ModelViewSet):
         rows = int(request.data.get('rows', 3))
         columns = int(request.data.get('columns', 3))
         num_cards = int(request.data.get('num_cards', 1))
+        platform = request.data.get('platform', 'spotify')
         
         if not playlist_id:
             return Response({"error": "playlist_id is required."}, status=400)
             
         try:
-            sp = get_spotify_client()
-            if not sp:
-                return Response({"error": "Failed to connect to Spotify."}, status=400)
-            
-            playlist = sp.playlist(playlist_id)
-            tracks = fetch_playlist_tracks(sp, playlist_id)
+            if platform == 'youtube' or is_youtube_url(playlist_id):
+                playlist_name, tracks = fetch_youtube_playlist_tracks(playlist_id)
+            else:
+                sp = get_spotify_client()
+                if not sp:
+                    return Response({"error": "Failed to connect to Spotify."}, status=400)
+                
+                playlist = sp.playlist(playlist_id)
+                tracks = fetch_playlist_tracks(sp, playlist_id)
+                playlist_name = playlist['name']
             
             num_songs = len(tracks)
             songs_per_card = rows * columns
@@ -354,7 +373,7 @@ class BingoViewSet(viewsets.ModelViewSet):
                         error_message = f"❌ Demasiados cartones: Con {num_songs} canciones, puedes crear hasta {max_possible_unique:,} cartones {rows}×{columns} únicos. Por favor reduce el número de cartones."
             
             return Response({
-                "playlist_name": playlist['name'],
+                "playlist_name": playlist_name,
                 "track_count": num_songs,
                 "songs_per_card": songs_per_card,
                 "max_possible_unique": max_possible_unique,
@@ -377,14 +396,19 @@ class BingoViewSet(viewsets.ModelViewSet):
         orientation = request.data.get('orientation', 'portrait')
         primary_color = request.data.get('primary_color', '#3f51b5')
         theme_overrides = request.data.get('theme_overrides')
+        platform = request.data.get('platform', 'spotify')
         
         try:
-            sp = get_spotify_client()
-            if not sp:
-                return Response({"error": "Failed to connect to Spotify."}, status=400)
-            
-            playlist = sp.playlist(playlist_id)
-            tracks = fetch_playlist_tracks(sp, playlist_id)
+            if platform == 'youtube' or is_youtube_url(playlist_id):
+                playlist_name, tracks = fetch_youtube_playlist_tracks(playlist_id)
+            else:
+                sp = get_spotify_client()
+                if not sp:
+                    return Response({"error": "Failed to connect to Spotify."}, status=400)
+                
+                playlist = sp.playlist(playlist_id)
+                tracks = fetch_playlist_tracks(sp, playlist_id)
+                playlist_name = playlist['name']
             
             if not tracks:
                 return Response({"error": "No tracks found in playlist."}, status=400)
@@ -417,7 +441,8 @@ class BingoViewSet(viewsets.ModelViewSet):
                 user=request.user,
                 event_title=event_title,
                 playlist_id=playlist_id,
-                playlist_name=playlist['name'],
+                playlist_name=playlist_name,
+                platform=platform,
                 num_cards=num_cards,
                 rows=rows,
                 columns=columns,
@@ -425,7 +450,7 @@ class BingoViewSet(viewsets.ModelViewSet):
                 orientation=orientation,
                 is_premium=is_premium,
                 primary_color=primary_color,
-                theme_overrides=theme_overrides if getattr(request.user, 'is_premium', False) and isinstance(theme_overrides, dict) else {}
+                theme_overrides=theme_overrides if request.user.effective_is_premium() and isinstance(theme_overrides, dict) else {}
             )
             
             # Save tracks to DB
@@ -503,7 +528,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         """Save theme override JSON for an event (premium only)."""
         event = self.get_object()
 
-        if not getattr(request.user, 'is_premium', False):
+        if not request.user.effective_is_premium():
             return Response({'error': 'premium_required'}, status=status.HTTP_403_FORBIDDEN)
 
         overrides = request.data.get('theme_overrides')
@@ -525,7 +550,7 @@ class BingoViewSet(viewsets.ModelViewSet):
         """Upload a background image for an event (premium only)."""
         event = self.get_object()
 
-        if not getattr(request.user, 'is_premium', False):
+        if not request.user.effective_is_premium():
             return Response({'error': 'premium_required'}, status=status.HTTP_403_FORBIDDEN)
 
         file_obj = request.FILES.get('background')
@@ -559,15 +584,36 @@ class BingoViewSet(viewsets.ModelViewSet):
         
         return Response({'songs': data})
 
-    @action(detail=True, methods=['post'], url_path='songs/(?P<song_id>[^/.]+)/toggle')
-    def toggle_song(self, request, pk=None, song_id=None):
-        """Toggle the played status of a song"""
-        from django.shortcuts import get_object_or_404
-        song = get_object_or_404(PlaylistTrack, id=song_id, event_id=pk)
-        song.played = not song.played
-        song.save()
-        return Response({
-            'status': 'success',
-            'played': song.played,
-            'song_id': song.id
-        })
+    @action(detail=False, methods=['get'])
+    def user_playlists(self, request):
+        """Get sample Spotify playlists for users to choose from."""
+        # EJEMPLO: Para configurar tus propias playlists, edita esta lista:
+        # 1. Ve a Spotify y copia la URL de la playlist
+        # 2. La URL será algo como: https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M
+        # 3. El ID es la parte después de "playlist/": 37i9dQZF1DXcBWIGoYBM5M
+        # 4. Agrega un objeto con 'id', 'name', 'description', y 'track_count'
+        #
+        # EJEMPLO DE TU PROPIA PLAYLIST:
+        # {
+        #     'id': 'TU_PLAYLIST_ID_AQUI',
+        #     'name': 'Nombre de tu playlist',
+        #     'description': 'Descripción corta',
+        #     'track_count': 50  # número aproximado de canciones
+        # }
+
+        sample_playlists = [
+            {
+                'id': '37i9dQZF1DWUzaE9UzQeCb',
+                'name': 'Pop con Ñ: Clásicos'
+            },
+            {
+                'id': '37i9dQZF1DX4UtSsGT1Sbe',
+                'name': 'All Out 2010s'
+            },
+            {
+                'id': '37i9dQZF1EQn4jwNIohw50',
+                'name': 'Pop con Ñ: Hits'
+            },
+            # ... añade tus playlists aquí
+        ]
+        return Response(sample_playlists)

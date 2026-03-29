@@ -15,3 +15,4 @@ django-widget-tweaks
 spotipy
 gunicorn
 dj-database-url
+yt-dlp

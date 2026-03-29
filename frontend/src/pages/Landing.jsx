@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import {
     Music, Zap, Users, ChevronRight, Play, LogIn, Copy, Palette,
     Download, Smartphone, Star, Shield, Sparkles, ArrowRight,
-    Headphones, ChevronsDown
+    Headphones, ChevronsDown, Printer
 } from 'lucide-react';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
@@ -138,36 +138,61 @@ const Landing = () => {
                         <p className="animate-fade-in hero-subtitle" style={{
                             fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
                             color: 'var(--text-muted)',
-                            maxWidth: '700px',
+                            maxWidth: '800px',
                             margin: '0 auto 2.5rem',
                             animationDelay: '0.1s',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.45rem',
-                            lineHeight: 1.4
+                            display: 'block',
+                            textAlign: 'center',
+                            lineHeight: 1.6
                         }}>
-                            {t('landing.hero.subtitle').split('<1>').map((part, i) => {
-                                if (i === 0) return <span key={i}>{part}</span>;
-                                const [spotifyPart, ...rest] = part.split('</1>');
-                                return (
-                                    <React.Fragment key={i}>
-                                        <span style={{
-                                            color: 'var(--spotify-green)',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '0.45rem',
-                                            whiteSpace: 'nowrap'
-                                        }}>
-                                            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-                                            </svg>
-                                            {spotifyPart}
-                                        </span>
-                                        <span>{rest.join('</1>')}</span>
-                                    </React.Fragment>
-                                );
-                            })}
+                            {t('landing.hero.subtitle').split('\n').map((line, lineIdx) => (
+                                <div key={lineIdx} style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    gap: '0.45rem',
+                                    flexWrap: 'wrap',
+                                    marginBottom: lineIdx === 0 ? '0.5rem' : 0
+                                }}>
+                                    {line.split(/(<1>.*?<\/1>|<2>.*?<\/2>)/g).map((part, i) => {
+                                        if (part.startsWith('<1>')) {
+                                            const content = part.replace('<1>', '').replace('</1>', '');
+                                            return (
+                                                <span key={i} style={{
+                                                    color: 'var(--spotify-green)',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.45rem',
+                                                    whiteSpace: 'nowrap'
+                                                }}>
+                                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                                                    </svg>
+                                                    {content}
+                                                </span>
+                                            );
+                                        }
+                                        if (part.startsWith('<2>')) {
+                                            const content = part.replace('<2>', '').replace('</2>', '');
+                                            return (
+                                                <span key={i} style={{
+                                                    color: '#FF0000',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.45rem',
+                                                    whiteSpace: 'nowrap'
+                                                }}>
+                                                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                                    </svg>
+                                                    {content}
+                                                </span>
+                                            );
+                                        }
+                                        return <span key={i}>{part}</span>;
+                                    })}
+                                </div>
+                            ))}
                         </p>
 
                         <div className="animate-fade-in" style={{
@@ -204,16 +229,13 @@ const Landing = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <h2 style={{ marginBottom: '4rem', lineHeight: 1.2 }}>
                                 {t('landing.why.title_from')}
-                                <span style={{ color: 'var(--spotify-green)', display: 'inline-flex', alignItems: 'center', marginLeft: '0.5rem', verticalAlign: 'middle' }}>
-                                    <svg width="0.9em" height="0.9em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" /></svg>
-                                </span>
                                 <br /> {t('landing.why.title_to')}
                             </h2>
 
 
                             <div style={{ display: 'grid', gap: '2rem' }}>
                                 <FeatureItem icon={<Palette />} title={t('landing.why.features.custom.title')} desc={t('landing.why.features.custom.desc')} color="var(--primary)" />
-                                <FeatureItem icon={<Download />} title={t('landing.why.features.print.title')} desc={t('landing.why.features.print.desc')} color="var(--secondary)" />
+                                <FeatureItem icon={<Printer />} title={t('landing.why.features.print.title')} desc={t('landing.why.features.print.desc')} color="var(--secondary)" />
                                 <FeatureItem icon={<Smartphone />} title={t('landing.why.features.ai.title')} desc={t('landing.why.features.ai.desc')} color="var(--accent)" />
                             </div>
                         </div>
@@ -252,9 +274,9 @@ const Landing = () => {
                 <section className="container" style={{ padding: 'clamp(3rem, 6vw, 6rem) 1rem' }}>
                     <SectionHeader title={t('landing.testimonials.title')} subtitle="" />
                     <div className="landing-testimonial-grid grid-layout" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-                        <TestimonialCard name="Júlia R." text={t('landing.testimonials.items.1')} rating={5} />
-                        <TestimonialCard name="Judith A." text={t('landing.testimonials.items.2')} rating={5} />
-                        <TestimonialCard name="Laia A." text={t('landing.testimonials.items.3')} rating={4} />
+                        <TestimonialCard name="Martí R." text={t('landing.testimonials.items.1')} rating={5} />
+                        <TestimonialCard name="Miquel A." text={t('landing.testimonials.items.2')} rating={5} />
+                        <TestimonialCard name="Laia B." text={t('landing.testimonials.items.3')} rating={4} />
                     </div>
                 </section>
 
@@ -306,6 +328,17 @@ const Landing = () => {
 };
 
 // --- Subcomponents ---
+
+// Helper function to render text with newlines as <br> elements
+const renderWithNewlines = (text) => {
+    if (!text) return null;
+    return text.split('\n').map((line, i) => (
+        <React.Fragment key={i}>
+            {line}
+            {i < text.split('\n').length - 1 && <br />}
+        </React.Fragment>
+    ));
+};
 
 const SectionHeader = ({ title, subtitle }) => (
     <div style={{ textAlign: 'center', marginBottom: 'clamp(3rem, 5vw, 4rem)' }}>

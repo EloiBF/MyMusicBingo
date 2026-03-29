@@ -12,19 +12,20 @@
         "logout_confirm_message": "Are you sure you want to logout? You'll need to login again to access your account.",
         "spotify_connected": "Spotify Connected",
         "free_account": "Free Account",
-        "premium_account": "Premium"
+        "premium_account": "Premium",
+        "trial_account": "Trial Premium"
     },
     "landing": {
         "hero": {
             "title": "Create your own <0 /> <1>Music Bingo</1>",
             "title1": "Musical Bingo",
-            "title2": "from your Spotify Playlists",
-            "subtitle": "Connect your <1>Spotify</1> playlists and create your\npersonalized bingo with your favorite songs!",
+            "title2": "from your Spotify or YouTube Playlists",
+            "subtitle": "Connect your <1>Spotify</1> or <2>YouTube</2> playlists and create your\npersonalized bingo with your favorite songs!",
             "cta": "Get Started Free",
             "secondaryCta": "How it works"
         },
         "why": {
-            "title_from": "From Spotify ",
+            "title_from": "Easily create a ",
             "title_to": "to Music Bingo",
             "features": {
                 "custom": {
@@ -50,8 +51,8 @@
                     "desc": "Create a free account to save your bingos and access premium designs."
                 },
                 "2": {
-                    "title": "Connect Spotify",
-                    "desc": "Paste any public playlist ID (share link from Spotify app)."
+                    "title": "Connect Spotify or YouTube",
+                    "desc": "Paste any public Spotify or YouTube link."
                 },
                 "3": {
                     "title": "Style Cards",
@@ -73,7 +74,7 @@
             "items": {
                 "1": "Easy song tracking during the Bingo from the web, I could focus on having fun.",
                 "2": "We ordered custom Bingo Game, the quality and design is really good. The party was amazing!!",
-                "3": "Easy to connect to Spotify and create full Bingo game with my songs, in less than a minute..."
+                "3": "Easy to connect to Spotify or YouTube and create full Bingo game with my songs, in less than a minute..."
             }
         },
         "blog": {
@@ -83,7 +84,7 @@
         }
     },
     "footer": {
-        "description": "Create personalized music bingo cards from your Spotify playlists. Print the cards yourself or request professional printing for the most special events.",
+        "description": "Create personalized music bingo cards from your Spotify or YouTube playlists. Print the cards yourself or request professional printing for the most special events.",
         "links": {
             "title": "Quick Links",
             "dashboard": "My Bingos",
@@ -112,7 +113,7 @@
         "subtitle": "Manage your music bingos and create new ones in a few clicks.",
         "empty": {
             "title": "Create your first music bingo",
-            "desc": "Start now! Turn any Spotify playlist into a professional bingo game in seconds.",
+            "desc": "Start now! Turn any Spotify or YouTube playlist into a professional bingo game in seconds.",
             "cta": "Start"
         }
     },
@@ -146,9 +147,9 @@
             "email_required": "Email is required.",
             "email_invalid": "Email is not valid.",
             "password_required": "Password is required.",
-            "password_min_length": "Password must be at least 5 characters long."
+            "password_min_length": "Password must be at least 8 characters long."
         },
-        "password_min_length_hint": "Minimum 5 characters"
+        "password_min_length_hint": "Minimum 8 characters"
     },
     "detail": {
         "loading": "Loading event details...",
@@ -193,27 +194,41 @@
     "create": {
         "title": "Create Bingo",
         "edit_title": "Edit Bingo",
-        "subtitle": "Generate unique cards from Spotify.",
-        "edit_subtitle": "Update event settings.",
+        "subtitle": "Generate unique cards from Spotify or YouTube playlists.",
+        "edit_subtitle": "Update the event configuration.",
         "default_title": "Disco Night",
+        "preview_title": "Card Preview",
         "steps": {
+            "source": "Source",
             "playlist": "Playlist",
             "theme": "Theme",
             "layout": "Layout"
         },
+        "source": {
+            "title": "Choose your source",
+            "subtitle": "Where do you want to get your songs from?"
+        },
         "playlist": {
-            "label": "Paste the Spotify Playlist link",
-            "placeholder": "Paste link...",
+            "label_spotify": "Paste the Spotify Playlist link",
+            "label_youtube": "Paste the YouTube Playlist link",
+            "placeholder_spotify": "Spotify link...",
+            "placeholder_youtube": "YouTube link...",
             "loading": "Loading playlists...",
             "error": "Failed to load playlists.",
-            "guide": {
+            "hint_title": "Quick start",
+            "hint_text_spotify": "Click the music icon to browse popular Spotify playlists, or paste a Spotify playlist URL directly.",
+            "hint_text_youtube": "Paste a YouTube playlist link directly to import its songs.",
+            "verifying": "Verifying playlist...",
+            "detected_status": "Playlist detected: {{count}} songs.",
+            "max_unique_status": "Max unique cards: {{count}}",
+            "guide_spotify": {
                 "desktop": {
                     "title": "Windows/Mac",
                     "step1": "Open Spotify Desktop",
                     "step2": "Find your playlist",
-                    "step3": "Right click on the list",
+                    "step3": "Open the playlist options",
                     "step4": "Select 'Share'",
-                    "step5": "Click 'Copy link to playlist'"
+                    "step5": "Copy the playlist link"
                 },
                 "mobile": {
                     "title": "iOS/Android",
@@ -222,6 +237,24 @@
                     "step3": "Tap the three dots (...)",
                     "step4": "Swipe and select 'Share'",
                     "step5": "Tap 'Copy link'"
+                }
+            },
+            "guide_youtube": {
+                "desktop": {
+                    "title": "Windows/Mac",
+                    "step1": "Open YouTube in your browser",
+                    "step2": "Go to Library or search for a playlist",
+                    "step3": "Open the full playlist",
+                    "step4": "Click the 'Share' button",
+                    "step5": "Copy the playlist link"
+                },
+                "mobile": {
+                    "title": "iOS/Android",
+                    "step1": "Open the YouTube app",
+                    "step2": "Go to 'You' and tap your playlist",
+                    "step3": "Open the full playlist",
+                    "step4": "Tap the 'Share' icon",
+                    "step5": "Select 'Copy link'"
                 }
             }
         },
@@ -262,7 +295,7 @@
             "title": "Playlists"
         },
         "alerts": {
-            "provide_info": "Please provide an event title and a Spotify playlist.",
+            "provide_info": "Please provide an event title and a Spotify or YouTube playlist.",
             "load_failed": "Failed to load event data.",
             "playlist_required": "Please enter a playlist ID or link."
         }
@@ -324,6 +357,20 @@
         "active": "Your account is Premium.",
         "free": "Your account is Free. Activate Premium to unlock personalization features.",
         "activating": "Activating...",
-        "activate_free": "Activate Premium (free)"
+        "activate_free": "Activate Premium (3 months free)",
+        "trial_active": "Trial active",
+        "days_left": "{{count}} days left",
+        "trial_expired": "Trial expired",
+        "activate_trial": "Activate 3-month free trial",
+        "permanent_title": "Permanent Premium",
+        "contact_title": "Interested in keeping Premium?",
+        "contact_desc": "Your trial has expired. Fill out this form if you'd like to continue using premium features.",
+        "contact_name": "Name",
+        "contact_email": "Email",
+        "contact_message": "How will you use the bingo? (Events, family, etc.)",
+        "contact_submit": "Send Interest",
+        "contact_success": "Thank you! We've received your request.",
+        "contact_error": "Failed to send request. Please try again.",
+        "permanent_active": "Full Premium Access"
     }
 }

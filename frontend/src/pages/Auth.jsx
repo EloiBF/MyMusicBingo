@@ -39,7 +39,7 @@ const Auth = () => {
     
     if (!formData.password) {
       errors.password = t('auth.errors.password_required');
-    } else if (mode === 'register' && formData.password.length < 5) {
+    } else if (mode === 'register' && formData.password.length < 8) {
       errors.password = t('auth.errors.password_min_length');
     }
     
@@ -56,6 +56,7 @@ const Auth = () => {
     
     setLoading(true);
     setError('');
+    setValidationErrors({});
 
     try {
       const endpoint = mode === 'login' ? '/auth/login/' : '/auth/register/';
@@ -67,11 +68,23 @@ const Auth = () => {
         navigate('/dashboard');
       }
     } catch (err) {
-      const errorKey = err.response?.data?.error;
-      if (errorKey && errorKey.startsWith('auth.errors.')) {
+      const data = err.response?.data;
+
+      // DRF serializer field errors (e.g. { email: ["..."], password: ["..."] })
+      if (data && typeof data === 'object' && (Array.isArray(data.email) || Array.isArray(data.password))) {
+        const nextFieldErrors = {};
+        if (Array.isArray(data.email) && data.email.length > 0) nextFieldErrors.email = data.email[0];
+        if (Array.isArray(data.password) && data.password.length > 0) nextFieldErrors.password = data.password[0];
+        setValidationErrors(nextFieldErrors);
+        setError('');
+        return;
+      }
+
+      const errorKey = data?.error;
+      if (typeof errorKey === 'string' && errorKey.startsWith('auth.errors.')) {
         setError(t(errorKey));
       } else {
-        setError(err.response?.data?.error || err.response?.data?.detail || t('auth.errors.generic'));
+        setError(data?.error || data?.detail || t('auth.errors.generic'));
       }
     } finally {
       setLoading(false);
@@ -95,8 +108,26 @@ const Auth = () => {
         paddingTop: '6rem' // Account for fixed navbar
       }}>
         <div className="container" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '100%', maxWidth: '450px' }}>
-            <div className="glass animate-fade-in" style={{ width: '100%', padding: '3rem', textAlign: 'center' }}>
+          <div style={{ width: '100%', maxWidth: mode === 'register' ? '500px' : '400px', transition: 'max-width 0.3s ease' }}>
+            <div className="glass animate-fade-in" style={{ 
+              width: '100%', 
+              padding: '3rem', 
+              textAlign: 'center', 
+              position: 'relative', 
+              overflow: 'hidden',
+              boxShadow: mode === 'register' ? '0 0 40px rgba(30, 215, 96, 0.1)' : 'var(--shadow-lg)'
+            }}>
+              
+              {mode === 'register' && (
+                <div style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  right: 0, 
+                  height: '4px', 
+                  background: 'linear-gradient(90deg, var(--primary), var(--secondary))' 
+                }} />
+              )}
 
               <img
                 src="/images/logo.png"
@@ -114,12 +145,15 @@ const Auth = () => {
               
               <div className={mode === 'register' ? 'glass' : ''} style={{
                 color: mode === 'register' ? 'var(--text)' : 'var(--text-muted)',
-                padding: mode === 'register' ? '1rem 1.5rem' : '0',
-                marginBottom: '1rem',
-                fontSize: mode === 'register' ? '1rem' : '0.9rem',
-                fontWeight: mode === 'register' ? '500' : 'normal',
+                padding: mode === 'register' ? '1rem' : '0',
+                marginBottom: '1.5rem',
+                fontSize: mode === 'register' ? '1.05rem' : '0.95rem',
+                fontWeight: mode === 'register' ? '600' : 'normal',
                 textAlign: 'center',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                background: mode === 'register' ? 'rgba(30, 215, 96, 0.05)' : 'none',
+                border: mode === 'register' ? '1px solid rgba(30, 215, 96, 0.2)' : 'none',
+                borderRadius: '0.5rem'
               }}>
                 {mode === 'login' ? t('auth.login.welcome') : t('auth.register.welcome')}
               </div>
@@ -184,7 +218,7 @@ const Auth = () => {
                         }
                       }}
                       required
-                      minLength={mode === 'register' ? 5 : undefined}
+                      minLength={mode === 'register' ? 8 : undefined}
                     />
                   </div>
                   {validationErrors.password && (
@@ -201,8 +235,15 @@ const Auth = () => {
 
                 <button
                   type="submit"
-                  className="btn btn-primary"
-                  style={{ width: '100%', height: '3.5rem', fontSize: '1rem' }}
+                  className={`btn ${mode === 'login' ? 'btn-secondary' : 'btn-primary'}`}
+                  style={{ 
+                    width: '100%', 
+                    height: '3.5rem', 
+                    fontSize: '1rem',
+                    background: mode === 'login' ? 'rgba(255, 255, 255, 0.05)' : undefined,
+                    border: mode === 'login' ? '1px solid var(--glass-border)' : undefined,
+                    borderBottom: mode === 'login' ? '1px solid var(--glass-border)' : undefined
+                  }}
                   disabled={loading}
                 >
                   {loading ? t('auth.processing') : (

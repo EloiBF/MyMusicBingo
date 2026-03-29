@@ -12,19 +12,20 @@
         "logout_confirm_message": "Estàs segur que vols tancar la sessió? Hauràs de tornar a iniciar sessió per accedir al teu compte.",
         "spotify_connected": "Spotify Connectat",
         "free_account": "Compte Gratuït",
-        "premium_account": "Premium"
+        "premium_account": "Premium",
+        "trial_account": "Premium de prova"
     },
     "landing": {
         "hero": {
             "title": "Crea el teu propi <0 /> <1>Bingo Musical</1>",
             "title1": "Bingo Musical",
-            "title2": "des de les teves llistes de Spotify",
-            "subtitle": "Connecta una llista de <1>Spotify</1> i crea el teu bingo\npersonalitzat amb les teves cançons preferides!",
+            "title2": "des de les teves llistes de Spotify o YouTube",
+            "subtitle": "Connecta una llista de <1>Spotify</1> o <2>YouTube</2> i crea el teu bingo\npersonalitzat amb les teves cançons preferides!",
             "cta": "Començar Gratis",
             "secondaryCta": "Com funciona"
         },
         "why": {
-            "title_from": "De Spotify ",
+            "title_from": "Crea fàcilment un ",
             "title_to": "a Bingo Musical",
             "features": {
                 "custom": {
@@ -32,7 +33,7 @@
                     "desc": "Totalment tematitzables. Des de casaments fins a aniversaris, també esdeveniments corporatius!"
                 },
                 "print": {
-                    "title": "Llest per Imprimir",
+                    "title": "Preparat per Imprimir",
                     "desc": "Crea cartons d'alta qualitat a l'instant o demana impressions premium per als esdeveniments més especials."
                 },
                 "ai": {
@@ -50,8 +51,8 @@
                     "desc": "Crea un compte gratuït per desar els teus bingos i accedir a dissenys premium."
                 },
                 "2": {
-                    "title": "Connecta Spotify",
-                    "desc": "Enganxa qualsevol ID de llista pública (enllaç de l'app de Spotify)."
+                    "title": "Connecta Spotify o YouTube",
+                    "desc": "Enganxa qualsevol enllaç públic de Spotify o YouTube."
                 },
                 "3": {
                     "title": "Personalitza",
@@ -83,7 +84,7 @@
         }
     },
     "footer": {
-        "description": "Crea cartrons de bingo musical personalitzats a partir de les teves llistes de Spotify. Imprimeix els cartrons tu mateix o demana una impressió professional pels esdeveniments més especials.",
+        "description": "Crea cartrons de bingo musical personalitzats a partir de les teves llistes de Spotify o YouTube. Imprimeix els cartrons tu mateix o demana una impressió professional pels esdeveniments més especials.",
         "links": {
             "title": "Enllaços Ràpids",
             "dashboard": "Els meus bingos",
@@ -112,7 +113,7 @@
         "subtitle": "Gestiona els teus bingos musicals i crea'n de nous en pocs clics.",
         "empty": {
             "title": "Crea el teu primer bingo musical",
-            "desc": "Comença ara! Converteix qualsevol llista de Spotify en un joc de bingo professional en segons.",
+            "desc": "Comença ara! Converteix qualsevol llista de Spotify o YouTube en un joc de bingo professional en segons.",
             "cta": "Començar"
         }
     },
@@ -146,9 +147,9 @@
             "email_required": "El correu electrònic és obligatori.",
             "email_invalid": "El correu electrònic no és vàlid.",
             "password_required": "La contrasenya és obligatòria.",
-            "password_min_length": "La contrasenya ha de tenir com a mínim 5 caràcters."
+            "password_min_length": "La contrasenya ha de tenir com a mínim 8 caràcters."
         },
-        "password_min_length_hint": "Mínim 5 caràcters"
+        "password_min_length_hint": "Mínim 8 caràcters"
     },
     "detail": {
         "loading": "Carregant detalls de l'esdeveniment...",
@@ -193,36 +194,67 @@
     "create": {
         "title": "Crear Bingo",
         "edit_title": "Editar Bingo",
-        "subtitle": "Genera cartons únics des de Spotify.",
+        "subtitle": "Genera cartons únics des de Spotify o YouTube.",
         "edit_subtitle": "Actualitza la configuració de l'esdeveniment.",
         "default_title": "Nit de Disco",
         "preview_title": "Vista Prèvia del Cartó",
         "steps": {
+            "source": "Font",
             "playlist": "Llista",
             "theme": "Tema",
             "layout": "Disseny"
         },
+        "source": {
+            "title": "Tria la teva font",
+            "subtitle": "D'on vols obtenir les teves cançons?"
+        },
         "playlist": {
-            "label": "Enganxa l'enllaç de la llista de Spotify",
-            "placeholder": "Enganxa l'enllaç...",
+            "label_spotify": "Enganxa l'enllaç de la llista de Spotify",
+            "label_youtube": "Enganxa l'enllaç de la llista de YouTube",
+            "placeholder_spotify": "Enllaç de Spotify...",
+            "placeholder_youtube": "Enllaç de YouTube...",
             "loading": "Carregant llistes...",
             "error": "Error en carregar les llistes.",
-            "guide": {
+            "hint_title": "Inici ràpid",
+            "hint_text_spotify": "Fes clic a la icona de música per explorar llistes populars, o enganxa un enllaç de Spotify directament.",
+            "hint_text_youtube": "Enganxa un enllaç d'una llista de YouTube directament per importar-ne les cançons.",
+            "verifying": "Verificant llista...",
+            "detected_status": "Llista detectada: {{count}} cançons.",
+            "max_unique_status": "Màxim de cartons únics: {{count}}",
+            "guide_spotify": {
                 "desktop": {
                     "title": "Windows/Mac",
                     "step1": "Obre Spotify Desktop",
                     "step2": "Busca la teva playlist",
                     "step3": "Fes clic dret a la llista",
                     "step4": "Selecciona 'Compartir'",
-                    "step5": "Fes clic a 'Copia l'enllaç de la llista'"
+                    "step5": "Copia l'enllaç de la llista"
                 },
                 "mobile": {
                     "title": "iOS/Android",
                     "step1": "Obre Spotify",
                     "step2": "Busca la teva playlist",
                     "step3": "Toca els tres punts (...)",
-                    "step4": "Llisca i selecciona 'Compartir'",
+                    "step4": "Selecciona 'Compartir'",
                     "step5": "Toca 'Copia l'enllaç'"
+                }
+            },
+            "guide_youtube": {
+                "desktop": {
+                    "title": "Windows/Mac",
+                    "step1": "Obre YouTube al navegador",
+                    "step2": "Vés a Biblioteca o busca una playlist",
+                    "step3": "Obre la playlist completa",
+                    "step4": "Fes clic al botó 'Compartir'",
+                    "step5": "Copia l'enllaç de la llista"
+                },
+                "mobile": {
+                    "title": "iOS/Android",
+                    "step1": "Obre l'app de YouTube",
+                    "step2": "Vés a 'Tu' i selecciona la playlist",
+                    "step3": "Obre la playlist completa",
+                    "step4": "Toca la icona de 'Compartir'",
+                    "step5": "Selecciona 'Copia l'enllaç'"
                 }
             }
         },
@@ -264,7 +296,7 @@
             "title": "Les Teves Llistes"
         },
         "alerts": {
-            "provide_info": "Si us plau, indica un títol i una llista de Spotify.",
+            "provide_info": "Si us plau, indica un títol i una llista de Spotify o YouTube.",
             "load_failed": "Error en carregar les dades de l'esdeveniment.",
             "playlist_required": "Si us plau, introdueix un ID o enllaç de llista."
         }
@@ -332,6 +364,20 @@
         "active": "El teu compte és Premium.",
         "free": "El teu compte és gratuït. Activa Premium per desbloquejar la personalització.",
         "activating": "Activant...",
-        "activate_free": "Activar Premium (gratis)"
+        "activate_free": "Activar Premium (3 mesos gratis)",
+        "trial_active": "Prova activa",
+        "days_left": "falten {{count}} dies",
+        "trial_expired": "Prova caducada",
+        "activate_trial": "Activar prova gratuïta de 3 mesos",
+        "permanent_title": "Premium Permanent",
+        "contact_title": "T'interessa mantenir el Premium?",
+        "contact_desc": "La teva prova ha caducat. Omple aquest formulari si vols seguir utilitzant les funcions premium.",
+        "contact_name": "Nom",
+        "contact_email": "Correu electrònic",
+        "contact_message": "Com utilitzaràs el bingo? (Esdeveniments, família, etc.)",
+        "contact_submit": "Enviar sol·licitud",
+        "contact_success": "Gràcies! Hem rebut la teva sol·licitud.",
+        "contact_error": "Error en enviar la sol·licitud. Torna-ho a provar.",
+        "permanent_active": "Accés Premium Complet"
     }
 }

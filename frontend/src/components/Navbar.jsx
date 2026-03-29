@@ -178,7 +178,7 @@ const Navbar = () => {
                                             {user?.email || user?.username || t('common.guest')}
                                         </span>
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1 }}>
-                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : user?.is_premium ? t('nav.premium_account') : t('nav.free_account')}
+                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : user?.is_premium ? t('nav.premium_account') : (user?.trial_expires_at && new Date(user.trial_expires_at) > new Date()) ? t('nav.trial_account') : t('nav.free_account')}
                                         </span>
                                     </div>
                                 </div>
@@ -295,7 +295,7 @@ const Navbar = () => {
                                             {user?.email || user?.username || t('common.guest')}
                                         </div>
                                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : user?.is_premium ? t('nav.premium_account') : t('nav.free_account')}
+                                            {user?.is_spotify_linked ? t('nav.spotify_connected') : user?.is_premium ? t('nav.premium_account') : (user?.trial_expires_at && new Date(user.trial_expires_at) > new Date()) ? t('nav.trial_account') : t('nav.free_account')}
                                         </div>
                                     </div>
                                 </div>
