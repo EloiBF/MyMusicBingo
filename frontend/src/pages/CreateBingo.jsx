@@ -999,17 +999,34 @@ const CreateBingo = () => {
                             background: 'hsla(0,0%,100%,0.02)',
                             display: 'flex',
                             gap: '0.75rem',
-                            flexShrink: 0
+                            flexShrink: 0,
+                            // Safari fix: ensure buttons are above fixed elements
+                            position: 'relative',
+                            zIndex: 1001
                         }}>
                             {currentStep > 1 && (
-                                <button onClick={prevStep} className="btn btn-secondary btn-nav-mini">
+                                <button type="button" onClick={prevStep} className="btn btn-secondary btn-nav-mini">
                                     <ArrowLeft size={16} /> {t('create.nav.back')}
                                 </button>
                             )}
                             <button
+                                type="button"
                                 onClick={nextStep}
+                                onTouchStart={(e) => {
+                                    // Safari iOS touch optimization - prevents 300ms delay
+                                    e.preventDefault();
+                                    if (canProceed && !loading) {
+                                        nextStep();
+                                    }
+                                }}
                                 className="btn btn-primary btn-nav-mini primary-nav"
                                 disabled={!canProceed}
+                                style={{
+                                    // Ensure minimum touch target size for iOS
+                                    minHeight: '44px',
+                                    WebkitAppearance: 'none',
+                                    WebkitTapHighlightColor: 'transparent'
+                                }}
                             >
                                 {loading ? (
                                     <>
@@ -1186,7 +1203,6 @@ styleSheet.innerHTML = `
     .btn-nav-mini.primary-nav:hover { transform: translateY(-2px); }
     .btn-nav-mini:not(.primary-nav) { flex: 1; }
 
-    /* Mobile Adaptations */
     @media (max-width: 1023px) {
         .wizard-form-col { border-radius: 0; background: transparent; box-shadow: none; border: none; padding-bottom: 7rem; }
         .wizard-footer-mini { 
@@ -1213,6 +1229,53 @@ styleSheet.innerHTML = `
             margin-left: auto;
             margin-right: auto;
         }
+    }
+
+    /* Extremely narrow screen fixes (< 350px) */
+    @media (max-width: 350px) {
+        .wizard-footer-mini {
+            padding: 0.75rem 1rem !important;
+            gap: 0.5rem !important;
+            flex-direction: column !important; /* Stack buttons vertically */
+        }
+        .btn-nav-mini {
+            width: 100% !important; /* Ensure buttons take full width when stacked */
+            height: 3.2rem !important;
+            padding: 0 0.75rem !important;
+            font-size: 0.9rem !important;
+            border-radius: 0.75rem !important;
+        }
+        .stepper-track-mini {
+            gap: 0.25rem !important;
+        }
+        .step-label-mini {
+            display: none; /* Hide labels on tiny screens to save space */
+        }
+        .step-circle-mini {
+            width: 24px !important;
+            height: 24px !important;
+        }
+        .section-compact-mini h2 {
+            font-size: 1.25rem !important;
+        }
+    }
+
+    /* Safari & Mobile touch optimizations */
+    .btn-nav-mini, .btn-primary, .btn-secondary {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer !important;
+        pointer-events: auto !important;
+        user-select: none;
+    }
+
+    /* Safari & Mobile touch optimizations */
+    .btn-nav-mini, .btn-primary, .btn-secondary {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer !important;
+        pointer-events: auto !important;
+        user-select: none;
     }
 
         .preview-scaler { 

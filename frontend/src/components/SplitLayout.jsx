@@ -49,6 +49,9 @@ const SplitLayout = ({
                         margin-right: auto !important;
                     }
                 }
+                @media (max-width: 350px) {
+                    .grid-layout { gap: 1rem !important; }
+                }
             `}</style>
 
             {/* Main Content Area */}

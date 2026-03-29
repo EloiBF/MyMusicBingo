@@ -20,6 +20,13 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [error, setError] = useState('');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -111,7 +118,7 @@ const Auth = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2rem',
+        padding: 'clamp(1rem, 3vw, 2rem)',
         paddingTop: '6rem',
         position: 'relative',
         overflow: 'hidden'
@@ -123,7 +130,7 @@ const Auth = () => {
         <div className="glass animate-fade-in" style={{
           width: '100%',
           maxWidth: '480px',
-          padding: '2.5rem',
+          padding: 'clamp(1.5rem, 5vw, 2.5rem)',
           position: 'relative',
           zIndex: 1,
           border: '1px solid var(--glass-border)',
@@ -153,14 +160,14 @@ const Auth = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {/* Google Login first */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', width: '100%' }}>
               <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
                   useOneTap
                   theme="filled_blue"
-                  width="400px"
+                  width={Math.max(200, Math.min(400, windowWidth - 90)).toString()}
                   shape="pill"
                 />
               </div>

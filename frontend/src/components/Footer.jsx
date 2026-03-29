@@ -14,9 +14,10 @@ const Footer = () => {
             WebkitBackdropFilter: 'blur(10px)'
         }}>
             <div style={{
-                maxWidth: 'clamp(800px, 90vw, 1400px)',
+                maxWidth: '1400px',
+                width: '100%',
                 margin: '0 auto',
-                padding: '0 1.5rem',
+                padding: '0 min(1.5rem, 5vw)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '1.5rem'
@@ -24,8 +25,8 @@ const Footer = () => {
                 {/* Main Footer Content */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '1.5rem'
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                    gap: 'min(1.5rem, 5vw)'
                 }}>
                     {/* Brand Section */}
                     <div>
