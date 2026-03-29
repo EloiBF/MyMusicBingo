@@ -22,7 +22,7 @@ i18n
         translation: caTranslation,
       },
     },
-    fallbackLng: 'en',
+    fallbackLng: 'ca',
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
