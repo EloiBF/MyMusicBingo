@@ -14,6 +14,9 @@ from .spotify import get_spotify_client, fetch_playlist_tracks
 from .youtube import fetch_youtube_playlist_tracks, is_youtube_url
 from .bingo_engine import generate_bingo_blocks
 from django.http import HttpResponse
+from django.conf import settings
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
@@ -117,7 +120,7 @@ class AuthViewSet(viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
-        if self.action in ['login', 'register']:
+        if self.action in ['login', 'register', 'google_login']:
             return [permissions.AllowAny()]
         return super().get_permissions()
 
@@ -160,21 +163,38 @@ class AuthViewSet(viewsets.GenericViewSet):
         if not identifier or not password:
             return Response({'error': 'auth.errors.required_fields'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Intentar autenticar con email primero
+        # Intentar encontrar el usuario
+        is_new_user = False
         try:
             user_obj = BingoUser.objects.get(email=identifier)
-            username = user_obj.username
         except BingoUser.DoesNotExist:
-            # Si no encuentra por email, usar el identifier como username
-            username = identifier
-        
-        # Check if user exists before attempting authentication
-        try:
-            user_obj = BingoUser.objects.get(username=username)
-        except BingoUser.DoesNotExist:
-            return Response({'error': 'auth.errors.user_not_found'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user = authenticate(username=username, password=password)
+            try:
+                user_obj = BingoUser.objects.get(username=identifier)
+            except BingoUser.DoesNotExist:
+                # Usuario no encontrado: Intentar registro automático
+                # Validar longitud de contraseña para registro
+                if len(password) < 8:
+                    return Response({'error': 'auth.errors.password_min_length'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                # Validar si el identifier es un email válido
+                from django.core.validators import validate_email
+                from django.core.exceptions import ValidationError
+                try:
+                    validate_email(identifier)
+                    email = identifier
+                except ValidationError:
+                    return Response({'error': 'auth.errors.email_invalid'}, status=status.HTTP_400_BAD_REQUEST)
+
+                # Intentar crear el usuario
+                serializer = BingoUserSerializer(data={'email': email, 'password': password})
+                if serializer.is_valid():
+                    user_obj = serializer.save()
+                    is_new_user = True
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Autenticar con el username encontrado o creado
+        user = authenticate(username=user_obj.username, password=password)
         if user:
             # Delete old token and create new one
             Token.objects.filter(user=user).delete()
@@ -186,7 +206,8 @@ class AuthViewSet(viewsets.GenericViewSet):
             response_data = {
                 'token': token.key,
                 'user': BingoUserSerializer(user).data,
-                'expires_at': token_expires.isoformat()
+                'expires_at': token_expires.isoformat(),
+                'is_new_user': is_new_user
             }
             
             response = Response(response_data)
@@ -202,6 +223,8 @@ class AuthViewSet(viewsets.GenericViewSet):
             )
             
             return response
+        
+        # Si llegamos aquí y no es nuevo usuario, la contraseña es incorrecta
         return Response({'error': 'auth.errors.invalid_password'}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
@@ -253,6 +276,74 @@ class AuthViewSet(viewsets.GenericViewSet):
             response.delete_cookie('auth_token')
             
             return response
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def google_login(self, request):
+        token = request.data.get('id_token')
+        if not token:
+            return Response({'error': 'auth.errors.id_token_required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Verify the ID token
+            try:
+                idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CLIENT_ID)
+            except ValueError as e:
+                # Handle clock skew (token used too early) by waiting 1 second and retrying
+                if "Token used too early" in str(e):
+                    import time
+                    time.sleep(1)
+                    idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.GOOGLE_CLIENT_ID)
+                else:
+                    raise
+
+            # ID token is valid. Get the user's email.
+            email = idinfo['email']
+            
+            # Check if user exists
+            is_new_user = False
+            try:
+                user = BingoUser.objects.get(email=email)
+            except BingoUser.DoesNotExist:
+                # Create user if it doesn't exist
+                serializer = BingoUserSerializer(data={'email': email})
+                if serializer.is_valid():
+                    user = serializer.save()
+                    is_new_user = True
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # Log the user in (generate token)
+            Token.objects.filter(user=user).delete()
+            auth_token = Token.objects.create(user=user)
+            
+            token_expires = timezone.now() + timedelta(hours=1)
+            
+            response_data = {
+                'token': auth_token.key,
+                'user': BingoUserSerializer(user).data,
+                'expires_at': token_expires.isoformat(),
+                'is_new_user': is_new_user
+            }
+            
+            response = Response(response_data)
+            
+            # Set httpOnly cookie
+            response.set_cookie(
+                'auth_token',
+                auth_token.key,
+                expires=token_expires,
+                httponly=True,
+                secure=not request.META.get('HTTP_HOST', '').startswith('localhost'),
+                samesite='Lax'
+            )
+            
+            return response
+
+        except ValueError as e:
+            # Invalid token
+            return Response({'error': 'auth.errors.invalid_google_token'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -583,6 +674,18 @@ class BingoViewSet(viewsets.ModelViewSet):
         } for song in songs]
         
         return Response({'songs': data})
+
+    @action(detail=True, methods=['post'], url_path='songs/(?P<song_id>[^/.]+)/toggle')
+    def toggle_song(self, request, pk=None, song_id=None):
+        """Toggle the 'played' status of a song within a bingo event."""
+        bingo = self.get_object()
+        try:
+            track = bingo.tracks.get(id=song_id)
+            track.played = not track.played
+            track.save(update_fields=['played'])
+            return Response({'played': track.played})
+        except PlaylistTrack.DoesNotExist:
+            return Response({'error': 'Track not found'}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=['get'])
     def user_playlists(self, request):

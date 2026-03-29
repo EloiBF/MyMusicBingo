@@ -3,7 +3,7 @@ import { Music, Disc3, Sparkles, Star, Radio, Headphones, Volume2 } from 'lucide
 
 export default {
     id: 'discofever',
-    label: '🕺 Disco Fever 🪩',
+    label: 'Disco Fever',
     category: 'Music',
     font: "'Bebas Neue', cursive",
     defaultAccentColor: '#8b5cf6',
@@ -96,7 +96,7 @@ export default {
         textAlign: 'center',
         textTransform: 'uppercase',
         shadow: '0 0 10px rgba(139, 92, 246, 0.3)',
-        font: "'Bebas Neue', cursive"
+        font: "'Outfit', sans-serif"
     },
     subtitle: {
         size: 'small',

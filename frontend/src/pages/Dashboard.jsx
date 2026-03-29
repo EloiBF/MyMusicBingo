@@ -129,7 +129,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div style={{ maxWidth: '420px', position: 'relative', zIndex: 1 }}>
+                    <div style={{ width: 'min(900px, 100%)', position: 'relative', zIndex: 1 }}>
                         <h2 style={{
                             fontSize: 'clamp(1.8rem, 4vw, 2.2rem)',
                             fontWeight: '800',

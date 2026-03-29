@@ -60,7 +60,7 @@ const Navbar = () => {
     const navLinks = [
         { icon: <Home size={20} />, label: t('nav.dashboard'), path: '/dashboard' },
         { icon: <PlusCircle size={20} />, label: t('nav.create'), path: '/create' },
-        { icon: <Crown size={20} />, label: t('nav.premium', 'Premium'), path: '/premium' },
+        { icon: <Crown size={20} />, label: t('nav.premium', 'Premium'), path: '/premium', disabled: true },
         { icon: <Settings size={20} />, label: t('nav.settings'), path: '/settings' }
     ];
 
@@ -125,6 +125,7 @@ const Navbar = () => {
                                     <button
                                         key={link.path}
                                         onClick={() => {
+                                            if (link.disabled) return;
                                             if (link.debug) {
                                                 console.log('Blog nav link clicked!');
                                             }
@@ -135,20 +136,49 @@ const Navbar = () => {
                                             padding: '0.5rem 1rem',
                                             background: 'transparent',
                                             border: 'none',
-                                            color: isActive(link.path) ? 'var(--primary)' : 'var(--text-muted)',
+                                            color: link.disabled ? 'var(--text-muted)' : (isActive(link.path) ? 'var(--primary)' : 'var(--text-muted)'),
                                             borderRadius: 'var(--radius-md)',
-                                            cursor: 'pointer',
+                                            cursor: link.disabled ? 'not-allowed' : 'pointer',
                                             transition: 'var(--transition)',
                                             fontWeight: '500',
                                             display: 'flex',
                                             alignItems: 'center',
                                             gap: '0.5rem',
                                             position: 'relative',
-                                            zIndex: 1001
+                                            zIndex: 1001,
+                                            opacity: link.disabled ? 0.5 : 1
                                         }}
+                                        disabled={link.disabled}
                                     >
                                         {link.icon}
                                         <span className="nav-text">{link.label}</span>
+                                        {link.disabled && (
+                                            <span style={{ 
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                lineHeight: 1,
+                                                gap: '1px'
+                                            }}>
+                                                <span style={{
+                                                    fontSize: '0.45rem', 
+                                                    background: 'rgba(255,255,255,0.1)', 
+                                                    padding: '1px 3px', 
+                                                    borderRadius: '2px',
+                                                    letterSpacing: '0.05em',
+                                                    fontWeight: 900,
+                                                }}>COMING</span>
+                                                <span style={{
+                                                    fontSize: '0.4rem', 
+                                                    background: 'rgba(255,255,255,0.08)', 
+                                                    padding: '1px 3px', 
+                                                    borderRadius: '2px',
+                                                    letterSpacing: '0.05em',
+                                                    fontWeight: 900,
+                                                    opacity: 0.8
+                                                }}>SOON</span>
+                                            </span>
+                                        )}
                                     </button>
                                 ))}
                             </div>
@@ -306,6 +336,7 @@ const Navbar = () => {
                                         <button
                                             key={link.path}
                                             onClick={() => {
+                                                if (link.disabled) return;
                                                 if (link.debug) {
                                                     console.log('Mobile authenticated blog button clicked!');
                                                 }
@@ -316,19 +347,49 @@ const Navbar = () => {
                                                 padding: '1rem',
                                                 background: isActive(link.path) ? 'var(--primary)' : 'var(--surface-light)',
                                                 border: 'none',
-                                                color: isActive(link.path) ? 'white' : 'var(--text)',
+                                                color: isActive(link.path) ? 'white' : (link.disabled ? 'var(--text-muted)' : 'var(--text)'),
                                                 borderRadius: 'var(--radius-md)',
-                                                cursor: 'pointer',
+                                                cursor: link.disabled ? 'not-allowed' : 'pointer',
                                                 transition: 'var(--transition)',
                                                 fontWeight: '500',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 gap: '1rem',
-                                                textAlign: 'left'
+                                                textAlign: 'left',
+                                                opacity: link.disabled ? 0.5 : 1
                                             }}
+                                            disabled={link.disabled}
                                         >
                                             {link.icon}
                                             <span>{link.label}</span>
+                                            {link.disabled && (
+                                                <span style={{ 
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    lineHeight: 1,
+                                                    gap: '2px',
+                                                    marginLeft: 'auto'
+                                                }}>
+                                                    <span style={{
+                                                        fontSize: '0.55rem', 
+                                                        background: 'rgba(255,255,255,0.1)', 
+                                                        padding: '2px 5px', 
+                                                        borderRadius: '3px',
+                                                        letterSpacing: '0.05em',
+                                                        fontWeight: 900,
+                                                    }}>COMING</span>
+                                                    <span style={{
+                                                        fontSize: '0.5rem', 
+                                                        background: 'rgba(255,255,255,0.08)', 
+                                                        padding: '2px 5px', 
+                                                        borderRadius: '3px',
+                                                        letterSpacing: '0.05em',
+                                                        fontWeight: 900,
+                                                        opacity: 0.8
+                                                    }}>SOON</span>
+                                                </span>
+                                            )}
                                         </button>
                                     ))}
                                 </div>

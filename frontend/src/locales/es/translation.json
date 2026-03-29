@@ -20,13 +20,13 @@
             "title": "Crea tu propio <0 /> <1>Bingo Musical</1>",
             "title1": "Bingo Musical",
             "title2": "desde tus listas de Spotify o YouTube",
-            "subtitle": "Conecta tus listas de <1>Spotify</1> o <2>YouTube</2> y crea tu bingo\npersonalizado con tus canciones favoridas!",
+            "subtitle": "Conecta una playlist de <1>Spotify</1> o <2>YouTube</2> y crea tu bingo\npersonalizado con tus canciones favoridas!",
             "cta": "Empezar Gratis",
             "secondaryCta": "Cómo funciona"
         },
         "why": {
-            "title_from": "Crea fácilmente un ",
-            "title_to": "a Bingo Musical",
+            "title_from": "Convierte tus listas en",
+            "title_to": "tu propio Bingo Musical",
             "features": {
                 "custom": {
                     "title": "Cartones Personalizables",
@@ -129,13 +129,15 @@
         "email": "Correo electrónico",
         "email_placeholder": "Introduce tu correo electrónico",
         "password": "Contraseña",
-        "signin": "Iniciar Sesión",
-        "signup": "Crear Cuenta",
+        "signin": "Acceder",
+        "signup": "Acceder",
+        "creating_account": "Creando nueva cuenta...",
         "processing": "Procesando...",
         "no_account": "¿No tienes una cuenta?",
         "have_account": "¿Ya tienes una cuenta?",
         "create_one": "Crea una cuenta",
         "sign_in_link": "Inicia sesión",
+        "or_with": "O con",
         "errors": {
             "cancelled": "Has cancelado la conexión con Spotify.",
             "failed": "El inicio de sesión falló: {{error}}",
@@ -146,7 +148,9 @@
             "email_required": "El correo electrónico es obligatorio.",
             "email_invalid": "El correo electrónico no es válido.",
             "password_required": "La contraseña es obligatoria.",
-            "password_min_length": "La contraseña debe tener al menos 8 caracteres."
+            "password_min_length": "La contraseña debe tener al menos 8 caracteres.",
+            "id_token_required": "Token de identificación necesario.",
+            "invalid_google_token": "Token de Google no válido."
         },
         "password_min_length_hint": "Mínimo 8 caracteres"
     },
@@ -350,7 +354,8 @@
         "guest": "Invitado",
         "no_articles": "No se encontraron artículos",
         "check_back": "¡Vuelve pronto para ver contenido nuevo!",
-        "welcome_to_app": "Bienvenido/a a BingoMusicMaker"
+        "welcome_to_app": "Bienvenido/a a BingoMusicMaker",
+        "retry": "Reintentar"
     },
     "premium": {
         "title": "Premium",
@@ -372,5 +377,16 @@
         "contact_success": "¡Gracias! Hemos recibido tu solicitud.",
         "contact_error": "Error al enviar la solicitud. Inténtalo de nuevo.",
         "permanent_active": "Acceso Premium Completo"
+    },
+    "tracking": {
+        "title": "Seguimiento de canciones",
+        "subtitle": "Marca las canciones a medida que suenen",
+        "game_progress": "Progreso del juego",
+        "search_placeholder": "Escribe para buscar...",
+        "syncing": "Sincronizando biblioteca...",
+        "no_songs": "No se han encontrado canciones que coincidan con",
+        "played": "REPRODUCIDA",
+        "sort_abc": "A-Z",
+        "sort_played": "Reproducidas"
     }
 }

@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 .venv
 .env
-.env_back
+.env_production
 .env_front
 CREDENTIALS SPOTY.TXT
 RAILWAY_DB_MIGRATIONS.md

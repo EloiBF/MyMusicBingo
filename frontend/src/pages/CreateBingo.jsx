@@ -729,16 +729,33 @@ const CreateBingo = () => {
                                                 {!isPremium ? (
                                                     <div className="glass" style={{ padding: '0.9rem', borderRadius: '12px', border: '1px solid var(--glass-border)', opacity: 0.85 }}>
                                                         <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{t('create.theme.customize_locked_title', 'Locked')}</div>
-                                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                            {t('create.theme.customize_locked_desc', 'Upgrade to Premium to customize colors, fonts, borders and background images.')} <span
-                                                                onClick={() => navigate('/premium')}
-                                                                style={{
-                                                                    color: 'var(--primary)',
-                                                                    textDecoration: 'underline',
-                                                                    cursor: 'pointer',
-                                                                    fontWeight: 500
-                                                                }}
-                                                            >{t('create.theme.upgrade_link', 'Upgrade')}</span>
+                                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                                            <span>{t('create.theme.customize_locked_desc', 'Upgrade to Premium to customize colors, fonts, borders and background images.')}</span>
+                                                            <span style={{ 
+                                                                display: 'inline-flex',
+                                                                flexDirection: 'column',
+                                                                alignItems: 'center',
+                                                                lineHeight: 1,
+                                                                gap: '1px'
+                                                            }}>
+                                                                <span style={{
+                                                                    fontSize: '0.5rem', 
+                                                                    background: 'rgba(255,255,255,0.1)', 
+                                                                    padding: '1px 4px', 
+                                                                    borderRadius: '3px',
+                                                                    letterSpacing: '0.05em',
+                                                                    fontWeight: 900,
+                                                                }}>COMING</span>
+                                                                <span style={{
+                                                                    fontSize: '0.45rem', 
+                                                                    background: 'rgba(255,255,255,0.08)', 
+                                                                    padding: '1px 4px', 
+                                                                    borderRadius: '3px',
+                                                                    letterSpacing: '0.05em',
+                                                                    fontWeight: 900,
+                                                                    opacity: 0.8
+                                                                }}>SOON</span>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 ) : (
@@ -923,18 +940,23 @@ const CreateBingo = () => {
                                                     {t('create.layout.num_cards_label')}
                                                 </label>
                                                 <input
-                                                    type="number"
+                                                    type="text"
+                                                    inputMode="numeric"
                                                     value={config.numCards}
-                                                    min={1}
                                                     onChange={(e) => {
                                                         const raw = e.target.value;
-                                                        const parsed = Number.parseInt(raw, 10);
-                                                        const nextValue = Number.isFinite(parsed) ? parsed : 1;
-                                                        const max = validation.max_possible_unique || undefined;
-                                                        const clamped = max ? Math.min(Math.max(nextValue, 1), max) : Math.max(nextValue, 1);
-                                                        setConfig({ ...config, numCards: clamped });
+                                                        // Allow empty or numeric values during typing
+                                                        if (raw === '' || /^\d*$/.test(raw)) {
+                                                            setConfig({ ...config, numCards: raw });
+                                                        }
                                                     }}
-                                                    max={validation.max_possible_unique || undefined}
+                                                    onBlur={(e) => {
+                                                        let val = Number.parseInt(e.target.value, 10);
+                                                        if (!Number.isFinite(val) || val < 1) val = 1;
+                                                        const max = validation.max_possible_unique;
+                                                        if (max && val > max) val = max;
+                                                        setConfig({ ...config, numCards: val });
+                                                    }}
                                                 />
                                             </div>
                                             <div className="input-group-mini" style={{ display: 'flex', flexDirection: 'column' }}>

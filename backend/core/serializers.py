@@ -12,7 +12,7 @@ class BingoUserSerializer(serializers.ModelSerializer):
         model = BingoUser
         fields = ('id', 'email', 'password', 'is_premium', 'premium_trial_start', 'trial_expires_at')
         extra_kwargs = {
-            'password': {'write_only': True, 'required': True},
+            'password': {'write_only': True, 'required': False}, # Password optional for Google Login
             'email': {'required': True},
             'premium_trial_start': {'read_only': True},
         }
@@ -21,6 +21,43 @@ class BingoUserSerializer(serializers.ModelSerializer):
         if obj.premium_trial_start is None:
             return None
         return (obj.premium_trial_start + timedelta(days=TRIAL_DURATION_DAYS)).isoformat()
+
+    def validate_email(self, value):
+        # Email is already unique in the model, but we can add custom validation if needed
+        return value
+
+    def create(self, validated_data):
+        email = validated_data.pop('email', None)
+        if not email:
+            raise serializers.ValidationError({"email": "Email is required."})
+            
+        # Generar username automáticamente desde el email (parte antes del @)
+        username = email.split('@')[0]
+        
+        # Asegurar que el username sea único
+        original_username = username
+        counter = 1
+        while BingoUser.objects.filter(username=username).exists():
+            username = f"{original_username}{counter}"
+            counter += 1
+        
+        password = validated_data.pop('password', None)
+        
+        if password:
+            user = BingoUser.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                **validated_data
+            )
+        else:
+            # For social login, create user without password
+            user = BingoUser.objects.create_user(
+                username=username,
+                email=email,
+                **validated_data
+            )
+        return user
 
 
 class ContactRequestSerializer(serializers.ModelSerializer):
@@ -34,37 +71,7 @@ class ContactRequestSerializer(serializers.ModelSerializer):
             validate_email(value)
         except ValidationError:
             raise serializers.ValidationError("Enter a valid email address.")
-        
-        # Check if email already exists
-        if BingoUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
-        
         return value
-
-    def validate_password(self, value):
-        if len(value) < 8:
-            raise serializers.ValidationError("Password must be at least 8 characters long.")
-        return value
-
-    def create(self, validated_data):
-        email = validated_data['email']
-        # Generar username automáticamente desde el email (parte antes del @)
-        username = email.split('@')[0]
-        
-        # Asegurar que el username sea único
-        original_username = username
-        counter = 1
-        while BingoUser.objects.filter(username=username).exists():
-            username = f"{original_username}{counter}"
-            counter += 1
-        
-        password = validated_data.pop('password', None)
-        user = BingoUser.objects.create_user(
-            username=username,
-            email=email,
-            password=password
-        )
-        return user
 
 class BingoEventSerializer(serializers.ModelSerializer):
     background_url = serializers.SerializerMethodField()

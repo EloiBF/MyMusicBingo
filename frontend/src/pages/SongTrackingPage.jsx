@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Check, Music, Search, Loader2, ChevronLeft } from 'lucide-react';
+import { Check, Music, Search, Loader2, ChevronLeft, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../api';
 
 const SongTrackingPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [songs, setSongs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [sortOrder, setSortOrder] = useState('abc'); // 'abc' or 'played'
@@ -21,14 +24,14 @@ const SongTrackingPage = () => {
                 setError(null);
             } catch (error) {
                 console.error('Error fetching songs:', error);
-                setError('Failed to load songs. Please try again.');
+                setError(t('detail.alerts.load_failed'));
             } finally {
                 setLoading(false);
             }
         };
 
         if (id) fetchSongs();
-    }, [id]);
+    }, [id, t]);
 
     const toggleSong = async (songId) => {
         if (isSaving) return;
@@ -107,9 +110,9 @@ const SongTrackingPage = () => {
                             <ChevronLeft size={20} />
                         </button>
                         <div style={{ flex: 1 }}>
-                            <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Track Songs</h1>
+                            <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>{t('tracking.title')}</h1>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                Mark songs as they are played
+                                {t('tracking.subtitle')}
                             </div>
                         </div>
 
@@ -129,7 +132,7 @@ const SongTrackingPage = () => {
                                     transition: 'all 0.2s'
                                 }}
                             >
-                                A-Z
+                                {t('tracking.sort_abc')}
                             </button>
                             <button
                                 onClick={() => setSortOrder('played')}
@@ -145,7 +148,7 @@ const SongTrackingPage = () => {
                                     transition: 'all 0.2s'
                                 }}
                             >
-                                Played
+                                {t('tracking.sort_played')}
                             </button>
                         </div>
                     </div>
@@ -153,7 +156,7 @@ const SongTrackingPage = () => {
                     {/* Progress Bar & Stats */}
                     <div style={{ marginBottom: '1.5rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Game Progress</span>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>{t('tracking.game_progress')}</span>
                             <span style={{
                                 fontSize: '0.9rem',
                                 fontWeight: 800,
@@ -192,7 +195,7 @@ const SongTrackingPage = () => {
                         }} />
                         <input
                             type="text"
-                            placeholder="Type to search..."
+                            placeholder={t('tracking.search_placeholder')}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             style={{
@@ -225,12 +228,20 @@ const SongTrackingPage = () => {
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-muted)' }}>
                             <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 1rem' }} />
-                            <p>Syncing library...</p>
+                            <p>{t('tracking.syncing')}</p>
+                        </div>
+                    ) : error ? (
+                        <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--error)' }}>
+                            <AlertCircle size={48} style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
+                            <p>{error}</p>
+                            <button onClick={() => window.location.reload()} className="btn btn-secondary" style={{ marginTop: '1rem' }}>
+                                {t('common.retry') || 'Retry'}
+                            </button>
                         </div>
                     ) : filteredSongs.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-muted)' }}>
                             <Music size={48} style={{ margin: '0 auto 1rem', opacity: 0.2 }} />
-                            <p>No songs found matching "{searchTerm}"</p>
+                            <p>{t('tracking.no_songs')} "{searchTerm}"</p>
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -254,6 +265,7 @@ const SongTrackingPage = () => {
                                         cursor: 'pointer',
                                         transition: 'all 0.2s',
                                         position: 'relative',
+                                        opacity: isSaving ? 0.7 : 1,
                                     }}
                                     className="song-card"
                                 >
@@ -310,7 +322,7 @@ const SongTrackingPage = () => {
                                             border: '1px solid var(--success)',
                                             boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
                                         }}>
-                                            PLAYED
+                                            {t('tracking.played')}
                                         </div>
                                     )}
                                 </div>

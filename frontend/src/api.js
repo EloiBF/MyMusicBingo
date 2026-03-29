@@ -20,35 +20,17 @@ api.interceptors.request.use(
 // Add a response interceptor to handle token expiration
 api.interceptors.response.use(
     (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-        
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+    (error) => {
+        if (error.response?.status === 401) {
+            // Refresh failed or unauthorized, redirect to login
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
             
-            // Try to refresh token
-            try {
-                let response;
-                try {
-                    response = await api.post('/auth/refresh/refresh/');
-                } catch (e) {
-                    response = await api.post('/auth/refresh/');
-                }
-                const newToken = response.data.token;
-                localStorage.setItem('token', newToken);
-                
-                // Retry original request
-                originalRequest.headers.Authorization = `Token ${newToken}`;
-                return api(originalRequest);
-            } catch (refreshError) {
-                // Refresh failed, redirect to login
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+            // Only redirect if we are not already on the auth page to avoid loops
+            if (!window.location.pathname.startsWith('/auth')) {
                 window.location.href = '/auth';
-                return Promise.reject(refreshError);
             }
         }
-        
         return Promise.reject(error);
     }
 );

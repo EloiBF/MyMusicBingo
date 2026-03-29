@@ -3,7 +3,7 @@ import { Music, Mic2, Radio, Disc3, Sparkles, Heart, Zap, Headphones } from 'luc
 
 export default {
     id: 'danceparty',
-    label: '💃 Dance Party 🎵',
+    label: 'Dance Party',
     category: 'Music',
     font: "'Poppins', sans-serif",
     defaultAccentColor: '#f43f5e',

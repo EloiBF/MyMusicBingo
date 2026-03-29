@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import { Music, ArrowRight, User, Mail, Lock, UserPlus, LogIn, Home } from 'lucide-react';
+import { Music, ArrowRight, User, Mail, Lock, UserPlus, LogIn, Home, Sparkles } from 'lucide-react';
 import { useTranslation, Trans } from 'react-i18next';
+import { GoogleLogin } from '@react-oauth/google';
 import api from '../api';
 import Navbar from '../components/Navbar';
 
@@ -9,58 +10,71 @@ const Auth = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const location = useLocation();
-  const [mode, setMode] = useState(location.state?.mode || 'register'); // 'login' or 'register'
+
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
-  const [validationErrors, setValidationErrors] = useState({});
+
+  const [loading, setLoading] = useState(false);
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const err = searchParams.get('error');
-    if (err) {
-      if (err === 'SpotifyAccessDenied') setError(t('auth.errors.cancelled'));
-      else setError(t('auth.errors.failed', { error: err }));
-    }
-  }, [searchParams, t]);
+    const token = localStorage.getItem('token');
+    if (token) navigate('/dashboard');
+  }, [navigate]);
 
-
-  const validateForm = () => {
-    const errors = {};
-    
-    if (!formData.email) {
-      errors.email = t('auth.errors.email_required');
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = t('auth.errors.email_invalid');
-    }
-    
-    if (!formData.password) {
-      errors.password = t('auth.errors.password_required');
-    } else if (mode === 'register' && formData.password.length < 8) {
-      errors.password = t('auth.errors.password_min_length');
-    }
-    
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
     setLoading(true);
+    setIsCreatingAccount(false);
     setError('');
-    setValidationErrors({});
 
     try {
-      const endpoint = mode === 'login' ? '/auth/login/' : '/auth/register/';
-      const response = await api.post(endpoint, formData);
+      const response = await api.post('/auth/login/', {
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (response.data.token) {
+        if (response.data.is_new_user) {
+          setIsCreatingAccount(true);
+          // UX: Wait 5 seconds to show the "Creating account" message as requested
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      const data = err.response?.data;
+      const errorKey = data?.error;
+      if (typeof errorKey === 'string' && errorKey.startsWith('auth.errors.')) {
+        setError(t(errorKey));
+      } else {
+        setError(data?.error || t('auth.errors.generic'));
+      }
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await api.post('/auth/google_login/', {
+        id_token: credentialResponse.credential
+      });
 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
@@ -69,205 +83,180 @@ const Auth = () => {
       }
     } catch (err) {
       const data = err.response?.data;
-
-      // DRF serializer field errors (e.g. { email: ["..."], password: ["..."] })
-      if (data && typeof data === 'object' && (Array.isArray(data.email) || Array.isArray(data.password))) {
-        const nextFieldErrors = {};
-        if (Array.isArray(data.email) && data.email.length > 0) nextFieldErrors.email = data.email[0];
-        if (Array.isArray(data.password) && data.password.length > 0) nextFieldErrors.password = data.password[0];
-        setValidationErrors(nextFieldErrors);
-        setError('');
-        return;
-      }
-
       const errorKey = data?.error;
       if (typeof errorKey === 'string' && errorKey.startsWith('auth.errors.')) {
         setError(t(errorKey));
       } else {
-        setError(data?.error || data?.detail || t('auth.errors.generic'));
+        setError(data?.error || t('auth.errors.generic'));
       }
-    } finally {
       setLoading(false);
-    }
+    } 
+  };
+
+  const handleGoogleError = () => {
+    setError(t('auth.errors.generic'));
   };
 
   return (
     <div style={{
       background: 'var(--background)',
-      color: 'var(--text)',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <Navbar />
+
       <div style={{
         flex: 1,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: '6rem' // Account for fixed navbar
+        padding: '2rem',
+        paddingTop: '6rem',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        <div className="container" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '100%', maxWidth: mode === 'register' ? '500px' : '400px', transition: 'max-width 0.3s ease' }}>
-            <div className="glass animate-fade-in" style={{ 
-              width: '100%', 
-              padding: '3rem', 
-              textAlign: 'center', 
-              position: 'relative', 
-              overflow: 'hidden',
-              boxShadow: mode === 'register' ? '0 0 40px rgba(30, 215, 96, 0.1)' : 'var(--shadow-lg)'
-            }}>
-              
-              {mode === 'register' && (
-                <div style={{ 
-                  position: 'absolute', 
-                  top: 0, 
-                  left: 0, 
-                  right: 0, 
-                  height: '4px', 
-                  background: 'linear-gradient(90deg, var(--primary), var(--secondary))' 
-                }} />
-              )}
+        {/* Background blobs */}
+        <div style={{ position: 'absolute', top: '10%', left: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: 0 }} />
+        <div style={{ position: 'absolute', bottom: '10%', right: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: 0 }} />
 
-              <img
-                src="/images/logo.png"
-                alt="BingoMusicMaker Logo"
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '1rem',
-                  margin: '0 auto 0.05rem',
-                  objectFit: 'contain'
-                }}
-              />
-
-              <h1 className="brand" style={{ fontSize: '2rem', marginBottom: '1rem', cursor: 'pointer', lineHeight: 1.1 }} onClick={() => navigate('/')}>BingoMusic<br />Maker</h1>
-              
-              <div className={mode === 'register' ? 'glass' : ''} style={{
-                color: mode === 'register' ? 'var(--text)' : 'var(--text-muted)',
-                padding: mode === 'register' ? '1rem' : '0',
-                marginBottom: '1.5rem',
-                fontSize: mode === 'register' ? '1.05rem' : '0.95rem',
-                fontWeight: mode === 'register' ? '600' : 'normal',
-                textAlign: 'center',
-                transition: 'all 0.2s ease',
-                background: mode === 'register' ? 'rgba(30, 215, 96, 0.05)' : 'none',
-                border: mode === 'register' ? '1px solid rgba(30, 215, 96, 0.2)' : 'none',
-                borderRadius: '0.5rem'
+        <div className="glass animate-fade-in" style={{
+          width: '100%',
+          maxWidth: '480px',
+          padding: '2.5rem',
+          position: 'relative',
+          zIndex: 1,
+          border: '1px solid var(--glass-border)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                width: '56px',
+                height: '56px',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 16px rgba(29, 185, 84, 0.3)'
               }}>
-                {mode === 'login' ? t('auth.login.welcome') : t('auth.register.welcome')}
-              </div>
-
-              {error && (
-                <div style={{
-                  padding: '0.75rem',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.2)',
-                  borderRadius: '0.5rem',
-                  color: 'var(--error)',
-                  fontSize: '0.85rem',
-                  marginBottom: '1.5rem'
-                }}>
-                  {error && error.includes('<0 />') ? (
-                    <Trans i18nKey={error} components={[<br />]} />
-                  ) : (
-                    error
-                  )}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} style={{ textAlign: 'left', marginBottom: '1.5rem' }}>
-                <div className="input-group" style={{ marginBottom: '1rem' }}>
-                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('auth.email')}</label>
-                  <div style={{ position: 'relative' }}>
-                    <Mail size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                    <input
-                      type="email"
-                      style={{ paddingLeft: '2.5rem' }}
-                      placeholder={t('auth.email_placeholder')}
-                      value={formData.email}
-                      onChange={(e) => {
-                        setFormData({ ...formData, email: e.target.value });
-                        if (validationErrors.email) {
-                          setValidationErrors({ ...validationErrors, email: '' });
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-                  {validationErrors.email && (
-                    <div style={{ color: 'var(--error)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                      {validationErrors.email}
-                    </div>
-                  )}
-                </div>
-
-                <div className="input-group" style={{ marginBottom: '2rem' }}>
-                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('auth.password')}</label>
-                  <div style={{ position: 'relative' }}>
-                    <Lock size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                    <input
-                      type="password"
-                      style={{ paddingLeft: '2.5rem' }}
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={(e) => {
-                        setFormData({ ...formData, password: e.target.value });
-                        if (validationErrors.password) {
-                          setValidationErrors({ ...validationErrors, password: '' });
-                        }
-                      }}
-                      required
-                      minLength={mode === 'register' ? 8 : undefined}
-                    />
-                  </div>
-                  {validationErrors.password && (
-                    <div style={{ color: 'var(--error)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                      {validationErrors.password}
-                    </div>
-                  )}
-                  {mode === 'register' && (
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.5rem' }}>
-                      {t('auth.password_min_length_hint')}
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="submit"
-                  className={`btn ${mode === 'login' ? 'btn-secondary' : 'btn-primary'}`}
-                  style={{ 
-                    width: '100%', 
-                    height: '3.5rem', 
-                    fontSize: '1rem',
-                    background: mode === 'login' ? 'rgba(255, 255, 255, 0.05)' : undefined,
-                    border: mode === 'login' ? '1px solid var(--glass-border)' : undefined,
-                    borderBottom: mode === 'login' ? '1px solid var(--glass-border)' : undefined
-                  }}
-                  disabled={loading}
-                >
-                  {loading ? t('auth.processing') : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                      {mode === 'login' ? <LogIn size={18} /> : <UserPlus size={18} />}
-                      {mode === 'login' ? t('auth.signin') : t('auth.signup')}
-                    </div>
-                  )}
-                </button>
-              </form>
-
-              <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--glass-border)' }}>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-                  {mode === 'login' ? t('auth.no_account') : t('auth.have_account')}
-                </p>
-                <button
-                  onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                  className="btn btn-secondary"
-                  style={{ width: '100%', justifyContent: 'center' }}
-                >
-                  {mode === 'login' ? t('auth.create_one') : t('auth.sign_in_link')}
-                </button>
+                <Music size={28} color="white" />
               </div>
             </div>
+
+            <h1 className="brand" style={{ fontSize: '2.25rem', marginBottom: '0.75rem', cursor: 'pointer', lineHeight: 1.1 }} onClick={() => navigate('/')}>BingoMusicMaker</h1>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem' }}>
+              {t('auth.login.welcome')}
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {/* Google Login first */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap
+                  theme="filled_blue"
+                  width="400px"
+                  shape="pill"
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '1rem' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                  {t('auth.or_with')}
+                </span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+              </div>
+            </div>
+
+            {error && (
+              <div style={{
+                padding: '1rem',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '0.75rem',
+                color: '#ef4444',
+                fontSize: '0.9rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                animation: 'fadeIn 0.3s ease'
+              }}>
+                <Sparkles size={18} />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="input-group" style={{ marginBottom: 0 }}>
+                <label>{t('auth.email')}</label>
+                <div style={{ position: 'relative' }}>
+                  <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder={t('auth.email_placeholder')}
+                    required
+                    style={{ paddingLeft: '3rem' }}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="input-group" style={{ marginBottom: '0.5rem' }}>
+                <label>{t('auth.password')}</label>
+                <div style={{ position: 'relative' }}>
+                  <Lock size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder={t('auth.password')}
+                    required
+                    style={{ paddingLeft: '3rem' }}
+                    disabled={loading}
+                  />
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem', marginLeft: '0.25rem' }}>
+                  {t('auth.password_min_length_hint')}
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+                style={{
+                  padding: '1rem',
+                  fontSize: '1.1rem',
+                  marginTop: '0.5rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  height: '54px'
+                }}
+              >
+                {loading ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} />
+                    <span style={{ fontWeight: 600 }}>
+                      {isCreatingAccount ? t('auth.creating_account') : t('auth.processing')}
+                    </span>
+                  </div>
+                ) : (
+                  <span>{t('auth.signin')}</span>
+                )}
+              </button>
+            </form>
           </div>
         </div>
       </div>

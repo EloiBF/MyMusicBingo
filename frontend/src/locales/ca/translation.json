@@ -20,13 +20,13 @@
             "title": "Crea el teu propi <0 /> <1>Bingo Musical</1>",
             "title1": "Bingo Musical",
             "title2": "des de les teves llistes de Spotify o YouTube",
-            "subtitle": "Connecta una llista de <1>Spotify</1> o <2>YouTube</2> i crea el teu bingo\npersonalitzat amb les teves cançons preferides!",
+            "subtitle": "Connecta una playlist de <1>Spotify</1> o <2>YouTube</2> i crea el teu bingo\npersonalitzat amb les teves cançons preferides!",
             "cta": "Començar Gratis",
             "secondaryCta": "Com funciona"
         },
         "why": {
-            "title_from": "Crea fàcilment un ",
-            "title_to": "a Bingo Musical",
+            "title_from": "Transforma les teves llistes",
+            "title_to": "en el teu Bingo Musical",
             "features": {
                 "custom": {
                     "title": "Cartons Personalitzables",
@@ -113,13 +113,13 @@
         "subtitle": "Gestiona els teus bingos musicals i crea'n de nous en pocs clics.",
         "empty": {
             "title": "Crea el teu primer bingo musical",
-            "desc": "Comença ara! Converteix qualsevol llista de Spotify o YouTube en un joc de bingo professional en segons.",
+            "desc": "Comença ara! Converteix qualezvol llista de Spotify o YouTube en un joc de bingo professional en segons.",
             "cta": "Començar"
         }
     },
     "auth": {
         "login": {
-            "welcome": "Benvingut/da de nou! Inicia sessió per continuar."
+            "welcome": "Inicia sessió per continuar."
         },
         "register": {
             "welcome": "Crea un compte per començar a construir els teus bingos.",
@@ -130,13 +130,15 @@
         "email": "Correu electrònic",
         "email_placeholder": "Introdueix el teu correu electrònic",
         "password": "Contrasenya",
-        "signin": "Iniciar Sessió",
-        "signup": "Crear Compte",
+        "signin": "Accedir",
+        "signup": "Accedir",
+        "creating_account": "Creant nou compte...",
         "processing": "Processant...",
         "no_account": "No tens un compte?",
         "have_account": "Ja tens un compte?",
         "create_one": "Crea un compte",
         "sign_in_link": "Inicia sessió",
+        "or_with": "O amb el correu electrònic",
         "errors": {
             "cancelled": "Has cancel·lat la connexió amb Spotify.",
             "failed": "L'inici de sessió ha fallat: {{error}}",
@@ -147,7 +149,9 @@
             "email_required": "El correu electrònic és obligatori.",
             "email_invalid": "El correu electrònic no és vàlid.",
             "password_required": "La contrasenya és obligatòria.",
-            "password_min_length": "La contrasenya ha de tenir com a mínim 8 caràcters."
+            "password_min_length": "La contrasenya ha de tenir com a mínim 8 caràcters.",
+            "id_token_required": "Token d'identificació necessari.",
+            "invalid_google_token": "Token de Google no vàlid."
         },
         "password_min_length_hint": "Mínim 8 caràcters"
     },
@@ -282,7 +286,7 @@
             "name_placeholder": "ej. Nit de Disco",
             "num_cards_label": "Número de cartons",
             "max_cards": "màxim",
-            "grid_label": "Mida de la quadrícula",
+            "grid_label": "Mida de l'a quadrícula",
             "orientation_label": "Orientació del cartó",
             "portrait": "Vertical",
             "landscape": "Horitzontal"
@@ -357,7 +361,8 @@
         "guest": "Convidat",
         "no_articles": "No s'han trobat articles",
         "check_back": "¡Torna aviat per veure contingut nou!",
-        "welcome_to_app": "Benvingut/da a BingoMusicMaker"
+        "welcome_to_app": "Benvingut/da a BingoMusicMaker",
+        "retry": "Reintentar"
     },
     "premium": {
         "title": "Premium",
@@ -379,5 +384,16 @@
         "contact_success": "Gràcies! Hem rebut la teva sol·licitud.",
         "contact_error": "Error en enviar la sol·licitud. Torna-ho a provar.",
         "permanent_active": "Accés Premium Complet"
+    },
+    "tracking": {
+        "title": "Seguiment de cançons",
+        "subtitle": "Marca les cançons a mesura que sonin",
+        "game_progress": "Progrés del joc",
+        "search_placeholder": "Escriu per cercar...",
+        "syncing": "Sincronitzant biblioteca...",
+        "no_songs": "No s'han trobat cançons que coincideixin amb",
+        "played": "REPRODUÏDA",
+        "sort_abc": "A-Z",
+        "sort_played": "Reproduïdes"
     }
 }

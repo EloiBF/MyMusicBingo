@@ -25,8 +25,8 @@
             "secondaryCta": "How it works"
         },
         "why": {
-            "title_from": "Easily create a ",
-            "title_to": "to Music Bingo",
+            "title_from": "Turn your playlists into ",
+            "title_to": "a unique Music Bingo",
             "features": {
                 "custom": {
                     "title": "Customizable Cards",
@@ -130,13 +130,15 @@
         "email": "Email Address",
         "email_placeholder": "Enter your email",
         "password": "Password",
-        "signin": "Sign In",
-        "signup": "Create Account",
+        "signin": "Log In",
+        "signup": "Log In",
+        "creating_account": "Creating new account...",
         "processing": "Processing...",
         "no_account": "Don't have an account?",
         "have_account": "Already have an account?",
         "create_one": "Create an account",
         "sign_in_link": "Sign in",
+        "or_with": "Or with",
         "errors": {
             "cancelled": "You cancelled the connection to Spotify.",
             "failed": "Login failed: {{error}}",
@@ -147,7 +149,9 @@
             "email_required": "Email is required.",
             "email_invalid": "Email is not valid.",
             "password_required": "Password is required.",
-            "password_min_length": "Password must be at least 8 characters long."
+            "password_min_length": "Password must be at least 8 characters long.",
+            "id_token_required": "ID token required.",
+            "invalid_google_token": "Invalid Google token."
         },
         "password_min_length_hint": "Minimum 8 characters"
     },
@@ -281,6 +285,7 @@
             "name_label": "Choose a Name to appear in your bingo cards",
             "name_placeholder": "e.g. Disco Night",
             "num_cards_label": "Number of bingo cards",
+            "max_cards": "maximum",
             "grid_label": "Grid layout",
             "orientation_label": "Choose card orientation",
             "portrait": "Portrait",
@@ -350,7 +355,8 @@
         "guest": "Guest",
         "no_articles": "No articles found",
         "check_back": "Check back soon for new content!",
-        "welcome_to_app": "Welcome to BingoMusicMaker"
+        "welcome_to_app": "Welcome to BingoMusicMaker",
+        "retry": "Retry"
     },
     "premium": {
         "title": "Premium",
@@ -372,5 +378,16 @@
         "contact_success": "Thank you! We've received your request.",
         "contact_error": "Failed to send request. Please try again.",
         "permanent_active": "Full Premium Access"
+    },
+    "tracking": {
+        "title": "Song Tracking",
+        "subtitle": "Mark songs as they are played",
+        "game_progress": "Game Progress",
+        "search_placeholder": "Type to search...",
+        "syncing": "Syncing library...",
+        "no_songs": "No songs found matching",
+        "played": "PLAYED",
+        "sort_abc": "A-Z",
+        "sort_played": "Played"
     }
 }

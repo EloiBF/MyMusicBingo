@@ -16,3 +16,4 @@ spotipy
 gunicorn
 dj-database-url
 yt-dlp
+google-auth
