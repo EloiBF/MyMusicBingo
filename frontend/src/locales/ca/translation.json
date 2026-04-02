@@ -107,7 +107,7 @@
         }
     },
     "dashboard": {
-        "loading": "Carregant el teu panell...",
+        "loading": "Carregant els teus bingos...",
         "new_bingo": "Crear Nou Bingo",
         "welcome": "Benvingut/da",
         "subtitle": "Gestiona els teus bingos musicals i crea'n de nous en pocs clics.",

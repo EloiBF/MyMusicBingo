@@ -107,7 +107,7 @@
         }
     },
     "dashboard": {
-        "loading": "Loading your dashboard...",
+        "loading": "Loading your bingos...",
         "new_bingo": "Create New Bingo",
         "welcome": "Welcome back",
         "subtitle": "Manage your music bingos and create new ones in a few clicks.",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Mic2, Radio, Disc3, Sparkles, Heart, Zap, Headphones } from 'lucide-react';
+import { Music, Mic2, Radio, Disc3, Sparkles, Heart, Zap, Headphones , Music2} from 'lucide-react';
 
 export default {
     id: 'danceparty',
@@ -8,72 +8,103 @@ export default {
     font: "'Poppins', sans-serif",
     defaultAccentColor: '#f43f5e',
     defaultGridSize: 'medium',
-    defaultTitleSpace: 'large',
+    defaultTitleSpace: 'medium',
     background: {
         color: '#fef2f2',
         elements: [
-            // Vibrant gradient circles for party atmosphere
+            // Notes musicals afegides per defecte
+            { content: <Music size={60} color="#f43f5e" opacity={0.12} />, style: { top: '10%', right: '10%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            { content: <Music2 size={50} color="#f43f5e" opacity={0.1} />, style: { bottom: '10%', left: '8%', transform: 'rotate(-20deg)' }, decorationLevel: 'subtle' },
+        
+            // Vibrant gradient circles for party atmosphere - positioned within bounds
             {
                 content: (
                     <div style={{
-                        width: '320px',
-                        height: '320px',
+                        width: '250px',
+                        height: '250px',
                         borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(244, 63, 94, 0.15) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, transparent 70%)',
                         filter: 'blur(35px)'
                     }} />
                 ),
-                style: { top: '-80px', right: '-80px' },
+                style: { top: '0', right: '0' },
                 decorationLevel: 'subtle'
             },
             {
                 content: (
                     <div style={{
-                        width: '280px',
-                        height: '280px',
+                        width: '220px',
+                        height: '220px',
                         borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(251, 146, 60, 0.12) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(251, 146, 60, 0.1) 0%, transparent 70%)',
                         filter: 'blur(30px)'
                     }} />
                 ),
-                style: { bottom: '-70px', left: '-70px' },
+                style: { bottom: '0', left: '0' },
                 decorationLevel: 'subtle'
             },
             {
                 content: (
                     <div style={{
-                        width: '240px',
-                        height: '240px',
+                        width: '200px',
+                        height: '200px',
                         borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%)',
                         filter: 'blur(25px)'
                     }} />
                 ),
-                style: { top: '40%', left: '50%', transform: 'translateX(-50%)' },
+                style: { top: '35%', left: '50%', transform: 'translateX(-50%)' },
                 decorationLevel: 'subtle'
             },
-            // Music and dance icons with energetic colors
-            { content: <Music size={110} color="#f43f5e" strokeWidth={2.5} />, style: { top: '5%', left: '2%', transform: 'rotate(-15deg)' }, decorationLevel: 'prominent' },
-            { content: <Mic2 size={95} color="#fb923c" strokeWidth={2.5} />, style: { top: '7%', right: '2%', transform: 'rotate(20deg)' }, decorationLevel: 'prominent' },
-            { content: <Radio size={100} color="#a855f7" strokeWidth={2.5} />, style: { bottom: '5%', left: '2%', transform: 'rotate(-25deg)' }, decorationLevel: 'subtle' },
-            { content: <Disc3 size={90} color="#f43f5e" strokeWidth={2.5} />, style: { bottom: '8%', right: '2%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
-            { content: <Headphones size={85} color="#fb923c" strokeWidth={2.5} />, style: { top: '50%', left: '3%', transform: 'rotate(-10deg)' }, decorationLevel: 'subtle' },
-            // Party decorations - sparkles and hearts
-            { content: <Sparkles size={45} color="#f43f5e" fill="#f43f5e" />, style: { top: '12%', right: '4%' }, decorationLevel: 'subtle' },
-            { content: <Heart size={40} color="#fb923c" fill="#fb923c" />, style: { bottom: '12%', left: '3%' }, decorationLevel: 'subtle' },
-            { content: <Sparkles size={38} color="#a855f7" fill="#a855f7" />, style: { bottom: '15%', right: '4%' }, decorationLevel: 'subtle' },
-            { content: <Heart size={35} color="#f43f5e" fill="#f43f5e" />, style: { top: '18%', left: '25%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
-            { content: <Zap size={42} color="#fb923c" fill="#fb923c" />, style: { top: '20%', right: '25%', transform: 'rotate(-20deg)' }, decorationLevel: 'subtle' },
-            // Confetti dots
+            // Top corner accents - subtle decorative elements
             {
                 content: (
-                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', width: '120px' }}>
-                        {[...Array(15)].map((_, i) => (
+                    <div style={{
+                        width: '25px',
+                        height: '25px',
+                        background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.5), rgba(251, 146, 60, 0.5))',
+                        borderRadius: '50%'
+                    }} />
+                ),
+                style: { top: '3%', left: '3%' },
+                decorationLevel: 'subtle'
+            },
+            {
+                content: (
+                    <div style={{
+                        width: '20px',
+                        height: '20px',
+                        background: 'linear-gradient(225deg, rgba(168, 85, 247, 0.5), rgba(244, 63, 94, 0.5))',
+                        borderRadius: '50%'
+                    }} />
+                ),
+                style: { top: '5%', right: '4%' },
+                decorationLevel: 'subtle'
+            },
+            { content: <Sparkles size={22} color="#f43f5e" fill="#f43f5e" opacity={0.6} />, style: { top: '8%', left: '8%' }, decorationLevel: 'subtle' },
+            { content: <Sparkles size={18} color="#fb923c" fill="#fb923c" opacity={0.5} />, style: { top: '6%', right: '8%' }, decorationLevel: 'subtle' },
+            // Music and dance icons - moved down to avoid header overlap
+            { content: <Music size={75} color="#f43f5e" strokeWidth={2.5} />, style: { top: '35%', left: '1%', transform: 'rotate(-15deg)' }, decorationLevel: 'subtle' },
+            { content: <Mic2 size={65} color="#fb923c" strokeWidth={2.5} />, style: { top: '55%', right: '1%', transform: 'rotate(20deg)' }, decorationLevel: 'subtle' },
+            { content: <Radio size={70} color="#a855f7" strokeWidth={2.5} />, style: { bottom: '8%', left: '1%', transform: 'rotate(-25deg)' }, decorationLevel: 'subtle' },
+            { content: <Disc3 size={60} color="#f43f5e" strokeWidth={2.5} />, style: { bottom: '10%', right: '1%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            { content: <Headphones size={55} color="#fb923c" strokeWidth={2.5} />, style: { top: '72%', left: '2%', transform: 'rotate(-10deg)' }, decorationLevel: 'subtle' },
+            // Party decorations - sparkles and hearts - repositioned away from header
+            { content: <Sparkles size={32} color="#f43f5e" fill="#f43f5e" />, style: { top: '38%', right: '3%' }, decorationLevel: 'subtle' },
+            { content: <Heart size={30} color="#fb923c" fill="#fb923c" />, style: { bottom: '15%', left: '2%' }, decorationLevel: 'subtle' },
+            { content: <Sparkles size={28} color="#a855f7" fill="#a855f7" />, style: { bottom: '18%', right: '3%' }, decorationLevel: 'subtle' },
+            { content: <Heart size={26} color="#f43f5e" fill="#f43f5e" />, style: { top: '60%', left: '18%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            { content: <Zap size={32} color="#fb923c" fill="#fb923c" />, style: { top: '65%', right: '18%', transform: 'rotate(-20deg)' }, decorationLevel: 'subtle' },
+            // Confetti dots - moved down
+            {
+                content: (
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', width: '70px' }}>
+                        {[...Array(10)].map((_, i) => (
                             <div
                                 key={i}
                                 style={{
-                                    width: '10px',
-                                    height: '10px',
+                                    width: '7px',
+                                    height: '7px',
                                     borderRadius: '50%',
                                     background: ['#f43f5e', '#fb923c', '#a855f7', '#fbbf24', '#10b981'][i % 5],
                                     transform: `rotate(${i * 24}deg)`
@@ -82,34 +113,32 @@ export default {
                         ))}
                     </div>
                 ),
-                style: { top: '15%', left: '4%' },
+                style: { top: '40%', left: '3%' },
                 decorationLevel: 'subtle'
             },
-            // Corner party decorations
+            // Corner accents - very subtle small rounded corners only
             {
                 content: (
                     <div style={{
-                        width: '70px',
-                        height: '70px',
-                        background: 'linear-gradient(135deg, #f43f5e, #fb923c)',
-                        borderRadius: '0 0 100% 0',
-                        boxShadow: '0 4px 15px rgba(244, 63, 94, 0.3)'
+                        width: '35px',
+                        height: '35px',
+                        background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.4), rgba(251, 146, 60, 0.4))',
+                        borderRadius: '0 0 100% 0'
                     }} />
                 ),
-                style: { top: 0, left: 0 },
+                style: { top: '2%', left: '2%' },
                 decorationLevel: 'subtle'
             },
             {
                 content: (
                     <div style={{
-                        width: '70px',
-                        height: '70px',
-                        background: 'linear-gradient(225deg, #a855f7, #f43f5e)',
-                        borderRadius: '0 0 0 100%',
-                        boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)'
+                        width: '35px',
+                        height: '35px',
+                        background: 'linear-gradient(225deg, rgba(168, 85, 247, 0.4), rgba(244, 63, 94, 0.4))',
+                        borderRadius: '0 0 0 100%'
                     }} />
                 ),
-                style: { top: 0, right: 0 },
+                style: { top: '2%', right: '2%' },
                 decorationLevel: 'subtle'
             }
         ]
@@ -122,7 +151,7 @@ export default {
         shadow: '0 12px 40px rgba(244, 63, 94, 0.2), 0 0 0 1px rgba(251, 146, 60, 0.1)'
     },
     title: {
-        content: '💃 BINGO 🎵',
+        content: 'BINGO',
         size: 'small',
         weight: '700',
         color: '#f43f5e',

@@ -11,7 +11,12 @@ export const themes = Object.entries(themeConfigs).reduce((acc, [path, module]) 
     // Skip this index file
     if (path.endsWith('index.js')) return acc;
 
-    const config = module.default;
+    const config = module?.default;
+    if (!config) {
+        console.warn(`No default export found in theme config: ${path}`);
+        return acc;
+    }
+
     const id = config.id || path.split('/').pop().replace('.jsx', '').toLowerCase();
 
     acc[id] = config;

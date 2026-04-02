@@ -1,21 +1,24 @@
-import { Music, Music2, Music3, Mic2, Headphones, Speaker, Disc, Sparkles, Star } from 'lucide-react';
+import { Music, Music2, Mic2, Headphones, Disc3, Sparkles, Star } from 'lucide-react';
 
 export default {
     id: 'basic',
     label: 'Basic',
     category: 'Essentials',
-    font: "'Montserrat', sans-serif",
+    font: "'Outfit', sans-serif",
     defaultAccentColor: '#3b82f6',
     defaultGridSize: 'medium',
     defaultTitleSpace: 'medium',
     background: {
         color: '#ffffff',
         elements: [
-            // Background Decorations (subtle, engine-controlled opacity)
-            { content: <Music size={100} color="#3b82f6" />, style: { top: '5%', left: '9%', transform: 'rotate(-15deg)' }, decorationLevel: 'subtle' },
-            { content: <Mic2 size={100} color="#3b82f6" />, style: { top: '8%', right: '10%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            // Background Decorations - més modernes i subtils
+            { content: <Music size={90} color="#3b82f6" opacity={0.12} />, style: { top: '5%', left: '8%', transform: 'rotate(-15deg)' }, decorationLevel: 'subtle' },
+            { content: <Mic2 size={85} color="#3b82f6" opacity={0.1} />, style: { top: '8%', right: '10%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            { content: <Disc3 size={70} color="#60a5fa" opacity={0.08} />, style: { bottom: '10%', left: '5%', transform: 'rotate(-20deg)' }, decorationLevel: 'subtle' },
+            { content: <Headphones size={65} color="#60a5fa" opacity={0.08} />, style: { bottom: '8%', right: '8%', transform: 'rotate(10deg)' }, decorationLevel: 'subtle' },
+            { content: <Music2 size={50} color="#93c5fd" opacity={0.06} />, style: { top: '40%', left: '3%', transform: 'rotate(25deg)' }, decorationLevel: 'subtle' },
             
-            // Decorations (full opacity, engine-independent)
+            // Decoracions subtils
             {
                 content: (
                     <div style={{
@@ -38,32 +41,60 @@ export default {
         ]
     },
     title: {
-        content: 'BINGO',
-        weight: '700',
-        color: '#dc2626',
-        letterSpacing: '2pt',
-        shadow: '3px 3px 0px #991b1b',
-        fontFamily: "'Dancing Script', 'Brush Script MT', cursive",
-        fontStyle: 'italic',
+        content: 'MUSIC BINGO',
+        weight: '800',
+        color: '#1e40af',
+        letterSpacing: '3pt',
+        shadow: '2px 2px 8px rgba(30, 64, 175, 0.2)',
+        fontFamily: "'Outfit', sans-serif",
         size: 'medium'
     },
     subtitle: {
+        content: '🎵 MUSIC BINGO 🎵',
         size: 'medium',
-        weight: '600',
+        weight: '500',
         color: '#64748b',
-        letterSpacing: '1pt'
+        letterSpacing: '2pt',
+        textTransform: 'uppercase',
+        font: "'Outfit', sans-serif"
     },
     grid: {
-        gap: '20px',
-        padding: '16px'
+        gap: '18px',
+        padding: '20px'
     },
     cell: {
-        shape: '8px',
-        border: '4px solid #1e293b',
-        background: '#ffffff',
-        shadow: '0 4px 20px rgba(0,0,0,0.1)',
-        offset: '12px'
+        shape: '12px',
+        border: '3px solid #1e293b',
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+        shadow: '0 4px 15px rgba(0,0,0,0.06)',
+        offset: '14px'
     },
-    song: { size: 'large', weight: '800', color: '#1e293b' },
-    artist: { size: 'medium', weight: '600', color: '#64748b' }
+    song: { 
+        size: 'large', 
+        weight: '700', 
+        color: '#1e293b',
+        font: "'Outfit', sans-serif"
+    },
+    artist: { 
+        size: 'medium', 
+        weight: '600', 
+        color: '#64748b',
+        font: "'Outfit', sans-serif"
+    },
+    cardNumber: {
+        size: 'small',
+        weight: '600',
+        color: '#3b82f6',
+        background: '#eff6ff',
+        padding: '5px 14px',
+        borderRadius: '15px'
+    },
+    footer: {
+        size: 'small',
+        weight: '500',
+        color: '#94a3b8',
+        letterSpacing: '1pt',
+        textAlign: 'center',
+        font: "'Outfit', sans-serif"
+    }
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Music, Radio, Disc3, Mic, Sparkles, Star, Heart, Zap } from 'lucide-react';
+import { Music, Radio, Disc3, Mic, Sparkles, Star, Heart, Zap , Music2} from 'lucide-react';
 
 export default {
     id: 'pop',
@@ -12,6 +12,10 @@ export default {
     background: {
         color: '#fff5f7',
         elements: [
+            // Notes musicals afegides per defecte
+            { content: <Music size={60} color="#ec4899" opacity={0.12} />, style: { top: '10%', right: '10%', transform: 'rotate(15deg)' }, decorationLevel: 'subtle' },
+            { content: <Music2 size={50} color="#ec4899" opacity={0.1} />, style: { bottom: '10%', left: '8%', transform: 'rotate(-20deg)' }, decorationLevel: 'subtle' },
+        
             // Vibrant gradient circles
             {
                 content: (

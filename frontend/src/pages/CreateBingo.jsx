@@ -261,6 +261,7 @@ const CreateBingo = () => {
         setLoading(true);
         try {
             let response;
+            const hasThemeOverrides = themeMode === 'custom' && isPremium && themeOverrides && typeof themeOverrides === 'object';
             const payload = {
                 event_title: config.eventTitle,
                 playlist_id: config.playlistId,
@@ -270,7 +271,7 @@ const CreateBingo = () => {
                 columns: config.columns,
                 theme: config.theme,
                 orientation: config.orientation,
-                theme_overrides: (themeMode === 'custom' && isPremium && themeOverrides && typeof themeOverrides === 'object') ? themeOverrides : undefined
+                ...(hasThemeOverrides ? { theme_overrides: themeOverrides } : {})
             };
             if (isEditMode) {
                 response = await api.patch(`/bingo/${id}/`, payload);
